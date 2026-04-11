@@ -1,0 +1,281 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
+const allPostsData = allPosts.map((p) => ({
+  slug: p.slug,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+}));
+
+const contributions = [
+  {
+    type: 'maintainer',
+    typeLabel: 'Author & Maintainer',
+    name: 'oci-prometheus-sd-proxy',
+    date: 'March 2026',
+    lang: 'Go',
+    link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
+    linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
+    summary: 'A lightweight Go service that bridges Oracle Cloud Infrastructure and Prometheus by dynamically discovering tagged compute instances across multiple tenancies via HTTP service discovery.',
+    detail: 'Fills a real gap in the OCI observability ecosystem — OCI has no native Prometheus HTTP SD support. The proxy polls the OCI Compute API across multiple tenancies, filters by instance tags, and exposes a valid Prometheus HTTP SD response. Deployed in production across a 9-tenancy OCI estate.',
+    tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
+    name: 'OCI Native Ingress Controller',
+    date: 'PR #139',
+    lang: 'Go',
+    link: 'https://github.com/oracle/oci-native-ingress-controller/pull/139',
+    linkLabel: 'oracle/oci-native-ingress-controller #139',
+    summary: 'Added proper HTTP liveness and readiness probes to the OCI Native Ingress Controller for Kubernetes, replacing TCP socket probes to satisfy CloudGuard CIS compliance requirements.',
+    detail: null,
+    story: {
+      heading: 'The review process forced the right answer',
+      body: `The initial fix was TCP socket probes on the webhook port — quick, compliant, done. But during review, Maintainer pushed back. TCP probes are blunt instruments; they tell you a port is open, not that a controller is actually healthy.
+
+So the implementation was rebuilt properly: a dedicated HealthChecker that tracks informer cache sync state and controller readiness, /healthz/ready and /healthz/live HTTP endpoints on the metrics server, readiness gated on informer cache sync (the controller is actually warmed up, not just listening), and the Helm deployment updated to use HTTP GET probes on the correct port.
+
+The probe tells the truth now. If the controller hasn't finished syncing, Kubernetes won't route traffic to it. The distinction between "something is running" and "something is ready" is what the review process forced getting right.`,
+    },
+    tags: ['Go', 'Kubernetes', 'OCI', 'Helm'],
+  },
+  {
+    type: 'maintainer',
+    typeLabel: 'Author & Publisher',
+    name: 'terraform-gitlab-groups',
+    date: '2025',
+    lang: 'Terraform',
+    link: 'https://github.com/sudo-terraform-modules/terraform-gitlab-groups',
+    linkLabel: 'sudo-terraform-modules/terraform-gitlab-groups',
+    registryLink: 'https://registry.terraform.io/modules/sudo-terraform-modules/groups/gitlab',
+    registryLabel: 'registry.terraform.io/modules/sudo-terraform-modules/groups/gitlab',
+    summary: 'Terraform module for managing GitLab groups, subgroups, and RBAC at scale — built from scratch and published to the public Terraform Registry. Used internally to manage 50+ GitLab groups and access policies via GitOps workflows.',
+    detail: null,
+    tags: ['Terraform', 'GitLab', 'IaC', 'GitOps'],
+  },
+  {
+    type: 'maintainer',
+    typeLabel: 'Author & Publisher',
+    name: 'terraform-aws-ec2-instance',
+    date: '2025',
+    lang: 'Terraform',
+    link: 'https://github.com/sudo-terraform-aws-modules/terraform-aws-ec2-instance',
+    linkLabel: 'sudo-terraform-aws-modules/terraform-aws-ec2-instance',
+    registryLink: 'https://registry.terraform.io/modules/sudo-terraform-aws-modules/ec2-instance/aws',
+    registryLabel: 'registry.terraform.io/modules/sudo-terraform-aws-modules/ec2-instance/aws',
+    summary: 'Terraform module for provisioning AWS EC2 instances — built from scratch and published to the public Terraform Registry. Covers instance configuration, IAM instance profiles, security groups, EBS volumes, and tagging conventions.',
+    detail: null,
+    tags: ['Terraform', 'AWS', 'EC2', 'IaC'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Contributor',
+    name: 'terraform-aws-sudo-vpc',
+    date: 'PR #7, PR #8',
+    lang: 'Terraform',
+    link: 'https://github.com/sudo-terraform-aws-modules/terraform-aws-sudo-vpc',
+    linkLabel: 'sudo-terraform-aws-modules/terraform-aws-sudo-vpc',
+    registryLink: 'https://registry.terraform.io/modules/sudo-terraform-aws-modules/sudo-vpc/aws/latest',
+    registryLabel: 'registry.terraform.io/modules/sudo-terraform-aws-modules/sudo-vpc/aws',
+    summary: 'Contributed two PRs to the public SUDO VPC Terraform module — maintenance contributions keeping the module current and production-ready.',
+    detail: null,
+    tags: ['Terraform', 'AWS', 'VPC', 'IaC'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
+    name: 'Netflix Lemur Docker',
+    date: 'February 2026 · PR #74',
+    lang: 'Docker',
+    link: 'https://github.com/Netflix/lemur-docker/pull/74',
+    linkLabel: 'Netflix/lemur-docker #74',
+    summary: 'Fixed a broken Docker build in the official lemur-docker repository — the containerized distribution of Netflix\'s TLS certificate management platform. The build was failing due to acme==3.3.0 no longer being available in package repositories.',
+    detail: 'Upgraded both builder and app stages from ubuntu:20.04 to ubuntu:22.04, switched Node.js installation to the official NodeSource 20.x LTS repository (with cryptographic signing) instead of Ubuntu\'s outdated default packages, and removed unnecessary dependencies to reduce image bloat. Reviewed and merged by maintainer jtschladen on February 2, 2026.',
+    tags: ['Python', 'Docker', 'TLS', 'PKI'],
+  },
+];
+
+const recognition = [
+  {
+    title: 'AWS Community Day Dubai',
+    date: 'October 2025',
+    location: 'Dubai Knowledge Park, UAE',
+    description: 'Delivered technical sessions to 200+ cloud practitioners on building resilient architectures and securing CI/CD pipelines. Shared hands-on insights from architecting production infrastructure under 48-hour competition constraints.',
+    link: null,
+    badge: 'Speaker',
+    badgeClass: 'badge-blue',
+  },
+  {
+    title: 'HackOps 2025 — 1st Place',
+    date: 'April 2025',
+    location: 'FAST NUCES, Karachi',
+    description: 'Led team to victory in the state-level DevOps hackathon, architecting and deploying production-grade cloud infrastructure on AWS under time constraints.',
+    detail: '₨65,000 prize · State-level competition',
+    link: null,
+    badge: '1st Place',
+    badgeClass: 'badge-green',
+  },
+];
+---
+
+<Base
+  title="Work & Open Source — Amaan Ul Haq Siddiqui"
+  description="Open source projects, upstream contributions, and community recognition by Amaan Ul Haq Siddiqui."
+  allPosts={allPostsData}
+>
+  <div class="space-y-14">
+
+    <div>
+      <h1 class="font-mono text-2xl text-text font-semibold mb-2">Work &amp; Open Source</h1>
+      <p class="text-muted text-sm">Contributions, projects, and community work.</p>
+    </div>
+
+    <!-- ── Open source contributions ─────────────────────────────────── -->
+    <section class="space-y-5">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Contributions</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      {contributions.map((item) => (
+        <article class="card group border-l-4 border-l-transparent hover:border-l-accent transition-all duration-200">
+          <!-- Header -->
+          <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h2 class="font-mono text-base text-text font-semibold group-hover:text-accent transition-colors">
+                {item.name}
+              </h2>
+              <span class={`badge ${item.type === 'maintainer' ? 'badge-blue' : 'badge-muted'}`}>
+                {item.typeLabel}
+              </span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap shrink-0">
+              <span class="font-mono text-xs text-muted">{item.date}</span>
+              <span class="font-mono text-xs text-muted bg-surface-raised border border-border rounded-full px-2.5 py-0.5">
+                {item.lang}
+              </span>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <p class="text-sm text-muted leading-relaxed mb-3">{item.summary}</p>
+
+          <!-- Story block (for OCI ingress) -->
+          {item.story && (
+            <div class="bg-surface-raised border border-border rounded-md p-4 mb-3 space-y-3">
+              <p class="font-mono text-xs text-accent uppercase tracking-wide">{item.story.heading}</p>
+              <div class="space-y-3">
+                {item.story.body.split('\n\n').map((para) => (
+                  <p class="text-sm text-muted leading-relaxed">{para}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Detail -->
+          {item.detail && (
+            <p class="text-xs text-muted leading-relaxed mb-3 italic">{item.detail}</p>
+          )}
+
+          <!-- Footer -->
+          <div class="flex items-center justify-between gap-3 flex-wrap pt-3 border-t border-border">
+            <div class="flex flex-wrap gap-1.5">
+              {item.tags.map((tag) => <span class="tag">{tag}</span>)}
+            </div>
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-xs text-accent hover:text-accent-hover no-underline inline-flex items-center gap-1.5"
+            >
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9"/>
+              </svg>
+              {item.linkLabel}
+            </a>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <!-- ── Recognition ────────────────────────────────────────────────── -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Recognition</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {recognition.map((item) => (
+          <article class="card space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <h2 class="font-mono text-sm text-text font-semibold leading-snug">{item.title}</h2>
+              <span class={`badge ${item.badgeClass} shrink-0`}>{item.badge}</span>
+            </div>
+            <div class="flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-xs text-muted">
+              <span>{item.date}</span>
+              <span>·</span>
+              <span>{item.location}</span>
+            </div>
+            <p class="text-sm text-muted leading-relaxed">{item.description}</p>
+            {item.detail && (
+              <p class="font-mono text-xs text-accent">{item.detail}</p>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Production infrastructure ─────────────────────────────────── -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Production work</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <div class="space-y-3">
+
+        <div class="card space-y-2">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h3 class="font-mono text-sm text-text font-semibold">Cloud Infrastructure & MSP Operations</h3>
+            <a href="https://sudoconsultants.com" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-muted hover:text-accent no-underline">SUDO Consultants</a>
+          </div>
+          <p class="text-sm text-muted leading-relaxed">
+            Multi-cloud infrastructure across AWS and OCI for enterprise clients. Multi-account governance with AWS Control Tower, Account Factory, SCPs, Config rules, CloudTrail, and Security Hub. CIS-hardened AMI pipelines for RHEL (SELinux enforcing, CIS Level 2) and Ubuntu with automated vulnerability scanning via Trivy and AWS Inspector. DNS-as-code for Cloudflare zones using DNSControl with GitOps workflows. Server and workload migrations using AWS MGN and EDR onboarding. Hybrid connectivity over Site-to-Site VPN. ECS and EKS cluster management including in-place version upgrades. Enterprise SIEM on AWS using Wazuh with NLB agent ingestion and ALB-fronted dashboards, provisioned via Terraform and Ansible. CI/CD pipeline support across Azure DevOps, GitHub Actions, and GitLab CI.
+          </p>
+        </div>
+
+        <div class="card space-y-2">
+          <h3 class="font-mono text-sm text-text font-semibold">Observability Stack</h3>
+          <p class="text-sm text-muted leading-relaxed">
+            Designed and operate a full Prometheus&thinsp;/&thinsp;Thanos&thinsp;/&thinsp;Grafana Enterprise observability platform across multi-cloud and on-premises environments — covering Kubernetes clusters, virtual machines, managed databases, data centre firewalls and switches, load balancers, and CDN. Exporters in production: FortiGate exporter, Cloudflare exporter, CloudWatch exporter, SNMP (data centre switches and firewalls), and Blackbox exporter. Dynamic compute discovery using a custom-built oci-prometheus-sd-proxy. Thanos Query for cross-environment federation, configurable retention, and Prometheus deduplication. HA Prometheus with Alertmanager clustering, Slack-integrated alert correlation, 80+ custom dashboards, and synthetic monitoring. Reduced MTTR from 45 minutes to 8 minutes through intelligent alert grouping and correlation.
+          </p>
+        </div>
+
+        <div class="card space-y-2">
+          <h3 class="font-mono text-sm text-text font-semibold">Migrations & Hybrid Architecture</h3>
+          <p class="text-sm text-muted leading-relaxed">
+            Zero-downtime migration from Azure AKS to Oracle Kubernetes Engine using Velero with Kopia for application-aware persistent volume backups, cross-region replication, and DR drills. AWS DMS full-load and CDC migrations of 500GB+ production databases with sub-5-second replication lag. Hybrid DR using AWS DataSync over Site-to-Site VPN with VPC endpoints, syncing on-premises Windows File Server to S3, with on-prem Active Directory integrated into EC2 for domain authentication. Multi-region AWS deployments with Cognito-enforced MFA, ALB routing to private ECS services, and PCI-DSS/SOC2-aligned network segmentation.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="flex flex-wrap gap-2 pt-1">
+        {[
+          'AWS', 'OCI', 'Azure', 'Kubernetes', 'Terraform', 'Ansible',
+          'Prometheus', 'Thanos', 'Grafana', 'Alertmanager', 'Blackbox Exporter',
+          'Cloudflare', 'Wazuh', 'Velero', 'AWS DMS', 'AWS MGN',
+          'Control Tower', 'DNSControl', 'GitLab CI', 'GitHub Actions', 'Azure DevOps'
+        ].map((tech) => (
+          <span class="tag">{tech}</span>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</Base>

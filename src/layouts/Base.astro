@@ -1,0 +1,354 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogType?: string;
+  allPosts?: Array<{ slug: string; title: string; description: string; tags: string[] }>;
+}
+
+const {
+  title,
+  description = 'DevOps & Cloud Security Engineer — Amaan Ul Haq Siddiqui',
+  ogTitle,
+  ogDescription,
+  ogType = 'website',
+  allPosts = [],
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/verify', label: 'Verify' },
+];
+
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:title" content={ogTitle || title} />
+    <meta property="og:description" content={ogDescription || description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Amaan Ul Haq Siddiqui" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={ogTitle || title} />
+    <meta name="twitter:description" content={ogDescription || description} />
+
+    <title>{title}</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Anti-FOUC: apply theme before paint -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored || (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+      })();
+    </script>
+  </head>
+
+  <body class="bg-canvas text-text min-h-screen">
+    <!-- Top nav -->
+    <header id="site-nav" class="sticky top-0 z-50 border-b border-border bg-canvas transition-all duration-200">
+      <div class="max-w-content mx-auto px-5 sm:px-8">
+        <div class="flex items-center justify-between h-14">
+          <!-- Logo -->
+          <a
+            href="/"
+            class="font-mono text-sm font-semibold text-text hover:text-accent no-underline hover:no-underline tracking-tight"
+          >
+            amaanx86<span class="text-accent">.</span>
+          </a>
+
+          <!-- Center nav -->
+          <nav class="hidden sm:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <a
+                href={link.href}
+                class={`nav-link ${isActive(link.href) ? 'active' : ''}`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-1">
+            <!-- Search trigger -->
+            <button
+              id="search-trigger"
+              class="icon-btn"
+              aria-label="Search (Cmd+K)"
+              title="Search (Cmd+K)"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6.5" cy="6.5" r="4.5"/>
+                <path d="M10.5 10.5L14 14"/>
+              </svg>
+            </button>
+
+            <!-- Theme toggle -->
+            <button
+              id="theme-toggle"
+              class="icon-btn"
+              aria-label="Toggle theme"
+              title="Toggle light/dark"
+            >
+              <!-- Sun (shown in dark mode) -->
+              <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                <circle cx="8" cy="8" r="3"/>
+                <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"/>
+              </svg>
+              <!-- Moon (shown in light mode) -->
+              <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 10A5.5 5.5 0 016 2.5a5.5 5.5 0 100 11 5.5 5.5 0 007.5-3.5z"/>
+              </svg>
+            </button>
+
+            <!-- Mobile nav toggle -->
+            <button
+              id="mobile-nav-toggle"
+              class="icon-btn sm:hidden"
+              aria-label="Toggle navigation"
+            >
+              <svg id="icon-menu" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <path d="M2 4h12M2 8h12M2 12h12"/>
+              </svg>
+              <svg id="icon-close" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="hidden">
+                <path d="M12 4L4 12M4 4l8 8"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile nav drawer -->
+        <nav id="mobile-nav" class="hidden sm:hidden pb-4 border-t border-border mt-0 pt-4">
+          <div class="flex flex-col gap-3">
+            {navLinks.map((link) => (
+              <a
+                href={link.href}
+                class={`font-mono text-sm ${isActive(link.href) ? 'text-accent' : 'text-muted'} hover:text-text no-underline`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Search modal -->
+    <dialog id="search-modal" aria-label="Search">
+      <div class="search-modal-box" id="search-modal-box">
+        <div class="search-modal-input-wrap">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6.5" cy="6.5" r="4.5"/>
+            <path d="M10.5 10.5L14 14"/>
+          </svg>
+          <input
+            id="modal-search-input"
+            type="text"
+            placeholder="Search posts..."
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+          />
+          <kbd class="hidden sm:inline-flex items-center gap-0.5 font-mono text-xs text-muted bg-surface-raised border border-border rounded px-1.5 py-0.5">
+            esc
+          </kbd>
+        </div>
+        <div class="search-modal-results" id="modal-results">
+          <p class="search-empty">Start typing to search posts...</p>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Main content -->
+    <main class="max-w-content mx-auto px-5 sm:px-8 py-12">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-border mt-16">
+      <div class="max-w-content mx-auto px-5 sm:px-8 py-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <p class="font-mono text-xs text-muted">
+            Amaan Ul Haq Siddiqui &mdash; GPG: <code class="text-xs">FC47DEE803DB612A</code>
+          </p>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://github.com/amaanx86"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-xs text-muted hover:text-accent"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://www.linkedin.com/in/amaanulhaqsiddiqui/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-xs text-muted hover:text-accent"
+            >
+              LinkedIn
+            </a>
+            <a
+              href="/verify"
+              class="font-mono text-xs text-muted hover:text-accent"
+            >
+              Verify identity
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Posts data for modal search -->
+    <script type="application/json" id="all-posts-data" set:text={JSON.stringify(allPosts)} />
+
+    <script>
+      // ─── Theme toggle ────────────────────────────────────────────────────
+      const html = document.documentElement;
+      const toggleBtn = document.getElementById('theme-toggle');
+      const iconSun = document.getElementById('icon-sun');
+      const iconMoon = document.getElementById('icon-moon');
+
+      function applyTheme(theme: string) {
+        if (theme === 'dark') {
+          html.classList.add('dark');
+          iconSun?.classList.remove('hidden');
+          iconMoon?.classList.add('hidden');
+        } else {
+          html.classList.remove('dark');
+          iconSun?.classList.add('hidden');
+          iconMoon?.classList.remove('hidden');
+        }
+        localStorage.setItem('theme', theme);
+      }
+
+      // Init icons
+      applyTheme(html.classList.contains('dark') ? 'dark' : 'light');
+
+      toggleBtn?.addEventListener('click', () => {
+        applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
+      });
+
+      // ─── Nav scroll ──────────────────────────────────────────────────────
+      const nav = document.getElementById('site-nav');
+      window.addEventListener('scroll', () => {
+        nav?.classList.toggle('nav-scrolled', window.scrollY > 8);
+      }, { passive: true });
+
+      // ─── Mobile nav ──────────────────────────────────────────────────────
+      const mobileToggle = document.getElementById('mobile-nav-toggle');
+      const mobileNav = document.getElementById('mobile-nav');
+      const iconMenu = document.getElementById('icon-menu');
+      const iconClose = document.getElementById('icon-close');
+
+      mobileToggle?.addEventListener('click', () => {
+        const open = !mobileNav?.classList.contains('hidden');
+        mobileNav?.classList.toggle('hidden', open);
+        iconMenu?.classList.toggle('hidden', !open);
+        iconClose?.classList.toggle('hidden', open);
+      });
+
+      // ─── Search modal ────────────────────────────────────────────────────
+      const modal = document.getElementById('search-modal') as HTMLDialogElement | null;
+      const modalBox = document.getElementById('search-modal-box');
+      const searchTrigger = document.getElementById('search-trigger');
+      const modalInput = document.getElementById('modal-search-input') as HTMLInputElement | null;
+      const modalResults = document.getElementById('modal-results');
+
+      let posts: Array<{ slug: string; title: string; description: string; tags: string[] }> = [];
+      try {
+        const raw = document.getElementById('all-posts-data')?.textContent || '[]';
+        posts = JSON.parse(raw);
+      } catch {}
+
+      function openModal() {
+        modal?.setAttribute('open', '');
+        modalInput?.focus();
+        renderResults('');
+      }
+      function closeModal() {
+        modal?.removeAttribute('open');
+        if (modalInput) modalInput.value = '';
+      }
+
+      searchTrigger?.addEventListener('click', openModal);
+
+      modal?.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          modal?.hasAttribute('open') ? closeModal() : openModal();
+        }
+        if (e.key === 'Escape' && modal?.hasAttribute('open')) closeModal();
+      });
+
+      function renderResults(query: string) {
+        if (!modalResults) return;
+        const q = query.trim().toLowerCase();
+
+        if (!q) {
+          modalResults.innerHTML = '<p class="search-empty">Start typing to search posts...</p>';
+          return;
+        }
+
+        const filtered = posts.filter(p =>
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.tags.some((t: string) => t.toLowerCase().includes(q))
+        );
+
+        if (!filtered.length) {
+          modalResults.innerHTML = `<p class="search-empty">No results for "<strong>${query}</strong>"</p>`;
+          return;
+        }
+
+        modalResults.innerHTML = filtered.map(p => `
+          <a href="/blog/${p.slug}" class="search-result-item" onclick="closeModal ? closeModal() : null">
+            <div class="result-title">${p.title}</div>
+            <div class="result-desc">${p.description}</div>
+          </a>
+        `).join('');
+
+        // Close modal on result click
+        modalResults.querySelectorAll('.search-result-item').forEach(el => {
+          el.addEventListener('click', closeModal);
+        });
+      }
+
+      let debounceTimer: ReturnType<typeof setTimeout>;
+      modalInput?.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          renderResults((e.target as HTMLInputElement).value);
+        }, 120);
+      });
+    </script>
+  </body>
+</html>

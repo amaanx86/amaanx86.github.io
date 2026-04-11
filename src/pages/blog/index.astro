@@ -1,0 +1,173 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const allPosts = (await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md')))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allPostsData = allPosts.map((p) => ({
+    slug: p.slug,
+    title: p.data.title,
+    description: p.data.description,
+    tags: p.data.tags,
+  }));
+
+const postsWithMeta = allPosts.map((post) => ({
+  slug: post.slug,
+  title: post.data.title,
+  description: post.data.description,
+  date: post.data.date,
+  tags: post.data.tags,
+  draft: post.data.draft,
+  readingTime: Math.ceil(post.body.split(/\s+/).length / 200),
+  formattedDate: post.data.date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }),
+  isoDate: post.data.date.toISOString(),
+}));
+---
+
+<Base
+  title="Blog — Amaan Ul Haq Siddiqui"
+  description="Technical writing on infrastructure, platform security, and cloud engineering."
+  allPosts={allPostsData}
+>
+  <div class="space-y-8">
+    <!-- Header -->
+    <div>
+      <h1 class="font-mono text-2xl text-text font-semibold mb-2">Blog</h1>
+      <p class="text-muted text-sm">
+        Deep-dives on infrastructure, platform security, and cloud engineering.
+        <span class="font-mono">({allPosts.length} post{allPosts.length !== 1 ? 's' : ''})</span>
+      </p>
+    </div>
+
+    <!-- Inline search -->
+    <div class="relative">
+      <svg
+        class="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
+        width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+      >
+        <circle cx="6.5" cy="6.5" r="4.5"/>
+        <path d="M10.5 10.5L14 14"/>
+      </svg>
+      <input
+        id="blog-search"
+        type="text"
+        placeholder="Filter posts by title, tag, or keyword..."
+        class="search-input"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      />
+      <button
+        id="clear-search"
+        class="hidden absolute right-3 top-1/2 -translate-y-1/2 icon-btn w-5 h-5 text-muted"
+        aria-label="Clear search"
+      >
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 4L4 12M4 4l8 8"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Post list -->
+    <div id="posts-list" class="space-y-4">
+      {postsWithMeta.map((post) => (
+        <article
+          class="post-card card block group"
+          data-title={post.title.toLowerCase()}
+          data-desc={post.description.toLowerCase()}
+          data-tags={post.tags.join(' ').toLowerCase()}
+        >
+          <a href={`/blog/${post.slug}`} class="block no-underline hover:no-underline">
+            <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="font-mono text-base text-text group-hover:text-accent transition-colors font-medium leading-snug">
+                  {post.title}
+                </h2>
+                {post.draft && (
+                  <span class="badge badge-orange">Draft</span>
+                )}
+              </div>
+              <time
+                datetime={post.isoDate}
+                class="font-mono text-xs text-muted shrink-0"
+              >
+                {post.formattedDate}
+              </time>
+            </div>
+
+            <p class="text-sm text-muted leading-relaxed mb-3 line-clamp-2">
+              {post.description}
+            </p>
+
+            <div class="flex items-center gap-3 flex-wrap">
+              <span class="font-mono text-xs text-muted flex items-center gap-1">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8" cy="8" r="7"/>
+                  <path d="M8 4v4l3 2"/>
+                </svg>
+                {post.readingTime} min
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                {post.tags.map((tag: string) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <!-- Empty state -->
+    <div id="no-results" class="hidden text-center py-16">
+      <p class="font-mono text-sm text-muted mb-1">No posts match your search.</p>
+      <button id="reset-search" class="font-mono text-xs text-accent hover:text-accent-hover cursor-pointer border-none bg-transparent mt-2">
+        Clear filter
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('blog-search') as HTMLInputElement | null;
+    const clearBtn = document.getElementById('clear-search');
+    const noResults = document.getElementById('no-results');
+    const resetBtn = document.getElementById('reset-search');
+    const cards = document.querySelectorAll<HTMLElement>('.post-card');
+
+    function filterPosts(query: string) {
+      const q = query.trim().toLowerCase();
+      clearBtn?.classList.toggle('hidden', !q);
+
+      let visible = 0;
+      cards.forEach((card) => {
+        const match = !q ||
+          (card.dataset.title || '').includes(q) ||
+          (card.dataset.desc || '').includes(q) ||
+          (card.dataset.tags || '').includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+
+      noResults?.classList.toggle('hidden', visible > 0);
+    }
+
+    searchInput?.addEventListener('input', (e) => {
+      filterPosts((e.target as HTMLInputElement).value);
+    });
+
+    function clearSearch() {
+      if (searchInput) searchInput.value = '';
+      filterPosts('');
+      searchInput?.focus();
+    }
+
+    clearBtn?.addEventListener('click', clearSearch);
+    resetBtn?.addEventListener('click', clearSearch);
+  </script>
+</Base>
