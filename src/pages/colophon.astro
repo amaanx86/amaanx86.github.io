@@ -1,0 +1,189 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
+const allPostsData = allPosts.map((p) => ({
+  slug: p.slug,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+}));
+
+const stack = [
+  { label: 'Framework', value: 'Astro', link: 'https://astro.build' },
+  { label: 'Styling', value: 'Tailwind CSS', link: 'https://tailwindcss.com' },
+  { label: 'Content', value: 'MDX' },
+  { label: 'Fonts', value: 'Inter + JetBrains Mono' },
+  { label: 'Syntax highlighting', value: 'Shiki (github-dark)' },
+  { label: 'Hosting', value: 'GitHub Pages' },
+  { label: 'CI / CD', value: 'GitHub Actions' },
+  { label: 'Package manager', value: 'Bun' },
+];
+---
+
+<Base
+  title="Colophon | Amaan Ul Haq Siddiqui"
+  description="How this site was built and the thinking behind it."
+  allPosts={allPostsData}
+>
+  <div class="space-y-12">
+
+    <!-- Header -->
+    <div>
+      <h1 class="font-mono text-2xl text-text font-semibold mb-3">Colophon</h1>
+      <p class="text-sm text-muted leading-relaxed max-w-prose">
+        A colophon is a brief note about how something was made. In books it lives at the back, a quiet record of decisions that shaped the final thing. This is mine.
+      </p>
+    </div>
+
+    <!-- Approach -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Approach</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <div class="card space-y-4">
+        <p class="text-sm text-muted leading-relaxed">
+          You're no doubt familiar with the old adage: "The toughest client is yourself." Well it's true. Designing your own site can be a frustrating experience.
+        </p>
+        <p class="text-sm text-muted leading-relaxed">
+          When I've worked on personal projects before it's tended to be a messy, drawn-out, indecisive process. I'd struggle to produce anything I was happy with and I'd change my mind every five minutes and lose interest.
+        </p>
+        <p class="text-sm text-muted leading-relaxed">
+          To avoid this happening again, I set myself four rules.
+        </p>
+      </div>
+    </section>
+
+    <!-- Four rules -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">The rules</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="card border-l-4 border-l-accent space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-xs text-accent">01</span>
+            <h2 class="font-mono text-sm text-text font-semibold">Stick to the MVP</h2>
+          </div>
+          <p class="text-sm text-muted leading-relaxed">
+            With yourself as the client, it's too easy to change the scope as you get further into the project. I made a list of the site structure, detailed every essential element that would be on each page, and held the line.
+          </p>
+        </div>
+
+        <div class="card border-l-4 border-l-accent space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-xs text-accent">02</span>
+            <h2 class="font-mono text-sm text-text font-semibold">Avoid trends</h2>
+          </div>
+          <p class="text-sm text-muted leading-relaxed">
+            I deliberately avoided looking at other blogs, personal sites, or any external source of inspiration. It's easy to be influenced, consciously or not, only to find six months later you want to rip it all down.
+          </p>
+        </div>
+
+        <div class="card border-l-4 border-l-accent space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-xs text-accent">03</span>
+            <h2 class="font-mono text-sm text-text font-semibold">Build it fast</h2>
+          </div>
+          <p class="text-sm text-muted leading-relaxed">
+            I wanted to keep momentum to avoid backing out or changing my mind. I set a realistic schedule and stuck to it. Shipping something imperfect beats not shipping at all.
+          </p>
+        </div>
+
+        <div class="card border-l-4 border-l-accent space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-xs text-accent">04</span>
+            <h2 class="font-mono text-sm text-text font-semibold">Make it personal</h2>
+          </div>
+          <p class="text-sm text-muted leading-relaxed">
+            Probably the most important rule. Not lose sight of why I was making the site in the first place: to do things my own way, be myself, and communicate who I am. Not to impress anyone in particular.
+          </p>
+        </div>
+      </div>
+
+      <p class="text-sm text-muted leading-relaxed pl-1">
+        Setting myself these rules made the decision-making process so much simpler.
+      </p>
+    </section>
+
+    <!-- Why Astro -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Why Astro</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <div class="card space-y-4">
+        <p class="text-sm text-muted leading-relaxed">
+          I chose Astro because I love Cloudflare. Astro deploys to Cloudflare Pages with zero configuration. Static output, edge delivery, no server to manage. That combination is hard to beat for a personal site.
+        </p>
+        <p class="text-sm text-muted leading-relaxed">
+          Astro also gets the defaults right: zero JavaScript shipped unless you explicitly opt in, content collections with schema validation, and MDX out of the box. It stays out of your way while still giving you the full component model when you need it.
+        </p>
+      </div>
+    </section>
+
+    <!-- Tech stack -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Built with</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <div class="card p-0 overflow-hidden">
+        <table class="w-full text-sm">
+          <tbody>
+            {stack.map((item) => (
+              <tr class="border-b border-border last:border-0 hover:bg-surface-raised transition-colors">
+                <td class="px-5 py-3 font-mono text-xs text-muted uppercase tracking-wide whitespace-nowrap w-48">{item.label}</td>
+                <td class="px-5 py-3">
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-mono text-sm text-accent hover:text-accent-hover no-underline"
+                    >
+                      {item.value}
+                    </a>
+                  ) : (
+                    <span class="font-mono text-sm text-text">{item.value}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Source -->
+    <section>
+      <div class="card bg-surface-raised border-dashed">
+        <div class="flex items-start gap-3">
+          <svg class="text-muted mt-0.5 flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="8" r="7"/><path d="M8 7v5M8 5h.01"/>
+          </svg>
+          <p class="font-mono text-xs text-muted leading-relaxed">
+            The source is open at{' '}
+            <a
+              href="https://github.com/amaanx86/amaanx86.github.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-accent hover:text-accent-hover"
+            >
+              github.com/amaanx86/amaanx86.github.io
+            </a>.
+            The site is statically generated and served from GitHub Pages.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</Base>

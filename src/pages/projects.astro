@@ -20,7 +20,7 @@ const contributions = [
     link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
     linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
     summary: 'A lightweight Go service that bridges Oracle Cloud Infrastructure and Prometheus by dynamically discovering tagged compute instances across multiple tenancies via HTTP service discovery.',
-    detail: 'Fills a real gap in the OCI observability ecosystem — OCI has no native Prometheus HTTP SD support. The proxy polls the OCI Compute API across multiple tenancies, filters by instance tags, and exposes a valid Prometheus HTTP SD response. Deployed in production across a 9-tenancy OCI estate.',
+    detail: 'Fills a real gap in the OCI observability ecosystem. OCI has no native Prometheus HTTP SD support. The proxy polls the OCI Compute API across multiple tenancies, filters by instance tags, and exposes a valid Prometheus HTTP SD response. Deployed in production across a 9-tenancy OCI estate.',
     tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
   },
   {
@@ -35,7 +35,7 @@ const contributions = [
     detail: null,
     story: {
       heading: 'The review process forced the right answer',
-      body: `The initial fix was TCP socket probes on the webhook port — quick, compliant, done. But during review, Maintainer pushed back. TCP probes are blunt instruments; they tell you a port is open, not that a controller is actually healthy.
+      body: `The initial fix was TCP socket probes on the webhook port, quick, compliant, done. But during review, Maintainer pushed back. TCP probes are blunt instruments; they tell you a port is open, not that a controller is actually healthy.
 
 So the implementation was rebuilt properly: a dedicated HealthChecker that tracks informer cache sync state and controller readiness, /healthz/ready and /healthz/live HTTP endpoints on the metrics server, readiness gated on informer cache sync (the controller is actually warmed up, not just listening), and the Helm deployment updated to use HTTP GET probes on the correct port.
 
@@ -53,7 +53,7 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
     linkLabel: 'sudo-terraform-modules/terraform-gitlab-groups',
     registryLink: 'https://registry.terraform.io/modules/sudo-terraform-modules/groups/gitlab',
     registryLabel: 'registry.terraform.io/modules/sudo-terraform-modules/groups/gitlab',
-    summary: 'Terraform module for managing GitLab groups, subgroups, and RBAC at scale — built from scratch and published to the public Terraform Registry. Used internally to manage 50+ GitLab groups and access policies via GitOps workflows.',
+    summary: 'Terraform module for managing GitLab groups, subgroups, and RBAC at scale. Built from scratch and published to the public Terraform Registry. Used internally to manage 50+ GitLab groups and access policies via GitOps workflows.',
     detail: null,
     tags: ['Terraform', 'GitLab', 'IaC', 'GitOps'],
   },
@@ -67,7 +67,7 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
     linkLabel: 'sudo-terraform-aws-modules/terraform-aws-ec2-instance',
     registryLink: 'https://registry.terraform.io/modules/sudo-terraform-aws-modules/ec2-instance/aws',
     registryLabel: 'registry.terraform.io/modules/sudo-terraform-aws-modules/ec2-instance/aws',
-    summary: 'Terraform module for provisioning AWS EC2 instances — built from scratch and published to the public Terraform Registry. Covers instance configuration, IAM instance profiles, security groups, EBS volumes, and tagging conventions.',
+    summary: 'Terraform module for provisioning AWS EC2 instances. Built from scratch and published to the public Terraform Registry. Covers instance configuration, IAM instance profiles, security groups, EBS volumes, and tagging conventions.',
     detail: null,
     tags: ['Terraform', 'AWS', 'EC2', 'IaC'],
   },
@@ -81,7 +81,7 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
     linkLabel: 'sudo-terraform-aws-modules/terraform-aws-sudo-vpc',
     registryLink: 'https://registry.terraform.io/modules/sudo-terraform-aws-modules/sudo-vpc/aws/latest',
     registryLabel: 'registry.terraform.io/modules/sudo-terraform-aws-modules/sudo-vpc/aws',
-    summary: 'Contributed two PRs to the public SUDO VPC Terraform module — maintenance contributions keeping the module current and production-ready.',
+    summary: 'Contributed two PRs to the public SUDO VPC Terraform module, keeping it current and production-ready.',
     detail: null,
     tags: ['Terraform', 'AWS', 'VPC', 'IaC'],
   },
@@ -93,7 +93,7 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
     lang: 'Docker',
     link: 'https://github.com/Netflix/lemur-docker/pull/74',
     linkLabel: 'Netflix/lemur-docker #74',
-    summary: 'Fixed a broken Docker build in the official lemur-docker repository — the containerized distribution of Netflix\'s TLS certificate management platform. The build was failing due to acme==3.3.0 no longer being available in package repositories.',
+    summary: 'Fixed a broken Docker build in the official lemur-docker repository, the containerized distribution of Netflix\'s TLS certificate management platform. The build was failing due to acme==3.3.0 no longer being available in package repositories.',
     detail: 'Upgraded both builder and app stages from ubuntu:20.04 to ubuntu:22.04, switched Node.js installation to the official NodeSource 20.x LTS repository (with cryptographic signing) instead of Ubuntu\'s outdated default packages, and removed unnecessary dependencies to reduce image bloat. Reviewed and merged by maintainer jtschladen on February 2, 2026.',
     tags: ['Python', 'Docker', 'TLS', 'PKI'],
   },
@@ -110,7 +110,7 @@ const recognition = [
     badgeClass: 'badge-blue',
   },
   {
-    title: 'HackOps 2025 — 1st Place',
+    title: 'HackOps 2025: 1st Place',
     date: 'April 2025',
     location: 'FAST NUCES, Karachi',
     description: 'Led team to victory in the state-level DevOps hackathon, architecting and deploying production-grade cloud infrastructure on AWS under time constraints.',
@@ -123,7 +123,7 @@ const recognition = [
 ---
 
 <Base
-  title="Work & Open Source — Amaan Ul Haq Siddiqui"
+  title="Work & Open Source | Amaan Ul Haq Siddiqui"
   description="Open source projects, upstream contributions, and community recognition by Amaan Ul Haq Siddiqui."
   allPosts={allPostsData}
 >
