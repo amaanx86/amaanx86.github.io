@@ -450,24 +450,24 @@
 #search-modal {
   position: fixed;
   inset: 0;
-  z-index: 200;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding-top: 6rem;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
   border: none;
-  max-width: none;
-  max-height: none;
+  max-width: 100vw;
+  max-height: 100vh;
   width: 100%;
   height: 100%;
+  background: transparent;
+  overflow: visible;
 }
 #search-modal:not([open]) {
   display: none;
 }
 #search-modal::backdrop {
-  display: none;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 .search-modal-box {
   background: var(--surface);
