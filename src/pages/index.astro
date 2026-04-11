@@ -1,0 +1,184 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const allPostsData = allPosts.map((p) => ({
+  slug: p.slug,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+}));
+---
+
+<Base
+  title="Amaan Ul Haq Siddiqui — DevOps & Cloud Security Engineer"
+  description="DevOps & Cloud Security Engineer building infrastructure at scale across AWS, OCI & Azure. Observability, platform security, and open source tooling."
+  allPosts={allPostsData}
+>
+  <div class="space-y-16 pt-2">
+
+    <!-- ── Identity block ─────────────────────────────────────────────── -->
+    <section>
+      <h1 class="font-mono text-4xl sm:text-5xl font-semibold tracking-tight text-text mb-5 leading-none">
+        Amaan Ul Haq<br/>Siddiqui
+      </h1>
+
+      <!-- Meta row -->
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mb-8">
+        <span class="font-mono text-sm text-accent">DevOps &amp; Cloud Security Engineer</span>
+        <span class="text-muted select-none" aria-hidden="true">·</span>
+        <span class="font-mono text-sm text-muted">Karachi, Pakistan</span>
+        <span class="text-muted select-none hidden sm:inline" aria-hidden="true">·</span>
+        <span class="font-mono text-sm text-muted hidden sm:inline">SUDO Consultants &mdash; AWS Premier Implementation Partner</span>
+      </div>
+
+      <!-- Bio -->
+      <p class="text-text text-base leading-[1.85] max-w-[560px] mb-2">
+        Building infrastructure at scale across AWS, OCI, and Azure.
+        Designing observability stacks, hardening platform security, and shipping open source
+        tooling that fills real gaps.
+      </p>
+      <p class="text-muted text-sm leading-relaxed max-w-[520px] mb-10">
+        At <a href="https://sudoconsultants.com" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-accent underline underline-offset-2">SUDO Consultants</a> — AWS Premier Implementation Partner &amp; MSP. Multi-cloud infrastructure, enterprise observability stacks, large-scale migrations, and platform security across AWS and OCI.
+      </p>
+
+      <!-- Links -->
+      <nav class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <a
+          href="https://github.com/amaanx86"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-mono text-sm text-muted hover:text-text no-underline inline-flex items-center gap-1.5 group"
+        >
+          <svg class="group-hover:text-accent transition-colors" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+        <a
+          href="https://www.linkedin.com/in/amaanulhaqsiddiqui/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-mono text-sm text-muted hover:text-text no-underline"
+        >
+          LinkedIn
+        </a>
+        <a
+          href="https://www.credly.com/users/amaan-igs/badges"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-mono text-sm text-muted hover:text-text no-underline"
+        >
+          Credly
+        </a>
+        <span class="text-muted select-none hidden sm:inline" aria-hidden="true">·</span>
+        <a
+          href="/blog"
+          class="font-mono text-sm text-accent hover:text-accent-hover no-underline font-medium inline-flex items-center gap-1"
+        >
+          Writing
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+      </nav>
+    </section>
+
+    <!-- ── Background ────────────────────────────────────────────────── -->
+    <section>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Background</span>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <dl class="space-y-5">
+        <div class="grid grid-cols-[140px_1fr] sm:grid-cols-[180px_1fr] gap-x-4 gap-y-1">
+          <dt class="font-mono text-xs text-muted pt-0.5 uppercase tracking-wide">Certifications</dt>
+          <dd class="text-sm text-text leading-relaxed space-y-2">
+            <div class="flex items-baseline justify-between gap-3 flex-wrap">
+              <span>GCP Professional Cloud Architect</span>
+              <span class="font-mono text-xs text-muted shrink-0">Jan 2026 &ndash; Jan 2028</span>
+            </div>
+            <div class="flex items-baseline justify-between gap-3 flex-wrap">
+              <span>AWS Certified DevOps Engineer &ndash; Professional</span>
+              <span class="font-mono text-xs text-muted shrink-0">Aug 2025 &ndash; Aug 2028</span>
+            </div>
+            <div class="flex items-baseline justify-between gap-3 flex-wrap">
+              <span>AWS Certified Solutions Architect &ndash; Associate</span>
+              <span class="font-mono text-xs text-muted shrink-0">Jun 2025 &ndash; Jun 2028</span>
+            </div>
+            <div class="flex items-baseline justify-between gap-3 flex-wrap">
+              <span>AWS Certified Cloud Practitioner</span>
+              <span class="font-mono text-xs text-muted shrink-0">Apr 2025 &ndash; Aug 2028</span>
+            </div>
+            <a href="https://www.credly.com/users/amaan-igs/badges" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-accent hover:text-accent-hover no-underline inline-flex items-center gap-1 mt-1">
+              View on Credly →
+            </a>
+          </dd>
+        </div>
+
+        <div class="h-px bg-border opacity-50"></div>
+
+        <div class="grid grid-cols-[140px_1fr] sm:grid-cols-[180px_1fr] gap-x-4 gap-y-1">
+          <dt class="font-mono text-xs text-muted pt-0.5 uppercase tracking-wide">Stack</dt>
+          <dd class="text-sm text-text leading-relaxed">
+            AWS &middot; OCI &middot; Azure &middot; Kubernetes &middot; Terraform &middot; Go &middot; Prometheus &middot; Cloudflare &middot; Ansible
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ── Recent writing ─────────────────────────────────────────────── -->
+    {recentPosts.length > 0 && (
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Writing</span>
+          <div class="flex-1 h-px bg-border"></div>
+          <a href="/blog" class="font-mono text-xs text-muted hover:text-accent no-underline shrink-0">
+            All posts →
+          </a>
+        </div>
+
+        <div class="space-y-0 divide-y divide-border">
+          {recentPosts.map((post) => {
+            const readingTime = Math.ceil(post.body.split(/\s+/).length / 200);
+            const formattedDate = post.data.date.toLocaleDateString('en-US', {
+              year: 'numeric', month: 'short', day: 'numeric',
+            });
+            return (
+              <a
+                href={`/blog/${post.slug}`}
+                class="group flex items-start gap-6 py-5 no-underline hover:no-underline"
+              >
+                <time class="font-mono text-xs text-muted shrink-0 pt-0.5 w-24 hidden sm:block">
+                  {formattedDate}
+                </time>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-mono text-sm font-medium text-text group-hover:text-accent transition-colors duration-150 leading-snug mb-1.5">
+                    {post.data.title}
+                  </h3>
+                  <p class="text-xs text-muted leading-relaxed line-clamp-2">
+                    {post.data.description}
+                  </p>
+                  <div class="flex items-center gap-2 mt-2">
+                    <time class="font-mono text-xs text-muted sm:hidden">{formattedDate}</time>
+                    <span class="font-mono text-xs text-muted">{readingTime}&thinsp;min read</span>
+                  </div>
+                </div>
+                <svg class="text-muted group-hover:text-accent group-hover:translate-x-0.5 transition-all duration-150 shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 8h10M9 4l4 4-4 4"/>
+                </svg>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+  </div>
+</Base>
