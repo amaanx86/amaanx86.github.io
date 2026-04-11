@@ -168,7 +168,7 @@ function isActive(href: string) {
           <input
             id="modal-search-input"
             type="text"
-            placeholder="Search posts..."
+            placeholder="Search blogs..."
             autocomplete="off"
             autocorrect="off"
             spellcheck="false"
@@ -224,7 +224,9 @@ function isActive(href: string) {
     </footer>
 
     <!-- Posts data for modal search -->
-    <script type="application/json" id="all-posts-data" set:text={JSON.stringify(allPosts)} />
+    <script is:inline define:vars={{ __allPosts: allPosts }}>
+      window.__allPosts = __allPosts;
+    </script>
 
     <script>
       // ─── Theme toggle ────────────────────────────────────────────────────
@@ -279,19 +281,16 @@ function isActive(href: string) {
       const modalInput = document.getElementById('modal-search-input') as HTMLInputElement | null;
       const modalResults = document.getElementById('modal-results');
 
-      let posts: Array<{ slug: string; title: string; description: string; tags: string[] }> = [];
-      try {
-        const raw = document.getElementById('all-posts-data')?.textContent || '[]';
-        posts = JSON.parse(raw);
-      } catch {}
+      let posts: Array<{ slug: string; title: string; description: string; tags: string[] }> =
+        (window as any).__allPosts || [];
 
       function openModal() {
-        modal?.setAttribute('open', '');
+        modal?.showModal();
         modalInput?.focus();
         renderResults('');
       }
       function closeModal() {
-        modal?.removeAttribute('open');
+        modal?.close();
         if (modalInput) modalInput.value = '';
       }
 
@@ -301,31 +300,34 @@ function isActive(href: string) {
         if (e.target === modal) closeModal();
       });
 
+      modal?.addEventListener('cancel', (e) => {
+        e.preventDefault();
+        closeModal();
+      });
+
       document.addEventListener('keydown', (e) => {
         if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
           e.preventDefault();
-          modal?.hasAttribute('open') ? closeModal() : openModal();
+          modal?.open ? closeModal() : openModal();
         }
-        if (e.key === 'Escape' && modal?.hasAttribute('open')) closeModal();
       });
 
       function renderResults(query: string) {
         if (!modalResults) return;
         const q = query.trim().toLowerCase();
 
-        if (!q) {
-          modalResults.innerHTML = '<p class="search-empty">Start typing to search posts...</p>';
-          return;
-        }
-
-        const filtered = posts.filter(p =>
-          p.title.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.tags.some((t: string) => t.toLowerCase().includes(q))
-        );
+        const filtered = q
+          ? posts.filter(p =>
+              p.title.toLowerCase().includes(q) ||
+              p.description.toLowerCase().includes(q) ||
+              p.tags.some((t: string) => t.toLowerCase().includes(q))
+            )
+          : posts;
 
         if (!filtered.length) {
-          modalResults.innerHTML = `<p class="search-empty">No results for "<strong>${query}</strong>"</p>`;
+          modalResults.innerHTML = q
+            ? `<p class="search-empty">No results for "<strong>${query}</strong>"</p>`
+            : '<p class="search-empty">No posts yet.</p>';
           return;
         }
 
