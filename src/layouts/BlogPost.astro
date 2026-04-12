@@ -27,6 +27,8 @@ const formattedDate = date.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
 });
+const mentionTargetUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const mentionCountApi = `https://webmention.io/api/count?target=${encodeURIComponent(mentionTargetUrl)}`;
 ---
 
 <Base
@@ -76,6 +78,12 @@ const formattedDate = date.toLocaleDateString('en-US', {
           </svg>
           {readingTime} min read
         </span>
+        <span class="flex items-center gap-1.5" title="Webmentions received for this post">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h10v7H8l-3 3v-3H3z"/>
+          </svg>
+          <span id="webmention-count">0 mentions</span>
+        </span>
       </div>
 
       <p class="mt-5 text-muted text-sm leading-relaxed max-w-prose border-l-2 border-border pl-4">
@@ -114,10 +122,11 @@ const formattedDate = date.toLocaleDateString('en-US', {
     </div>
   </article>
 
-  <script>
+  <script is:inline define:vars={{ mentionCountApi }}>
     // Scroll progress bar
     const bar = document.getElementById('progress-bar');
     const content = document.getElementById('post-content');
+    const mentionCountEl = document.getElementById('webmention-count');
 
     function updateProgress() {
       if (!bar || !content) return;
@@ -131,5 +140,20 @@ const formattedDate = date.toLocaleDateString('en-US', {
 
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
+
+    fetch(mentionCountApi)
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to load mentions');
+        return response.json();
+      })
+      .then((data) => {
+        const count = typeof data?.count === 'number' ? data.count : 0;
+        if (mentionCountEl) {
+          mentionCountEl.textContent = count === 1 ? '1 mention' : `${count} mentions`;
+        }
+      })
+      .catch(() => {
+        if (mentionCountEl) mentionCountEl.textContent = 'Mentions unavailable';
+      });
   </script>
 </Base>
