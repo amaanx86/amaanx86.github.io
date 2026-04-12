@@ -21,6 +21,10 @@ const {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const currentPath = Astro.url.pathname;
+const webmentionUsername = Astro.site ? new URL(Astro.site).hostname : '';
+const webmentionEndpoint = webmentionUsername
+  ? `https://webmention.io/${webmentionUsername}/webmention`
+  : '';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -43,6 +47,9 @@ function isActive(href: string) {
     <meta name="description" content={description} />
     <meta name="google-site-verification" content="g2wzBj0K1fTbsSn7_MU3y7yTfAR8NO5qXQ-edSQ3DFY" />
     <link rel="canonical" href={canonicalURL} />
+    {webmentionEndpoint && <link rel="webmention" href={webmentionEndpoint} />}
+    <link rel="me" href="https://github.com/amaanx86" />
+    <link rel="me" href="https://gitlab.com/amaanx86" />
 
     <meta property="og:title" content={ogTitle || title} />
     <meta property="og:description" content={ogDescription || description} />
@@ -202,7 +209,7 @@ function isActive(href: string) {
             <a
               href="https://github.com/amaanx86"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="me noopener noreferrer"
               class="font-mono text-xs text-muted hover:text-accent"
             >
               GitHub
