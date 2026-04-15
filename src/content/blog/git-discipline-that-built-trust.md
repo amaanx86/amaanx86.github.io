@@ -142,8 +142,9 @@ The key thing to understand: cherry-pick is not a shortcut for avoiding code rev
 A PR is a document. If the description is empty or says "fix stuff," you're forcing the reviewer to read the entire diff to understand context that you already have in your head.
 
 ```markdown
-## CR Number
-CR: S-CR1234
+## Linked Issue / Ticket
+<!-- GitHub/GitLab: Closes #123 | Jira: PROJECT-456 | Azure DevOps: AB#789 -->
+Closes #
 
 ## Summary
 Brief description of what this MR accomplishes.
