@@ -105,3 +105,12 @@ The HTTP SD API that Prometheus exposes is actually the right answer for this si
 The docs cover installation, the full configuration reference, OCI IAM permissions, and Docker Compose deployment examples. If you are building observability on OCI and want automatic enrollment from day one, this is what I use.
 
 And if you were one of the people who commented on that PR hoping it would eventually land - same. This is what I built instead.
+
+---
+
+## References
+
+- [Oracle Forums - Prometheus Service Discovery for OCI via HTTP SD](https://forums.oracle.com/ords/apexds/post/prometheus-service-discovery-for-oci-via-http-sd-production-5441)
+- [LinkedIn post](https://www.linkedin.com/posts/amaanulhaqsiddiqui_devops-prometheus-oraclecloud-activity-7437797204855087104-3F0q?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWbcAcBZTdKHcYrh82gRuQUI9J1PqDtYXA)
+
+Also published on [DEV.to](https://dev.to/amaanx86/built-my-own-prometheus-service-discovery-for-oracle-cloud-because-a-3-year-old-pr-never-got-merged-2fme).
