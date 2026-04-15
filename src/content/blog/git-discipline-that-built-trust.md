@@ -216,3 +216,7 @@ git push origin --delete feat/your-feature
 ```
 
 That's it. No magic. Just consistency applied over enough time that it becomes automatic.
+
+---
+
+Also published on [DEV.to](https://dev.to/amaanx86/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code-anh), [AWS Builder ID](https://builder.aws.com/content/3CO3bh5vYaHmiPuQHDnpH4bRBDD/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code), and [Hashnode](https://amaanx86.hashnode.dev/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code).

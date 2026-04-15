@@ -224,3 +224,7 @@ After that, expanding to multi-maintainer TUF with hardware-backed root keys and
 ---
 
 Full implementation details and the verification workflow are documented at [oci-prometheus-sd-proxy.readthedocs.io/en/latest/releasing.html](https://oci-prometheus-sd-proxy.readthedocs.io/en/latest/releasing.html).
+
+---
+
+Also published on [DEV.to](https://dev.to/amaanx86/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3-1575), [AWS Builder ID](https://builder.aws.com/content/3CEE0bcWsPBxnBBvV3nbjMf0Pwi/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3), and [Hashnode](https://amaanx86.hashnode.dev/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3).
