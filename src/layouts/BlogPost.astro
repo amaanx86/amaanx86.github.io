@@ -78,7 +78,7 @@ const mentionCountApi = `https://webmention.io/api/count?target=${encodeURICompo
           </svg>
           {readingTime} min read
         </span>
-        <span class="flex items-center gap-1.5" title="Webmentions received for this post">
+        <span id="webmention-wrapper" class="flex items-center gap-1.5 hidden" title="Webmentions received for this post">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 3h10v7H8l-3 3v-3H3z"/>
           </svg>
@@ -148,8 +148,10 @@ const mentionCountApi = `https://webmention.io/api/count?target=${encodeURICompo
       })
       .then((data) => {
         const count = typeof data?.count === 'number' ? data.count : 0;
-        if (mentionCountEl) {
+        if (count > 0 && mentionCountEl) {
           mentionCountEl.textContent = count === 1 ? '1 mention' : `${count} mentions`;
+          const wrapper = document.getElementById('webmention-wrapper');
+          if (wrapper) wrapper.classList.remove('hidden');
         }
       })
       .catch(() => {

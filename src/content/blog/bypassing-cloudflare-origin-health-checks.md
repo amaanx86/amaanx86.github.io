@@ -239,3 +239,5 @@ The pattern is always the same: run a lightweight DNS resolver as a sidecar, ove
 The setup is simple. CoreDNS is maybe 30MB of memory. The hosts file is trivially maintainable. And the result is that when your pager goes off at 3am, you know it is because the origin is actually down - not because Cloudflare rotated an edge node.
 
 That is the kind of signal worth waking up for.
+
+Also published on [DEV.to](https://dev.to/amaanx86/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns-4fhg), [AWS Builder ID](https://builder.aws.com/content/3Czz3pnlo6MHI2CmsxGuQh959CS/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns), and [Hashnode](https://amaanx86.hashnode.dev/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns).
