@@ -136,6 +136,29 @@ Someone needs to add `staging.runonaws.dev` pointing to an ALB. They:
 
 The contributor never opened the Cloudflare dashboard. The reviewer saw the exact change before it applied. The commit history shows who added the record, when, and why.
 
+## The sync catches what the dashboard quietly added
+
+Here is where the reconciliation model earns its keep. This is the actual preview comment the GitHub Actions bot posted on [PR #10](https://github.com/amaanx86/cloudflare-dnscontrol/pull/10):
+
+
+```
+******************** Domain: runonaws.dev
+4 corrections (cloudflare)
+
+± MODIFY _zone-updated.runonaws.dev TXT ("1758268077330" ttl=300) -> ("1779036943050" ttl=300)
+- DELETE argo.runonaws.dev A 192.168.1.57 proxy=false ttl=1
+- DELETE test.runonaws.dev CNAME e73da4f6-a287-41eb-bfe9-563f73037d68.cfargotunnel.com. proxy=true ttl=1
++ CREATE test.runonaws.dev A 203.0.113.0 proxy=true ttl=1
+```
+
+`argo.runonaws.dev` and `test.runonaws.dev` were added directly in the Cloudflare dashboard, outside of the repo. DNSControl has no knowledge of them. From its perspective, those records do not belong in the zone and will be deleted on the next push. The preview comment is the warning before that happens.
+
+`test.runonaws.dev` shows up as both a DELETE and a CREATE. The CNAME pointing to a Cloudflare Tunnel was manually added; the replacement A record pointing to `203.0.113.0` comes from `reserved.json`. So the sync removes the manual record and installs the reserved placeholder in its place.
+
+This is exactly the behavior you want, but it means any record added through the dashboard will eventually get wiped. Before merging a PR, check the preview output for unexpected DELETEs. If a record that should stay is listed for deletion, port it into a `domains/` JSON file first. Once it is in the repo, it is safe.
+
+The alternative is to merge and let the sync clean up the manual additions. Either way, the zone ends up matching the code.
+
 ## Provider portability
 
 DNSControl abstracts the provider. Switching from Cloudflare to Route53 is a one-line change in `dnsconfig.js`. The domain JSON files, reserved and internal lists, and CI pipelines stay the same. Zone definitions are not coupled to the DNS provider.
