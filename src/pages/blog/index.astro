@@ -13,13 +13,13 @@ const allPostsData = allPosts.map((p) => ({
   }));
 
 const postsWithMeta = allPosts.map((post) => ({
-  slug: post.slug,
+  slug: post.id,
   title: post.data.title,
   description: post.data.description,
   date: post.data.date,
   tags: post.data.tags,
   draft: post.data.draft,
-  readingTime: Math.ceil(post.body.split(/\s+/).length / 200),
+  readingTime: Math.ceil((post.body ?? '').split(/\s+/).length / 200),
   formattedDate: post.data.date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
