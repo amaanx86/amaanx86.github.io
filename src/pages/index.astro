@@ -8,7 +8,7 @@ const recentPosts = allPosts
   .slice(0, 3);
 
 const allPostsData = allPosts.map((p) => ({
-  slug: p.slug,
+  slug: p.id,
   title: p.data.title,
   description: p.data.description,
   tags: p.data.tags,
@@ -146,13 +146,13 @@ const allPostsData = allPosts.map((p) => ({
 
         <div class="space-y-0 divide-y divide-border">
           {recentPosts.map((post) => {
-            const readingTime = Math.ceil(post.body.split(/\s+/).length / 200);
+            const readingTime = Math.ceil((post.body ?? '').split(/\s+/).length / 200);
             const formattedDate = post.data.date.toLocaleDateString('en-US', {
               year: 'numeric', month: 'short', day: 'numeric',
             });
             return (
               <a
-                href={`/blog/${post.slug}`}
+                href={`/blog/${post.id}`}
                 class="group flex items-start gap-6 py-5 no-underline hover:no-underline"
               >
                 <time class="font-mono text-xs text-muted shrink-0 pt-0.5 w-24 hidden sm:block">

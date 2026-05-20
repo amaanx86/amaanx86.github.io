@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
-const readingTime = Math.ceil(post.body.split(/\s+/).length / 200);
+const { Content } = await render(post);
+const readingTime = Math.ceil((post.body ?? '').split(/\s+/).length / 200);
 ---
 
 <BlogPost

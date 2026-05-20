@@ -6,7 +6,7 @@ const allPosts = (await getCollection('blog', ({ data, id }) => !data.draft && !
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const allPostsData = allPosts.map((p) => ({
-    slug: p.slug,
+    slug: p.id,
     title: p.data.title,
     description: p.data.description,
     tags: p.data.tags,
