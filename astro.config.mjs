@@ -1,18 +1,18 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://amaanx86.github.io',
   base: '/',
   output: 'static',
+  vite: {
+    plugins: [tailwindcss()],
+  },
   integrations: [
     mdx(),
     sitemap(),
-    tailwind({
-      applyBaseStyles: false,
-    }),
   ],
   markdown: {
     shikiConfig: {

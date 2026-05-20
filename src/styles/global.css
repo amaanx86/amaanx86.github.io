@@ -1,8 +1,29 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ─── Tailwind v4 theme overrides ───────────────────────────────────────── */
+
+@theme {
+  /* Semantic color tokens — reference the CSS custom properties defined below */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-bg: var(--accent-bg);
+
+  /* Fonts */
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: Inter, system-ui, sans-serif;
+}
+
+@utility max-w-content {
+  max-width: 780px;
+}
 
 /* ─── Theme tokens ──────────────────────────────────────────────────────── */
 /* Palette inspired by Cloudflare Docs / Starlight — hsl(224 °) cool-blue  */
