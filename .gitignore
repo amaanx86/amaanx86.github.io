@@ -4,6 +4,7 @@ dist/
 
 # Dependencies
 node_modules/
+package-lock.json
 
 # Environment
 .env
