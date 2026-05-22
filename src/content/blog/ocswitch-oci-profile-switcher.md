@@ -119,3 +119,5 @@ So `~/.oci/config_staging` has `[config_staging]` inside, `~/.oci/config_dev` ha
 ---
 
 The full source is in [this gist](https://gist.github.com/amaanx86/2621a181e2f4b572a1904d65748d66bd). Two files, one for bash and one for zsh, no external dependencies beyond the OCI CLI itself.
+
+Also published on [Oracle Forums](https://forums.oracle.com/ords/apexds/post/i-got-tired-of-passing-profile-on-every-oci-cli-command-7904), [DEV.to](https://dev.to/amaanx86/i-got-tired-of-passing-profile-on-every-oci-cli-command-3jpd), and [Hashnode](https://amaanx86.hashnode.dev/i-got-tired-of-passing-profile-on-every-oci-cli-command).
