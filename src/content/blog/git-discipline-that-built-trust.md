@@ -176,8 +176,8 @@ This is not bureaucracy. It's a forcing function for you to think through what y
 After a branch merges, delete it. Both locally and remotely.
 
 ```bash
-git branch -d feat/S-CR1234-new-feature
-git push origin --delete feat/S-CR1234-new-feature
+git branch -d feat/user-authentication
+git push origin --delete feat/user-authentication
 ```
 
 A repository with 200 stale branches is a repository nobody trusts. Clean branches signal that someone is actually maintaining this.
@@ -219,4 +219,4 @@ That's it. No magic. Just consistency applied over enough time that it becomes a
 
 ---
 
-Also published on [DEV.to](https://dev.to/amaanx86/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code-anh), [AWS Builder ID](https://builder.aws.com/content/3CO3bh5vYaHmiPuQHDnpH4bRBDD/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code), and [Hashnode](https://amaanx86.hashnode.dev/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code).
+Also published on [DEV.to](https://dev.to/amaanx86/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code-anh), [AWS Builder Center](https://builder.aws.com/content/3CO3bh5vYaHmiPuQHDnpH4bRBDD/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code), and [Hashnode](https://amaanx86.hashnode.dev/the-git-habits-that-made-reviewers-trust-me-before-they-read-a-single-line-of-code).

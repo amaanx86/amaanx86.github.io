@@ -240,4 +240,4 @@ The setup is simple. CoreDNS is maybe 30MB of memory. The hosts file is triviall
 
 That is the kind of signal worth waking up for.
 
-Also published on [DEV.to](https://dev.to/amaanx86/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns-4fhg), [AWS Builder ID](https://builder.aws.com/content/3Czz3pnlo6MHI2CmsxGuQh959CS/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns), and [Hashnode](https://amaanx86.hashnode.dev/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns).
+Also published on [DEV.to](https://dev.to/amaanx86/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns-4fhg), [AWS Builder Center](https://builder.aws.com/content/3Czz3pnlo6MHI2CmsxGuQh959CS/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns), and [Hashnode](https://amaanx86.hashnode.dev/bypassing-cloudflare-for-true-origin-health-checks-with-blackbox-exporter-and-coredns).

@@ -227,4 +227,4 @@ Full implementation details and the verification workflow are documented at [oci
 
 ---
 
-Also published on [DEV.to](https://dev.to/amaanx86/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3-1575), [AWS Builder ID](https://builder.aws.com/content/3CEE0bcWsPBxnBBvV3nbjMf0Pwi/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3), and [Hashnode](https://amaanx86.hashnode.dev/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3).
+Also published on [DEV.to](https://dev.to/amaanx86/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3-1575), [AWS Builder Center](https://builder.aws.com/content/3CEE0bcWsPBxnBBvV3nbjMf0Pwi/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3), and [Hashnode](https://amaanx86.hashnode.dev/end-to-end-supply-chain-security-for-a-go-project-tuf-on-ci-cosign-and-slsa-l3).

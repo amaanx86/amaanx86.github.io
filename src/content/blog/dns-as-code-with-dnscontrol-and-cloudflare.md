@@ -174,3 +174,5 @@ The hardest part is the initial import. DNSControl's `get-zones` command can exp
 ---
 
 DNS is infrastructure. Treat it like infrastructure.
+
+Also published on [Hashnode](http://amaanx86.hashnode.dev/dns-as-code-managing-cloudflare-records-with-dnscontrol), [DEV.to](https://dev.to/amaanx86/dns-as-code-managing-cloudflare-records-with-dnscontrol-4c0j), and [AWS Builder Center](https://builder.aws.com/content/3E84BWcXBpy4ymEFgJxvsY8Icw7/dns-as-code-managing-cloudflare-records-with-dnscontrol).
