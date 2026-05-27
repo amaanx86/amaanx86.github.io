@@ -16,7 +16,7 @@ const { title, description, date, tags, draft = false, readingTime = 1 } = Astro
 // Fetch all posts for the search modal
 const allPostsRaw = await getCollection('blog', ({ data }) => !data.draft);
 const allPosts = allPostsRaw.map((p) => ({
-  slug: p.slug,
+  slug: p.id,
   title: p.data.title,
   description: p.data.description,
   tags: p.data.tags,
