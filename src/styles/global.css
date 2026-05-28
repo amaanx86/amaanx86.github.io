@@ -157,6 +157,7 @@
     overflow-x: auto;
     font-size: 0.875rem;
     line-height: 1.7;
+    padding: 1rem 1.25rem;
   }
 
   pre code {
