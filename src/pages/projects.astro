@@ -20,7 +20,13 @@ const contributions = [
     link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
     linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
     summary: 'A lightweight Go service that bridges Oracle Cloud Infrastructure and Prometheus by dynamically discovering tagged compute instances across multiple tenancies via HTTP service discovery.',
-    detail: 'Fills a real gap in the OCI observability ecosystem. OCI has no native Prometheus HTTP SD support. The proxy polls the OCI Compute API across multiple tenancies, filters by instance tags, and exposes a valid Prometheus HTTP SD response. Deployed in production across a 9-tenancy OCI estate.',
+    detail: null,
+    story: {
+      heading: 'Why HTTP SD over native OCI SD?',
+      body: `A native OCI SD integration was proposed upstream in <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> but closed - Prometheus maintainers explicitly prefer keeping the binary lean by delegating cloud-specific discovery to HTTP SD endpoints.
+
+HTTP SD turned out to be the right model anyway. The proxy runs independently of Prometheus, releasing on its own schedule without touching scrape configs. It caches OCI API responses centrally so multiple Prometheus replicas do not each hammer the OCI Compute API separately. Multi-tenancy is handled by the proxy itself - no per-tenancy scrape_config blocks cluttering Prometheus configuration.`,
+    },
     tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
   },
   {
@@ -45,45 +51,17 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
   },
   {
     type: 'maintainer',
-    typeLabel: 'Author & Publisher',
-    name: 'terraform-gitlab-groups',
-    date: '2025',
+    typeLabel: 'Maintainer',
+    name: 'SUDO Terraform Modules',
+    date: '2025 - present',
     lang: 'Terraform',
-    link: 'https://github.com/sudo-terraform-modules/terraform-gitlab-groups',
-    linkLabel: 'sudo-terraform-modules/terraform-gitlab-groups',
-    registryLink: 'https://registry.terraform.io/modules/sudo-terraform-modules/groups/gitlab',
-    registryLabel: 'registry.terraform.io/modules/sudo-terraform-modules/groups/gitlab',
-    summary: 'Terraform module for managing GitLab groups, subgroups, and RBAC at scale. Built from scratch and published to the public Terraform Registry. Used internally to manage 50+ GitLab groups and access policies via GitOps workflows.',
+    links: [
+      { href: 'https://github.com/sudo-terraform-aws-modules', label: 'github.com/sudo-terraform-aws-modules' },
+      { href: 'https://github.com/sudo-terraform-modules', label: 'github.com/sudo-terraform-modules' },
+    ],
+    summary: 'Maintain two public Terraform module organizations on GitHub spanning AWS infrastructure and multi-cloud patterns. Authored and published modules covering AWS resources, GitLab resource management, and reusable scaffolding templates — all published to the public Terraform Registry. Govern both organizations end-to-end: module design standards, release management, PR review, issue triage, and roadmap.',
     detail: null,
-    tags: ['Terraform', 'GitLab', 'IaC', 'GitOps'],
-  },
-  {
-    type: 'maintainer',
-    typeLabel: 'Author & Publisher',
-    name: 'terraform-aws-ec2-instance',
-    date: '2025',
-    lang: 'Terraform',
-    link: 'https://github.com/sudo-terraform-aws-modules/terraform-aws-ec2-instance',
-    linkLabel: 'sudo-terraform-aws-modules/terraform-aws-ec2-instance',
-    registryLink: 'https://registry.terraform.io/modules/sudo-terraform-aws-modules/ec2-instance/aws',
-    registryLabel: 'registry.terraform.io/modules/sudo-terraform-aws-modules/ec2-instance/aws',
-    summary: 'Terraform module for provisioning AWS EC2 instances. Built from scratch and published to the public Terraform Registry. Covers instance configuration, IAM instance profiles, security groups, EBS volumes, and tagging conventions.',
-    detail: null,
-    tags: ['Terraform', 'AWS', 'EC2', 'IaC'],
-  },
-  {
-    type: 'upstream',
-    typeLabel: 'Contributor',
-    name: 'terraform-aws-sudo-vpc',
-    date: 'PR #7, PR #8',
-    lang: 'Terraform',
-    link: 'https://github.com/sudo-terraform-aws-modules/terraform-aws-sudo-vpc',
-    linkLabel: 'sudo-terraform-aws-modules/terraform-aws-sudo-vpc',
-    registryLink: 'https://registry.terraform.io/modules/sudo-terraform-aws-modules/sudo-vpc/aws/latest',
-    registryLabel: 'registry.terraform.io/modules/sudo-terraform-aws-modules/sudo-vpc/aws',
-    summary: 'Contributed two PRs to the public SUDO VPC Terraform module, keeping it current and production-ready.',
-    detail: null,
-    tags: ['Terraform', 'AWS', 'VPC', 'IaC'],
+    tags: ['Terraform', 'AWS', 'GitLab', 'IaC', 'GitOps'],
   },
   {
     type: 'upstream',
@@ -170,7 +148,7 @@ const recognition = [
               <p class="font-mono text-xs text-accent uppercase tracking-wide">{item.story.heading}</p>
               <div class="space-y-3">
                 {item.story.body.split('\n\n').map((para) => (
-                  <p class="text-sm text-muted leading-relaxed">{para}</p>
+                  <p class="text-sm text-muted leading-relaxed" set:html={para} />
                 ))}
               </div>
             </div>
@@ -186,17 +164,33 @@ const recognition = [
             <div class="flex flex-wrap gap-1.5">
               {item.tags.map((tag) => <span class="tag">{tag}</span>)}
             </div>
-            <a
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-xs text-accent hover:text-accent-hover no-underline inline-flex items-center gap-1.5"
-            >
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9"/>
-              </svg>
-              {item.linkLabel}
-            </a>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 justify-end">
+              {item.links ? item.links.map((l: { href: string; label: string }) => (
+                <a
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-xs text-accent hover:text-accent-hover no-underline inline-flex items-center gap-1.5"
+                >
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9"/>
+                  </svg>
+                  {l.label}
+                </a>
+              )) : (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-xs text-accent hover:text-accent-hover no-underline inline-flex items-center gap-1.5"
+                >
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9"/>
+                  </svg>
+                  {item.linkLabel}
+                </a>
+              )}
+            </div>
           </div>
         </article>
       ))}
@@ -270,7 +264,7 @@ const recognition = [
           'AWS', 'OCI', 'Azure', 'Kubernetes', 'Terraform', 'Ansible',
           'Prometheus', 'Thanos', 'Grafana', 'Alertmanager', 'Blackbox Exporter',
           'Cloudflare', 'Wazuh', 'Velero', 'AWS DMS', 'AWS MGN',
-          'Control Tower', 'DNSControl', 'GitLab CI', 'GitHub Actions', 'Azure DevOps'
+          'Control Tower', 'DNSControl', 'GitLab CI', 'GitHub Actions', 'Azure DevOps', 'Terragrunt', 'GCP'
         ].map((tech) => (
           <span class="tag">{tech}</span>
         ))}
