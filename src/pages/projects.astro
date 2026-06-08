@@ -32,6 +32,43 @@ HTTP SD turned out to be the right model anyway. The proxy runs independently of
   {
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
+    name: 'Harbor',
+    date: 'June 2026 · PR #23326',
+    lang: 'Go',
+    link: 'https://github.com/goharbor/harbor/pull/23326',
+    linkLabel: 'goharbor/harbor #23326',
+    summary: 'Fixed a bug in Harbor\'s ECR adapter where AWS China partition regions (cn-north-1, cn-northwest-1) were assigned the wrong endpoint domain. The adapter was generating https://api.ecr.cn-north-1.amazonaws.com for all regions using a hardcoded suffix — China regions require amazonaws.com.cn. The connection failed silently with no UI indication. Added TestGetAdapterInfo_ChinaRegionEndpoints to cover the fix.',
+    detail: null,
+    story: {
+      heading: 'Caught during a region list review',
+      body: `<a href="https://github.com/goharbor/harbor/pull/22941" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #22941</a> had just added <code>cn-north-1</code> and <code>cn-northwest-1</code> to the ECR region loop to close <a href="https://github.com/goharbor/harbor/issues/22860" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#22860</a>. The regions were added but the domain suffix logic was not touched — the format string <code>fmt.Sprintf("https://api.ecr.%s.amazonaws.com", e)</code> applied uniformly across every region in the loop.
+
+The fix was a targeted check: any region prefixed with <code>cn-</code> gets <code>amazonaws.com.cn</code>; everything else retains <code>amazonaws.com</code>. The existing <code>ecrPattern</code> regex in the same file already handled <code>.cn</code> correctly for URL parsing — only the endpoint generator was wrong. One changed line, 18 lines of test.`,
+    },
+    tags: ['Go', 'Harbor', 'CNCF', 'ECR', 'AWS'],
+  },
+  // TODO: PR #2151 still under review - uncomment when merged
+  // {
+  //   type: 'upstream',
+  //   typeLabel: 'Upstream Contributor',
+  //   name: 'RabbitMQ Cluster Operator',
+  //   date: 'May 2026 · PR #2151',
+  //   lang: 'Go',
+  //   link: 'https://github.com/rabbitmq/cluster-operator/pull/2151',
+  //   linkLabel: 'rabbitmq/cluster-operator #2151',
+  //   summary: 'Fixed a production bug where reconcileOperatorDefaults sent a full CR PUT on every reconciliation loop, causing the "manager" field manager to take ownership of all RabbitmqCluster fields. This broke subsequent helm upgrade operations with SSA conflicts — Go silently serializes cpu: 1 (integer) as "1" (string) on round-trip, which SSA then rejects.',
+  //   detail: null,
+  //   story: {
+  //     heading: 'The fix: move defaulting out of the reconciler',
+  //     body: `The reconciler was sending a full PUT even when nothing changed. After one loop, "manager" owned every CR field. A helm upgrade would then conflict because the stored type no longer matched what Helm sent (<a href="https://github.com/rabbitmq/cluster-operator/issues/2098" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2098</a>).
+  //
+  // Moved defaulting of spec.image, spec.imagePullSecrets, and vault.defaultUserUpdaterImage into a mutating admission webhook. Defaults are applied once at admission time; the reconciler only runs when ControlRabbitmqImage is true (enforcement, not defaulting). Proposed and confirmed with maintainer Zerpet (<a href="https://github.com/rabbitmq/cluster-operator/issues/2121" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2121</a>) before implementation.`,
+  //   },
+  //   tags: ['Go', 'Kubernetes', 'RabbitMQ', 'Helm', 'Webhooks'],
+  // },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
     name: 'OCI Native Ingress Controller',
     date: 'PR #139',
     lang: 'Go',
