@@ -50,6 +50,24 @@ Review covered frontend, UX, and copy. The initial approach got reworked to matc
   {
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
+    name: 'Terraform AWS Provider',
+    date: 'June 2026 · PR #48190',
+    lang: 'Go',
+    link: 'https://github.com/hashicorp/terraform-provider-aws/pull/48190',
+    linkLabel: 'hashicorp/terraform-provider-aws #48190',
+    summary: 'Added two new resources for the CloudWatch Logs S3 Tables integration released by AWS in December 2025. aws_observabilityadmin_s3_table_integration manages the singleton integration per account; aws_cloudwatch_log_s3_table_integration_source associates log data sources to it. Both resources include full lifecycle, acceptance tests against live AWS, and Terraform docs.',
+    detail: null,
+    story: {
+      heading: 'New AWS feature with no Terraform support',
+      body: `<a href="https://github.com/hashicorp/terraform-provider-aws/issues/48137" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#48137</a> asked for Terraform resources to cover the feature that routes CloudWatch Logs directly into S3 Tables, making them queryable via Athena without Firehose or Lambda in the middle. No resources existed yet.
+
+A few API quirks needed handling: the integration is a singleton per account, so parallel acceptance tests would collide with a <code>ConflictException</code> and had to be serialized. <code>ListSourcesForS3TableIntegration</code> returns <code>ValidationException: Integration not found</code> when the parent is already deleted, which needed to be treated as not-found rather than an error. <code>DeleteS3TableIntegration</code> returns a generic smithy <code>ResourceNotFoundException</code> rather than a typed SDK error, so both had to be checked. Maintainer Kit Ewbank extended the implementation during review with Autoflex mapping, a list resource variant, and additional test cases for KMS key and tags.`,
+    },
+    tags: ['Go', 'Terraform', 'AWS', 'CloudWatch', 'S3 Tables'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
     name: 'Harbor',
     date: 'June 2026 · PR #23326',
     lang: 'Go',
