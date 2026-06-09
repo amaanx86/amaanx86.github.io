@@ -83,6 +83,22 @@ The fix was a targeted check: any region prefixed with <code>cn-</code> gets <co
     },
     tags: ['Go', 'Harbor', 'CNCF', 'ECR', 'AWS'],
   },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
+    name: 'k3s',
+    date: 'June 2026 · PR #14189',
+    lang: 'Go',
+    link: 'https://github.com/k3s-io/k3s/pull/14189',
+    linkLabel: 'k3s-io/k3s #14189',
+    summary: 'Fixed a flaky integration test in the kubeflags suite. The test restarts k3s multiple times but was not calling K3sCleanup between kills, leaving stale etcd state that caused the next server start to fatal on bootstrap reconciliation.',
+    detail: null,
+    story: {
+      heading: 'Missing cleanup, intermittent fatal',
+      body: `<a href="https://github.com/k3s-io/k3s/issues/14153" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#14153</a> filed by Brad Davidson, one of the k3s core maintainers. If k3s was killed before etcd wrote bootstrap data, the stale snapshot dir would survive to the next restart. k3s would try to reconcile against the datastore and fatal with <code>no bootstrap data found</code>. The startup integration test already had the right pattern: every <code>K3sKillServer</code> paired with <code>K3sCleanup(-1, "")</code>. The kubeflags test was just missing those two calls.`,
+    },
+    tags: ['Go', 'k3s', 'CNCF', 'Kubernetes', 'etcd'],
+  },
 //   // TODO: PR #2151 still under review - uncomment when merged
 //   {
 //     type: 'upstream',
@@ -144,8 +160,8 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
     lang: 'Docker',
     link: 'https://github.com/Netflix/lemur-docker/pull/74',
     linkLabel: 'Netflix/lemur-docker #74',
-    summary: 'Fixed a broken Docker build in the official lemur-docker repository, the containerized distribution of Netflix\'s TLS certificate management platform. The build was failing due to acme==3.3.0 no longer being available in package repositories.',
-    detail: 'Upgraded both builder and app stages from ubuntu:20.04 to ubuntu:22.04, switched Node.js installation to the official NodeSource 20.x LTS repository (with cryptographic signing) instead of Ubuntu\'s outdated default packages, and removed unnecessary dependencies to reduce image bloat. Reviewed and merged by maintainer jtschladen on February 2, 2026.',
+    summary: 'Fixed a broken Docker build in the official lemur-docker repository. The build was failing due to acme==3.3.0 no longer being available. Upgraded both stages from ubuntu:20.04 to ubuntu:22.04, switched Node.js to the NodeSource 20.x LTS repo, and cleaned up unnecessary dependencies.',
+    detail: null,
     tags: ['Python', 'Docker', 'TLS', 'PKI'],
   },
 ];
