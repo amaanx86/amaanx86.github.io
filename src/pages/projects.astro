@@ -19,13 +19,11 @@ const contributions = [
     lang: 'Go',
     link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
     linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
-    summary: 'A lightweight Go service that bridges Oracle Cloud Infrastructure and Prometheus by dynamically discovering tagged compute instances across multiple tenancies via HTTP service discovery.',
+    summary: 'Go HTTP SD proxy that exposes OCI compute instances to Prometheus across multiple tenancies. Handles response caching so multiple Prometheus replicas don\'t each hit the OCI API, and multi-tenancy is just config rather than per-tenancy scrape_config blocks.',
     detail: null,
     story: {
       heading: 'Why HTTP SD over native OCI SD?',
-      body: `A native OCI SD integration was proposed upstream in <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> but closed - Prometheus maintainers explicitly prefer keeping the binary lean by delegating cloud-specific discovery to HTTP SD endpoints.
-
-HTTP SD turned out to be the right model anyway. The proxy runs independently of Prometheus, releasing on its own schedule without touching scrape configs. It caches OCI API responses centrally so multiple Prometheus replicas do not each hammer the OCI Compute API separately. Multi-tenancy is handled by the proxy itself - no per-tenancy scrape_config blocks cluttering Prometheus configuration.`,
+      body: `Native OCI SD was proposed in <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> but closed - maintainers don't want cloud-specific code in the binary, HTTP SD is the right answer for that. Turned out to be the better model anyway. Proxy runs independently, caches OCI API responses centrally, and multi-tenancy is handled at the proxy level so Prometheus config stays clean.`,
     },
     tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
   },
@@ -37,13 +35,11 @@ HTTP SD turned out to be the right model anyway. The proxy runs independently of
     lang: 'Vue / Ruby',
     link: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238594',
     linkLabel: 'gitlab-org/gitlab !238594',
-    summary: 'Implemented PDF export for Markdown files in the blob viewer, closing a three-year-old feature request. The download button is replaced with a dropdown offering Download as Markdown and Print as PDF. Changes span the Vue.js blob header component, Ruby backend, scoped i18n strings, print styles, and frontend unit tests.',
+    summary: 'Added PDF export for Markdown files in the blob viewer, closing a three-year feature request. Download button becomes a dropdown with Download as Markdown and Print as PDF. Touches the Vue.js blob header, Ruby backend, i18n strings, print styles, and frontend tests.',
     detail: null,
     story: {
       heading: 'Three years from product request to merge',
-      body: `<a href="https://gitlab.com/gitlab-org/gitlab/-/work_items/414692" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#414692</a> was filed in June 2023 by a Senior Product Manager at GitLab. Customers wanted PDF exports of release docs without checking binaries into the repo or spinning up a headless browser in CI. It sat in design for three years while the UX team worked through the overflow menu model for the blob viewer.
-
-Review covered frontend, UX, and copy. The initial approach got reworked to match an existing pattern already used in the wiki, which simplified things quite a bit. First contribution to GitLab, merged in nine days.`,
+      body: `<a href="https://gitlab.com/gitlab-org/gitlab/-/work_items/414692" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#414692</a> was filed in 2023 by a GitLab PM. Customers wanted PDF exports of release docs without CI pipelines or checked-in binaries. Sat unactioned for three years. Initial approach got reworked during review to match an existing pattern from the wiki editor, which simplified things. Merged in nine days, first contribution to GitLab.`,
     },
     tags: ['Vue', 'Ruby', 'Rails', 'GitLab', 'i18n'],
   },
@@ -57,11 +53,11 @@ Review covered frontend, UX, and copy. The initial approach got reworked to matc
       { href: 'https://github.com/hashicorp/terraform-provider-aws/pull/48190', label: 'hashicorp/terraform-provider-aws #48190' },
       { href: 'https://github.com/hashicorp/terraform-provider-aws/pull/48286', label: 'hashicorp/terraform-provider-aws #48286' },
     ],
-    summary: 'Added two new resources for the CloudWatch Logs S3 Tables integration released by AWS in December 2025. aws_observabilityadmin_s3_table_integration manages the singleton integration per account; aws_cloudwatch_log_s3_table_integration_source associates log data sources to it. Both resources include full lifecycle, acceptance tests against live AWS, and Terraform docs. A follow-up docs PR added import discovery steps after a user hit the gap importing existing resources.',
+    summary: 'Two new resources for the CloudWatch Logs S3 Tables integration: aws_observabilityadmin_s3_table_integration for the singleton per-account integration, aws_cloudwatch_log_s3_table_integration_source for associating log sources. Full lifecycle, acceptance tests against live AWS, docs. Follow-up PR added import discovery steps after a user got stuck importing existing resources.',
     detail: null,
     story: {
-      heading: 'New AWS feature with no Terraform support',
-      body: `<a href="https://github.com/hashicorp/terraform-provider-aws/issues/48137" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#48137</a> asked for Terraform resources to cover the feature that routes CloudWatch Logs directly into S3 Tables, making them queryable via Athena without Firehose or Lambda in the middle. A few API quirks needed handling: the integration is a singleton per account so parallel acceptance tests had to be serialized to avoid <code>ConflictException</code>, <code>ListSourcesForS3TableIntegration</code> returns <code>ValidationException: Integration not found</code> when the parent is already deleted and needed to be treated as not-found, and <code>DeleteS3TableIntegration</code> returns a generic smithy <code>ResourceNotFoundException</code> rather than a typed SDK error. Maintainer Kit Ewbank extended the implementation during review with Autoflex mapping, a list resource variant, and additional test cases for KMS key and tags. After the implementation merged, a user asked how to import resources created outside Terraform - specifically what value goes after the comma in the <code>integration_arn,id</code> import format. The <code>id</code> is a UUID per source association generated by AWS, not retrievable from <code>aws observabilityadmin list-s3-table-integrations</code> - users need to call <code>aws logs list-sources-for-s3-table-integration</code> and pull the <code>Identifier</code> field. That exchange became <a href="https://github.com/hashicorp/terraform-provider-aws/pull/48286" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #48286</a>, adding the discovery steps to the resource docs.`,
+      heading: 'New AWS feature, no Terraform support yet',
+      body: `<a href="https://github.com/hashicorp/terraform-provider-aws/issues/48137" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#48137</a> asked for resources to cover the feature that routes CloudWatch Logs into S3 Tables so you can query via Athena without Firehose or Lambda. A few gotchas: integration is a singleton per account so acceptance tests had to be serialized or they'd hit <code>ConflictException</code>. <code>ListSourcesForS3TableIntegration</code> throws <code>ValidationException: Integration not found</code> when the parent's deleted and that had to be treated as not-found rather than an error. <code>DeleteS3TableIntegration</code> uses a generic smithy <code>ResourceNotFoundException</code> not a typed SDK error. Maintainer Kit Ewbank added Autoflex mapping, a list data source, and more test cases during review. After merge a user asked what the <code>id</code> is in the <code>integration_arn,id</code> import format - it's a per-association UUID from <code>aws logs list-sources-for-s3-table-integration</code>, Identifier field, not anything in the observabilityadmin API. That became <a href="https://github.com/hashicorp/terraform-provider-aws/pull/48286" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #48286</a>.`,
     },
     tags: ['Go', 'Terraform', 'AWS', 'CloudWatch', 'S3 Tables'],
   },
@@ -73,13 +69,11 @@ Review covered frontend, UX, and copy. The initial approach got reworked to matc
     lang: 'Go',
     link: 'https://github.com/goharbor/harbor/pull/23326',
     linkLabel: 'goharbor/harbor #23326',
-    summary: 'Fixed a bug in Harbor\'s ECR adapter where AWS China partition regions (cn-north-1, cn-northwest-1) were assigned the wrong endpoint domain. The adapter was generating https://api.ecr.cn-north-1.amazonaws.com for all regions using a hardcoded suffix. China regions require amazonaws.com.cn and the connection failed silently with no UI indication. Added TestGetAdapterInfo_ChinaRegionEndpoints to cover the fix.',
+    summary: 'Fixed Harbor\'s ECR adapter generating the wrong endpoint domain for China regions. Was using amazonaws.com for everything but cn-north-1 and cn-northwest-1 need amazonaws.com.cn. Connection failed silently with no UI feedback. Added a test to cover it.',
     detail: null,
     story: {
       heading: 'Spotted while reviewing someone else\'s fix',
-      body: `<a href="https://github.com/goharbor/harbor/issues/22860" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#22860</a> was a bug I filed about missing Middle East regions in the ECR adapter. Three months later, <a href="https://github.com/goharbor/harbor/pull/22941" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #22941</a> was opened by someone else to close it. While reviewing that PR, I noticed the China regions (<code>cn-north-1</code>, <code>cn-northwest-1</code>) had been in the list all along but the endpoint generator was producing the wrong domain for them. The format string used <code>amazonaws.com</code> uniformly across every region, but China partition requires <code>amazonaws.com.cn</code>. The connection would fail silently with no indication in the UI.
-
-The fix was a targeted check: any region prefixed with <code>cn-</code> gets <code>amazonaws.com.cn</code>, everything else keeps <code>amazonaws.com</code>. The existing <code>ecrPattern</code> regex already handled <code>.cn</code> correctly for URL parsing. Only the endpoint generator was wrong.`,
+      body: `<a href="https://github.com/goharbor/harbor/issues/22860" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#22860</a> was a bug I filed about missing Middle East regions. <a href="https://github.com/goharbor/harbor/pull/22941" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #22941</a> was opened a few months later by someone else to fix it. While reviewing I noticed China regions were already in the list but the endpoint generator used <code>amazonaws.com</code> uniformly - China partition needs <code>amazonaws.com.cn</code>. Fix is simple: any <code>cn-</code> prefixed region gets <code>amazonaws.com.cn</code>, rest stays the same. The <code>ecrPattern</code> regex for URL parsing already handled <code>.cn</code> correctly, just the generator was wrong.`,
     },
     tags: ['Go', 'Harbor', 'CNCF', 'ECR', 'AWS'],
   },
@@ -91,11 +85,11 @@ The fix was a targeted check: any region prefixed with <code>cn-</code> gets <co
     lang: 'Go',
     link: 'https://github.com/k3s-io/k3s/pull/14189',
     linkLabel: 'k3s-io/k3s #14189',
-    summary: 'Fixed a flaky integration test in the kubeflags suite. The test restarts k3s multiple times but was not calling K3sCleanup between kills, leaving stale etcd state that caused the next server start to fatal on bootstrap reconciliation.',
+    summary: 'Fixed a flaky integration test in the kubeflags suite. Test kills and restarts k3s multiple times but wasn\'t calling K3sCleanup between kills, leaving stale etcd state that caused the next start to fatal on bootstrap reconciliation.',
     detail: null,
     story: {
       heading: 'Missing cleanup, intermittent fatal',
-      body: `<a href="https://github.com/k3s-io/k3s/issues/14153" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#14153</a> filed by Brad Davidson, one of the k3s core maintainers. If k3s was killed before etcd wrote bootstrap data, the stale snapshot dir would survive to the next restart. k3s would try to reconcile against the datastore and fatal with <code>no bootstrap data found</code>. The startup integration test already had the right pattern: every <code>K3sKillServer</code> paired with <code>K3sCleanup(-1, "")</code>. The kubeflags test was just missing those two calls.`,
+      body: `<a href="https://github.com/k3s-io/k3s/issues/14153" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#14153</a> filed by Brad Davidson. If k3s gets killed before etcd flushes bootstrap data, the stale snapshot dir carries over to the next start and k3s fatals with <code>no bootstrap data found</code>. The startup test already had the right pattern - every <code>K3sKillServer</code> paired with <code>K3sCleanup(-1, "")</code>. Kubeflags test was just missing those two calls.`,
     },
     tags: ['Go', 'k3s', 'CNCF', 'Kubernetes', 'etcd'],
   },
@@ -126,15 +120,11 @@ The fix was a targeted check: any region prefixed with <code>cn-</code> gets <co
     lang: 'Go',
     link: 'https://github.com/oracle/oci-native-ingress-controller/pull/139',
     linkLabel: 'oracle/oci-native-ingress-controller #139',
-    summary: 'Added proper HTTP liveness and readiness probes to the OCI Native Ingress Controller for Kubernetes, replacing TCP socket probes to satisfy CloudGuard CIS compliance requirements.',
+    summary: 'Added HTTP liveness and readiness probes to the OCI Native Ingress Controller, replacing TCP socket probes that weren\'t satisfying CIS compliance checks.',
     detail: null,
     story: {
-      heading: 'The review process forced the right answer',
-      body: `The initial fix was TCP socket probes on the webhook port, quick, compliant, done. But during review, Maintainer pushed back. TCP probes are blunt instruments; they tell you a port is open, not that a controller is actually healthy.
-
-So the implementation was rebuilt properly: a dedicated HealthChecker that tracks informer cache sync state and controller readiness, /healthz/ready and /healthz/live HTTP endpoints on the metrics server, readiness gated on informer cache sync (the controller is actually warmed up, not just listening), and the Helm deployment updated to use HTTP GET probes on the correct port.
-
-The probe tells the truth now. If the controller hasn't finished syncing, Kubernetes won't route traffic to it. The distinction between "something is running" and "something is ready" is what the review process forced getting right.`,
+      heading: 'Review pushed for the proper fix',
+      body: `Initial approach was TCP socket probes on the webhook port - quick, compliant. Maintainer pushed back during review: TCP probes just tell you a port is open, not that the controller is healthy. Rebuilt it properly: a HealthChecker that tracks informer cache sync state, <code>/healthz/ready</code> and <code>/healthz/live</code> HTTP endpoints on the metrics server, readiness gated on cache sync. Helm deployment updated to use HTTP GET probes on the right port. Controller won't receive traffic until it's actually done syncing.`,
     },
     tags: ['Go', 'Kubernetes', 'OCI', 'Helm'],
   },
@@ -148,7 +138,7 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
       { href: 'https://github.com/sudo-terraform-aws-modules', label: 'github.com/sudo-terraform-aws-modules' },
       { href: 'https://github.com/sudo-terraform-modules', label: 'github.com/sudo-terraform-modules' },
     ],
-    summary: 'Maintain two public Terraform module organizations on GitHub spanning AWS infrastructure and multi-cloud patterns. Authored and published modules covering AWS resources, GitLab resource management, and reusable scaffolding templates — all published to the public Terraform Registry. Govern both organizations end-to-end: module design standards, release management, PR review, issue triage, and roadmap.',
+    summary: 'Two public Terraform module orgs on GitHub, one for AWS resources and one for multi-cloud patterns. Modules cover AWS infra, GitLab resource management, and scaffolding templates, all published to the Terraform Registry. Handle module design, releases, PR review, and issue triage.',
     detail: null,
     tags: ['Terraform', 'AWS', 'GitLab', 'IaC', 'GitOps'],
   },
@@ -160,7 +150,7 @@ The probe tells the truth now. If the controller hasn't finished syncing, Kubern
     lang: 'Docker',
     link: 'https://github.com/Netflix/lemur-docker/pull/74',
     linkLabel: 'Netflix/lemur-docker #74',
-    summary: 'Fixed a broken Docker build in the official lemur-docker repository. The build was failing due to acme==3.3.0 no longer being available. Upgraded both stages from ubuntu:20.04 to ubuntu:22.04, switched Node.js to the NodeSource 20.x LTS repo, and cleaned up unnecessary dependencies.',
+    summary: 'Build was broken because acme==3.3.0 was no longer on PyPI. Bumped both stages from ubuntu:20.04 to ubuntu:22.04, switched to NodeSource 20.x LTS, cleaned up some stale deps.',
     detail: null,
     tags: ['Python', 'Docker', 'TLS', 'PKI'],
   },
@@ -171,7 +161,7 @@ const recognition = [
     title: 'AWS Community Day Dubai',
     date: 'October 2025',
     location: 'Dubai Knowledge Park, UAE',
-    description: 'Delivered technical sessions to 200+ cloud practitioners on building resilient architectures and securing CI/CD pipelines. Shared hands-on insights from architecting production infrastructure under 48-hour competition constraints.',
+    description: 'Spoke to ~200 practitioners on resilient AWS architectures and CI/CD security. Based on production patterns from client work and HackOps.',
     link: null,
     badge: 'Speaker',
     badgeClass: 'badge-blue',
@@ -180,7 +170,7 @@ const recognition = [
     title: 'HackOps 2025: 1st Place',
     date: 'April 2025',
     location: 'FAST NUCES, Karachi',
-    description: 'Led team to victory in the state-level DevOps hackathon, architecting and deploying production-grade cloud infrastructure on AWS under time constraints.',
+    description: 'First place at a DevOps hackathon at FAST NUCES. Team built and shipped AWS infra under a time limit.',
     detail: '₨65,000 prize · State-level competition',
     link: null,
     badge: '1st Place',
@@ -190,23 +180,19 @@ const recognition = [
 ---
 
 <Base
-  title="Work & Open Source | Amaan Ul Haq Siddiqui"
-  description="Open source projects, upstream contributions, and community recognition by Amaan Ul Haq Siddiqui."
+  title="Contributions | Amaan Ul Haq Siddiqui"
+  description="Upstream contributions, open source projects, and community recognition by Amaan Ul Haq Siddiqui."
   allPosts={allPostsData}
 >
-  <div class="space-y-14">
+  <div class="space-y-10">
 
     <div>
-      <h1 class="font-mono text-2xl text-text font-semibold mb-2">Work &amp; Open Source</h1>
-      <p class="text-muted text-sm">Contributions, projects, and community work.</p>
+      <h1 class="font-mono text-2xl text-text font-semibold mb-2">Contributions</h1>
+      <p class="text-muted text-sm">Upstream contributions, open source projects, and community recognition.</p>
     </div>
 
     <!-- ── Open source contributions ─────────────────────────────────── -->
-    <section class="space-y-5">
-      <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Contributions</span>
-        <div class="flex-1 h-px bg-border"></div>
-      </div>
+    <section class="space-y-4">
 
       {contributions.map((item) => (
         <article class="card group border-l-4 border-l-transparent hover:border-l-accent transition-all duration-200">
@@ -231,16 +217,20 @@ const recognition = [
           <!-- Summary -->
           <p class="text-sm text-muted leading-relaxed mb-3">{item.summary}</p>
 
-          <!-- Story block (for OCI ingress) -->
           {item.story && (
-            <div class="bg-surface-raised border border-border rounded-md p-4 mb-3 space-y-3">
-              <p class="font-mono text-xs text-accent uppercase tracking-wide">{item.story.heading}</p>
-              <div class="space-y-3">
+            <details class="group/story mb-3">
+              <summary class="cursor-pointer list-none inline-flex items-center gap-1.5 font-mono text-xs text-accent bg-surface-raised border border-border rounded-full px-3 py-1 hover:border-accent transition-colors select-none mb-2">
+                <svg class="w-2.5 h-2.5 transition-transform group-open/story:rotate-90 shrink-0" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M6 4l4 4-4 4"/>
+                </svg>
+                {item.story.heading}
+              </summary>
+              <div class="bg-surface-raised border border-border rounded-md p-4 space-y-3">
                 {item.story.body.split('\n\n').map((para) => (
                   <p class="text-sm text-muted leading-relaxed" set:html={para} />
                 ))}
               </div>
-            </div>
+            </details>
           )}
 
           <!-- Detail -->
@@ -309,53 +299,6 @@ const recognition = [
               <p class="font-mono text-xs text-accent">{item.detail}</p>
             )}
           </article>
-        ))}
-      </div>
-    </section>
-
-    <!-- ── Production infrastructure ─────────────────────────────────── -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Production work</span>
-        <div class="flex-1 h-px bg-border"></div>
-      </div>
-
-      <div class="space-y-3">
-
-        <div class="card space-y-2">
-          <div class="flex items-center justify-between gap-3 flex-wrap">
-            <h3 class="font-mono text-sm text-text font-semibold">Cloud Infrastructure & MSP Operations</h3>
-            <a href="https://sudoconsultants.com" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-muted hover:text-accent no-underline">SUDO Consultants</a>
-          </div>
-          <p class="text-sm text-muted leading-relaxed">
-            Multi-cloud infrastructure across AWS and OCI for enterprise clients. Multi-account governance with AWS Control Tower, Account Factory, SCPs, Config rules, CloudTrail, and Security Hub. CIS-hardened AMI pipelines for RHEL (SELinux enforcing, CIS Level 2) and Ubuntu with automated vulnerability scanning via Trivy and AWS Inspector. DNS-as-code for Cloudflare zones using DNSControl with GitOps workflows. Server and workload migrations using AWS MGN and EDR onboarding. Hybrid connectivity over Site-to-Site VPN. ECS and EKS cluster management including in-place version upgrades. Enterprise SIEM on AWS using Wazuh with NLB agent ingestion and ALB-fronted dashboards, provisioned via Terraform and Ansible. CI/CD pipeline support across Azure DevOps, GitHub Actions, and GitLab CI.
-          </p>
-        </div>
-
-        <div class="card space-y-2">
-          <h3 class="font-mono text-sm text-text font-semibold">Observability Stack</h3>
-          <p class="text-sm text-muted leading-relaxed">
-            Designed and operate a full Prometheus&thinsp;/&thinsp;Thanos&thinsp;/&thinsp;Grafana Enterprise observability platform across multi-cloud and on-premises environments — covering Kubernetes clusters, virtual machines, managed databases, data centre firewalls and switches, load balancers, and CDN. Exporters in production: FortiGate exporter, Cloudflare exporter, CloudWatch exporter, SNMP (data centre switches and firewalls), and Blackbox exporter. Dynamic compute discovery using a custom-built oci-prometheus-sd-proxy. Thanos Query for cross-environment federation, configurable retention, and Prometheus deduplication. HA Prometheus with Alertmanager clustering, Slack-integrated alert correlation, 80+ custom dashboards, and synthetic monitoring. Reduced MTTR from 45 minutes to 8 minutes through intelligent alert grouping and correlation.
-          </p>
-        </div>
-
-        <div class="card space-y-2">
-          <h3 class="font-mono text-sm text-text font-semibold">Migrations & Hybrid Architecture</h3>
-          <p class="text-sm text-muted leading-relaxed">
-            Zero-downtime migration from Azure AKS to Oracle Kubernetes Engine using Velero with Kopia for application-aware persistent volume backups, cross-region replication, and DR drills. AWS DMS full-load and CDC migrations of 500GB+ production databases with sub-5-second replication lag. Hybrid DR using AWS DataSync over Site-to-Site VPN with VPC endpoints, syncing on-premises Windows File Server to S3, with on-prem Active Directory integrated into EC2 for domain authentication. Multi-region AWS deployments with Cognito-enforced MFA, ALB routing to private ECS services, and PCI-DSS/SOC2-aligned network segmentation.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="flex flex-wrap gap-2 pt-1">
-        {[
-          'AWS', 'OCI', 'Azure', 'Kubernetes', 'Terraform', 'Ansible',
-          'Prometheus', 'Thanos', 'Grafana', 'Alertmanager', 'Blackbox Exporter',
-          'Cloudflare', 'Wazuh', 'Velero', 'AWS DMS', 'AWS MGN',
-          'Control Tower', 'DNSControl', 'GitLab CI', 'GitHub Actions', 'Azure DevOps', 'Terragrunt', 'GCP'
-        ].map((tech) => (
-          <span class="tag">{tech}</span>
         ))}
       </div>
     </section>
