@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 
 const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
 const allPostsData = allPosts.map((p) => ({
-  slug: p.slug,
+  slug: p.id,
   title: p.data.title,
   description: p.data.description,
   tags: p.data.tags,
