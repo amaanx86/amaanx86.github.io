@@ -57,9 +57,25 @@ const contributions = [
     detail: null,
     story: {
       heading: 'New AWS feature, no Terraform support yet',
-      body: `<a href="https://github.com/hashicorp/terraform-provider-aws/issues/48137" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#48137</a> asked for resources to cover the feature that routes CloudWatch Logs into S3 Tables so you can query via Athena without Firehose or Lambda. A few gotchas: integration is a singleton per account so acceptance tests had to be serialized or they'd hit <code>ConflictException</code>. <code>ListSourcesForS3TableIntegration</code> throws <code>ValidationException: Integration not found</code> when the parent's deleted and that had to be treated as not-found rather than an error. <code>DeleteS3TableIntegration</code> uses a generic smithy <code>ResourceNotFoundException</code> not a typed SDK error. Maintainer Kit Ewbank added Autoflex mapping, a list data source, and more test cases during review. After merge a user asked what the <code>id</code> is in the <code>integration_arn,id</code> import format - it's a per-association UUID from <code>aws logs list-sources-for-s3-table-integration</code>, Identifier field, not anything in the observabilityadmin API. That became <a href="https://github.com/hashicorp/terraform-provider-aws/pull/48286" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #48286</a>.`,
+      body: `<a href="https://github.com/hashicorp/terraform-provider-aws/issues/48137" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#48137</a> asked for resources to cover the feature that routes CloudWatch Logs into S3 Tables so you can query via Athena without Firehose or Lambda. A few gotchas: integration is a singleton per account so acceptance tests had to be serialized or they'd hit <code>ConflictException</code>. <code>ListSourcesForS3TableIntegration</code> throws <code>ValidationException: Integration not found</code> when the parent's deleted and that had to be treated as not-found rather than an error. <code>DeleteS3TableIntegration</code> uses a generic smithy <code>ResourceNotFoundException</code> not a typed SDK error. During review the maintainer added Autoflex mapping, a list data source, and more test cases. After merge a user asked what the <code>id</code> is in the <code>integration_arn,id</code> import format - it's a per-association UUID from <code>aws logs list-sources-for-s3-table-integration</code>, Identifier field, not anything in the observabilityadmin API. That became <a href="https://github.com/hashicorp/terraform-provider-aws/pull/48286" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #48286</a>.`,
     },
     tags: ['Go', 'Terraform', 'AWS', 'CloudWatch', 'S3 Tables'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
+    name: 'Cilium',
+    date: 'June 2026 · PR #46531',
+    lang: 'Go',
+    link: 'https://github.com/cilium/cilium/pull/46531',
+    linkLabel: 'cilium/cilium #46531',
+    summary: 'Added --reply and --not-reply filter flags to hubble observe, exposing the existing ReplyFilter to the CLI. The two flags are mutually exclusive and follow the same pattern as --encrypted/--unencrypted.',
+    detail: null,
+    story: {
+      heading: 'Server-side filter already there, just no CLI flags',
+      body: `<a href="https://github.com/cilium/hubble/issues/1283" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">cilium/hubble#1283</a>: the <code>FlowFilter.Reply</code> proto field and <code>ReplyFilter</code> were already wired into the server-side filter chain - just no <code>hubble observe</code> flags to drive them. Added <code>--reply</code> and <code>--not-reply</code> as mutually exclusive flags following the same pattern as <code>--encrypted</code>/<code>--unencrypted</code>. The tri-state concern raised in the issue is already handled server-side in <code>pkg/hubble/filters/reply.go</code>, so nothing extra needed on the CLI side.`,
+    },
+    tags: ['Go', 'Cilium', 'CNCF', 'Hubble', 'eBPF'],
   },
   {
     type: 'upstream',
@@ -107,7 +123,7 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     detail: null,
     story: {
       heading: 'Missing cleanup, intermittent fatal',
-      body: `<a href="https://github.com/k3s-io/k3s/issues/14153" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#14153</a> filed by Brad Davidson. If k3s gets killed before etcd flushes bootstrap data, the stale snapshot dir carries over to the next start and k3s fatals with <code>no bootstrap data found</code>. The startup test already had the right pattern - every <code>K3sKillServer</code> paired with <code>K3sCleanup(-1, "")</code>. Kubeflags test was just missing those two calls.`,
+      body: `<a href="https://github.com/k3s-io/k3s/issues/14153" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#14153</a>: if k3s gets killed before etcd flushes bootstrap data, the stale snapshot dir carries over to the next start and k3s fatals with <code>no bootstrap data found</code>. The startup test already had the right pattern - every <code>K3sKillServer</code> paired with <code>K3sCleanup(-1, "")</code>. Kubeflags test was just missing those two calls.`,
     },
     tags: ['Go', 'k3s', 'CNCF', 'Kubernetes', 'etcd'],
   },
