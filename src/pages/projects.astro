@@ -1,6 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import * as simpleIcons from 'simple-icons';
+
+const iconFor = (slug: string | null | undefined) => {
+  if (!slug) return null;
+  const key = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1).toLowerCase();
+  const icon = (simpleIcons as Record<string, { svg: string; hex: string; title: string } | undefined>)[key];
+  return icon ?? null;
+};
 
 const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
 const allPostsData = allPosts.map((p) => ({
@@ -15,6 +23,7 @@ const contributions = [
     type: 'maintainer',
     typeLabel: 'Author & Maintainer',
     name: 'oci-prometheus-sd-proxy',
+    logo: 'prometheus',
     date: 'March 2026',
     lang: 'Go',
     link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
@@ -31,6 +40,7 @@ const contributions = [
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'GitLab',
+    logo: 'gitlab',
     date: 'June 2026 · MR !238594',
     lang: 'Vue / Ruby',
     link: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238594',
@@ -47,6 +57,7 @@ const contributions = [
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'Terraform AWS Provider',
+    logo: 'terraform',
     date: 'June 2026 · PR #48190 + #48286',
     lang: 'Go',
     links: [
@@ -65,6 +76,7 @@ const contributions = [
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'Cilium',
+    logo: 'cilium',
     date: 'June 2026 · PR #46531',
     lang: 'Go',
     link: 'https://github.com/cilium/cilium/pull/46531',
@@ -81,6 +93,7 @@ const contributions = [
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'RabbitMQ Cluster Operator',
+    logo: 'rabbitmq',
     date: 'June 2026 · PR #2151',
     lang: 'Go',
     link: 'https://github.com/rabbitmq/cluster-operator/pull/2151',
@@ -99,6 +112,7 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'Harbor',
+    logo: 'harbor',
     date: 'June 2026 · PR #23326',
     lang: 'Go',
     link: 'https://github.com/goharbor/harbor/pull/23326',
@@ -115,6 +129,7 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'k3s',
+    logo: 'k3s',
     date: 'June 2026 · PR #14189',
     lang: 'Go',
     link: 'https://github.com/k3s-io/k3s/pull/14189',
@@ -131,6 +146,7 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'OCI Native Ingress Controller',
+    logo: 'kubernetes',
     date: 'PR #139',
     lang: 'Go',
     link: 'https://github.com/oracle/oci-native-ingress-controller/pull/139',
@@ -147,6 +163,7 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     type: 'maintainer',
     typeLabel: 'Maintainer',
     name: 'SUDO Terraform Modules',
+    logo: 'terraform',
     date: '2025 - present',
     lang: 'Terraform',
     links: [
@@ -161,6 +178,7 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
     name: 'Netflix Lemur Docker',
+    logo: 'netflix',
     date: 'February 2026 · PR #74',
     lang: 'Docker',
     link: 'https://github.com/Netflix/lemur-docker/pull/74',
@@ -209,11 +227,20 @@ const recognition = [
     <!-- ── Open source contributions ─────────────────────────────────── -->
     <section class="space-y-4">
 
-      {contributions.map((item) => (
+      {contributions.map((item) => {
+        const icon = iconFor((item as { logo?: string }).logo);
+        return (
         <article class="card group border-l-4 border-l-transparent hover:border-l-accent transition-all duration-200">
           <!-- Header -->
           <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
             <div class="flex items-center gap-2.5 flex-wrap">
+              {icon && (
+                <span
+                  class="shrink-0 inline-flex items-center justify-center w-6 h-6 text-text [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current"
+                  aria-hidden="true"
+                  set:html={icon.svg}
+                />
+              )}
               <h2 class="font-mono text-base text-text font-semibold group-hover:text-accent transition-colors">
                 {item.name}
               </h2>
@@ -287,7 +314,8 @@ const recognition = [
             </div>
           </div>
         </article>
-      ))}
+        );
+      })}
     </section>
 
     <!-- ── Recognition ────────────────────────────────────────────────── -->
