@@ -113,4 +113,6 @@ And if you were one of the people who commented on that PR hoping it would event
 - [Oracle Forums - Prometheus Service Discovery for OCI via HTTP SD](https://forums.oracle.com/ords/apexds/post/prometheus-service-discovery-for-oci-via-http-sd-production-5441)
 - [LinkedIn post](https://www.linkedin.com/posts/amaanulhaqsiddiqui_devops-prometheus-oraclecloud-activity-7437797204855087104-3F0q?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEWbcAcBZTdKHcYrh82gRuQUI9J1PqDtYXA)
 
+---
+
 Also published on [DEV.to](https://dev.to/amaanx86/built-my-own-prometheus-service-discovery-for-oracle-cloud-because-a-3-year-old-pr-never-got-merged-2fme).

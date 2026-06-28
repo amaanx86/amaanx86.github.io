@@ -66,3 +66,7 @@ The new loop: describe the architecture while the customer is still on the call,
 It is an AWS Samples repo, so install follows the README: clone it, install deps, register it as an MCP server in your client. After that you do not call tools by name - you describe the architecture and let the agent reach for them in order. Source, the verified configs, and setup are in the [repo on GitHub](https://github.com/aws-samples/sample-aws-pricing-calculator-mcp).
 
 The summary is simple. It does not know AWS pricing for you and it does not invent your requirements. It deletes the twenty minutes between knowing what the customer needs and having a link to send. For anyone building these all day, that twenty minutes was the job.
+
+---
+
+Also published on [Hashnode](https://amaanx86.hashnode.dev/i-stopped-clicking-through-the-aws-pricing-calculator-now-i-just-describe-the-architecture), [DEV.to](https://dev.to/amaanx86/i-stopped-clicking-through-the-aws-pricing-calculator-now-i-just-describe-the-architecture-2leg), and [AWS Builder Center](https://builder.aws.com/content/3FlCdo3esEVEOIDf0FvYp0rVTjJ/i-stopped-clicking-through-the-aws-pricing-calculator-now-i-just-describe-the-architecture).
