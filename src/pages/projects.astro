@@ -19,24 +19,28 @@ const allPostsData = allPosts.map((p) => ({
 }));
 
 const contributions = [
-  // Pending merge - prometheus/prometheus #18919 (native OCI SD)
-  // {
-  //   type: 'upstream',
-  //   typeLabel: 'Upstream Contributor',
-  //   name: 'Prometheus',
-  //   logo: 'prometheus',
-  //   date: 'Pending · PR #18919',
-  //   lang: 'Go',
-  //   link: 'https://github.com/prometheus/prometheus/pull/18919',
-  //   linkLabel: 'prometheus/prometheus #18919',
-  //   summary: 'Added native service discovery for Oracle Cloud Infrastructure compute to Prometheus core. Supports api_key and instance_principal auth, recursive compartment walking via the Identity API, freeform/defined tag filtering, per-SD rate limiting, and the OCI SDK retry policy. Twelve files, ~1.9k lines added, with unit tests that need no OCI credentials.',
-  //   detail: null,
-  //   story: {
-  //     heading: 'Resurrecting a four-year-old proposal closed over binary size',
-  //     body: `<a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#10226</a> proposed native OCI SD in 2022 and was closed - maintainers didn't want concrete cloud SDK clients pulled into the Prometheus binary. <a href="https://github.com/prometheus/prometheus/issues/18707" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18707</a> reopened the case after the SD subsystem refactors in <a href="https://github.com/prometheus/prometheus/pull/18819" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18819</a> (GCE), <a href="https://github.com/prometheus/prometheus/pull/18821" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18821</a> (Kubernetes), and <a href="https://github.com/prometheus/prometheus/pull/18824" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18824</a> (Azure) established a closure-based adapter pattern that lets the linker drop unused SDK operations. This implementation follows that pattern: concrete OCI clients stay out of the <code>Discovery</code> struct, only function-typed closures cross the interface boundary, so the binary only pulls in the SDK paths Prometheus actually uses. Builds on the workaround proxy I'd been running (oci-prometheus-sd-proxy) - native SD is the right end state, the proxy was only ever a stopgap until upstream support landed.`,
-  //   },
-  //   tags: ['Go', 'Prometheus', 'OCI', 'CNCF', 'Service Discovery'],
-  // },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream Contributor',
+    name: 'Prometheus',
+    logo: 'prometheus',
+    date: 'Merged June 2026 · PR #18919',
+    lang: 'Go',
+    links: [
+      { href: 'https://github.com/prometheus/prometheus/pull/18919', label: 'prometheus/prometheus #18919' },
+      { href: 'https://github.com/prometheus/prometheus/pull/19030', label: 'prometheus/prometheus #19030' },
+      { href: 'https://github.com/prometheus/prometheus/pull/19032', label: 'prometheus/prometheus #19032' },
+    ],
+    summary: 'Added native service discovery for Oracle Cloud Infrastructure compute to Prometheus core. Supports api_key and instance_principal auth, recursive compartment walking via the Identity API, freeform/defined tag filtering, per-SD rate limiting, and the OCI SDK retry policy. Unit tests run without OCI credentials. The proposal carried a maintenance commitment, so follow-ups on discovery/oci - #19030 (IPv6 + VNIC hostname labels), #19032 (vanished-compartment cleanup) - get validated against a production OCI tenancy.',
+    detail: null,
+    story: {
+      heading: 'Resurrecting a four-year-old proposal closed over binary size',
+      body: `<a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#10226</a> proposed native OCI SD in 2022 and was closed - maintainers didn't want concrete cloud SDK clients pulled into the Prometheus binary. <a href="https://github.com/prometheus/prometheus/issues/18707" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18707</a> reopened the case after the SD subsystem refactors in <a href="https://github.com/prometheus/prometheus/pull/18819" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18819</a> (GCE), <a href="https://github.com/prometheus/prometheus/pull/18821" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18821</a> (Kubernetes), and <a href="https://github.com/prometheus/prometheus/pull/18824" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#18824</a> (Azure) established a closure-based adapter pattern that lets the linker drop unused SDK operations. This implementation follows that pattern: concrete OCI clients stay out of the <code>Discovery</code> struct, only function-typed closures cross the interface boundary, so the binary only pulls in the SDK paths Prometheus actually uses. Builds on the workaround proxy I'd been running (oci-prometheus-sd-proxy) - native SD is the right end state, the proxy was only ever a stopgap until upstream support landed.
+
+The proposal carried a <a href="https://github.com/prometheus/prometheus/issues/18707" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">maintenance commitment</a> - respond to <code>discovery/oci</code> issues and PRs, keep the OCI SDK current, run integration validation against a real OCI environment. The follow-ups since lean on that: <a href="https://github.com/prometheus/prometheus/pull/19030" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#19030</a> exposes the primary VNIC's IPv6 addresses and hostname label so dual-stack instances are discoverable, <a href="https://github.com/prometheus/prometheus/pull/19032" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#19032</a> collapses per-compartment target groups into one source so targets from deleted compartments don't linger until a restart. Both checked against a production OCI tenancy.`,
+    },
+    tags: ['Go', 'Prometheus', 'OCI', 'CNCF', 'Service Discovery'],
+  },
   {
     type: 'upstream',
     typeLabel: 'Upstream Contributor',
@@ -167,15 +171,15 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     typeLabel: 'Author & Maintainer',
     name: 'oci-prometheus-sd-proxy',
     logo: 'prometheus',
-    date: 'March 2026',
+    date: 'March 2026 · Public archive',
     lang: 'Go',
     link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
     linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
     summary: 'Go HTTP SD proxy that exposes OCI compute instances to Prometheus across multiple tenancies. Handles response caching so multiple Prometheus replicas don\'t each hit the OCI API, and multi-tenancy is just config rather than per-tenancy scrape_config blocks.',
     detail: null,
     story: {
-      heading: 'Why HTTP SD over native OCI SD?',
-      body: `Native OCI SD was proposed in <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> but closed - maintainers don't want cloud-specific code in the binary, HTTP SD is the right answer for that. Turned out to be the better model anyway. Proxy runs independently, caches OCI API responses centrally, and multi-tenancy is handled at the proxy level so Prometheus config stays clean.`,
+      heading: 'Stopgap until native SD landed - now archived',
+      body: `Built it while native OCI SD was still blocked: <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> had been closed and HTTP SD was the only path that didn't need cloud-specific code in the Prometheus binary. Proxy runs independently, caches OCI API responses centrally, and handles multi-tenancy at the proxy level so Prometheus config stays clean. Native SD has since merged (<a href="https://github.com/prometheus/prometheus/pull/18919" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#18919</a>), which is the better end state, so the repo is now a public archive - left up as read-only reference for anyone still on an older Prometheus.`,
     },
     tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
   },
