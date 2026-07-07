@@ -27,9 +27,9 @@ const contributions = [
     date: 'June 2026 · PR #18919',
     lang: 'Go',
     links: [
-      { href: 'https://github.com/prometheus/prometheus/pull/18919', label: 'prometheus/prometheus #18919' },
-      { href: 'https://github.com/prometheus/prometheus/pull/19030', label: 'prometheus/prometheus #19030' },
-      { href: 'https://github.com/prometheus/prometheus/pull/19032', label: 'prometheus/prometheus #19032' },
+      { href: 'https://github.com/prometheus/prometheus/pull/18919', label: 'prometheus #18919' },
+      { href: 'https://github.com/prometheus/prometheus/pull/19030', label: 'prometheus #19030' },
+      { href: 'https://github.com/prometheus/prometheus/pull/19032', label: 'prometheus #19032' },
     ],
     summary: 'Added native service discovery for Oracle Cloud Infrastructure compute to Prometheus core. Supports api_key and instance_principal auth, recursive compartment walking via the Identity API, freeform/defined tag filtering, per-SD rate limiting, and the OCI SDK retry policy. Unit tests run without OCI credentials. The proposal carried a maintenance commitment, so follow-ups on discovery/oci - #19030 (IPv6 + VNIC hostname labels), #19032 (vanished-compartment cleanup) - get validated against a production OCI tenancy.',
     detail: null,
@@ -68,7 +68,7 @@ The proposal carried a <a href="https://github.com/prometheus/prometheus/issues/
     date: 'June-July 2026 · PR #46531 + CFP #100',
     lang: 'Go / Design CFP',
     links: [
-      { href: 'https://github.com/cilium/cilium/pull/46531', label: 'cilium/cilium #46531' },
+      { href: 'https://github.com/cilium/cilium/pull/46531', label: 'cilium #46531' },
       { href: 'https://github.com/cilium/design-cfps/pull/100', label: 'cilium/design-cfps #100' },
     ],
     summary: 'Two Hubble contributions. Added --reply and --not-reply filter flags to hubble observe, exposing the existing server-side ReplyFilter to the CLI as mutually exclusive flags. Separately, authored the accepted design proposal (CFP-26521) to expose the URL path in Hubble HTTP metrics as an opt-in, operator-templated label - templates collapse variable URL segments (IDs, slugs) into stable placeholders so the metric label set stays bounded at config load rather than unbounded at request time.',
