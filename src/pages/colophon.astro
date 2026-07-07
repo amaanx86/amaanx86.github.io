@@ -13,7 +13,7 @@ const allPostsData = allPosts.map((p) => ({
 const stack = [
   { label: 'Framework', value: 'Astro', link: 'https://astro.build' },
   { label: 'Styling', value: 'Tailwind CSS', link: 'https://tailwindcss.com' },
-  { label: 'Content', value: 'MDX' },
+  { label: 'Content', value: 'Markdown' },
   { label: 'Fonts', value: 'Inter + JetBrains Mono' },
   { label: 'Syntax highlighting', value: 'Shiki (github-dark)' },
   { label: 'Analytics', value: 'Cloudflare Web Analytics', link: 'https://www.cloudflare.com/web-analytics/' },
@@ -122,7 +122,7 @@ const stack = [
 
       <div class="card space-y-4">
         <p class="text-sm text-muted leading-relaxed">
-          I chose Astro because I love Cloudflare. Astro deploys to Cloudflare Pages with zero configuration. Static output, edge delivery, no server to manage. That combination is hard to beat for a personal site.
+          I chose Astro because it gets out of the way. It builds to plain static output that deploys to GitHub Pages with a small CI workflow. No server to manage, nothing to keep patched. That combination is hard to beat for a personal site.
         </p>
         <p class="text-sm text-muted leading-relaxed">
           Astro also gets the defaults right: zero JavaScript shipped unless you explicitly opt in, content collections with schema validation, and MDX out of the box. It stays out of your way while still giving you the full component model when you need it.
