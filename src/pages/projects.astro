@@ -3,8 +3,16 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import * as simpleIcons from 'simple-icons';
 
+// Brands simple-icons dropped over trademark policy
+const customIcons: Record<string, { svg: string }> = {
+  aws: {
+    svg: '<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Amazon Web Services</title><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 0 1-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 0 1-.287-.375 6.18 6.18 0 0 1-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.588-.894-.588-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.128-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.279 0-.567.031-.863.103a6.363 6.363 0 0 0-.863.272 2.29 2.29 0 0 1-.28.104.488.488 0 0 1-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 0 1 .224-.167c.279-.144.614-.264 1.005-.36a4.84 4.84 0 0 1 1.246-.151c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm-3.24 1.214c.263 0 .534-.048.822-.144.288-.096.543-.271.758-.51.128-.152.224-.32.272-.512.047-.191.08-.423.08-.694v-.335a6.66 6.66 0 0 0-.735-.136 6.02 6.02 0 0 0-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.917 0 .375.095.655.295.846.191.2.47.296.838.296zm6.41.862c-.144 0-.24-.024-.304-.08-.064-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 0 1-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.152-.312a.549.549 0 0 1 .32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 0 1 .311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 0 1-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 0 1-.303.08h-.687c-.151 0-.255-.024-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.14c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 0 1-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 0 0 .415-.758.777.777 0 0 0-.215-.559c-.144-.151-.416-.287-.807-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 0 1-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.312.08.455.127.144.048.256.096.336.144a.69.69 0 0 1 .24.2.43.43 0 0 1 .071.263v.375c0 .168-.064.256-.184.256a.83.83 0 0 1-.303-.096 3.652 3.652 0 0 0-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.734.16-1.142.16zM21.698 16.207c-2.626 1.94-6.442 2.969-9.722 2.969-4.598 0-8.74-1.7-11.87-4.526-.247-.223-.024-.527.271-.351 3.384 1.963 7.559 3.153 11.877 3.153 2.914 0 6.114-.607 9.06-1.852.439-.2.814.287.383.607zm1.093-1.246c-.336-.43-2.22-.207-3.074-.103-.255.032-.295-.192-.063-.36 1.5-1.053 3.967-.75 4.254-.399.287.36-.08 2.826-1.485 4.007-.215.184-.423.088-.327-.151.32-.79 1.03-2.57.695-3.001z"/></svg>',
+  },
+};
+
 const iconFor = (slug: string | null | undefined) => {
   if (!slug) return null;
+  if (customIcons[slug]) return customIcons[slug];
   const key = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1).toLowerCase();
   const icon = (simpleIcons as Record<string, { svg: string; hex: string; title: string } | undefined>)[key];
   return icon ?? null;
@@ -84,25 +92,6 @@ The proposal carried a <a href="https://github.com/prometheus/prometheus/issues/
   {
     type: 'upstream',
     typeLabel: 'Upstream',
-    name: 'RabbitMQ Cluster Operator',
-    logo: 'rabbitmq',
-    date: 'June 2026 · PR #2151',
-    lang: 'Go',
-    link: 'https://github.com/rabbitmq/cluster-operator/pull/2151',
-    linkLabel: 'rabbitmq/cluster-operator #2151',
-    summary: 'Moved RabbitmqCluster defaulting logic from the reconciliation loop into a mutating admission webhook, fixing Helm SSA conflicts reported on Azure AKS. The reconciler now only touches fields when ControlRabbitmqImage is true.',
-    detail: null,
-    story: {
-      heading: 'A Go serialization quirk breaking Helm upgrades in production',
-      body: `<a href="https://github.com/rabbitmq/cluster-operator/issues/2098" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2098</a>: the reconciler sent a full PUT every loop, so "manager" claimed ownership of the whole CR. Go's <code>resource.Quantity</code> serializes integers as strings, meaning <code>cpu: 1</code> gets stored as <code>"1"</code>. The next <code>helm upgrade</code> then fails with an SSA type conflict on that field.
-
-Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2121" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2121</a> to move defaulting into a mutating webhook. Aligned on the approach before writing: <code>failurePolicy: Fail</code> since the webhook runs in the same pod, and <code>ControlRabbitmqImage</code> stays in the reconciler as it is enforcement, not defaulting. Also caught and confirmed a module path mismatch in the PROJECT file before scaffolding.`,
-    },
-    tags: ['Go', 'Kubernetes', 'RabbitMQ', 'Helm', 'Webhooks'],
-  },
-  {
-    type: 'upstream',
-    typeLabel: 'Upstream',
     name: 'GitLab',
     logo: 'gitlab',
     date: 'June 2026 · MR !238594 + !240468',
@@ -118,6 +107,44 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
       body: `<a href="https://gitlab.com/gitlab-org/gitlab/-/work_items/414692" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#414692</a> was filed in 2023 by a GitLab PM. Customers wanted PDF exports of release docs without CI pipelines or checked-in binaries. Sat unactioned for three years. Initial approach got reworked during review to match an existing pattern from the wiki editor, which simplified things. Merged in nine days, first contribution to GitLab. After merge <a href="https://gitlab.com/gitlab-org/gitlab/-/work_items/602773" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#602773</a> surfaced two issues: print styles relied on the server-rendered page structure so a soft Vue Router navigation produced a blank first print, and the dark-mode stylesheet (loaded unconditionally for those users) bled into print as gray text. Follow-up <a href="https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240468" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">!240468</a> hides the page chrome directly instead of relying on layout structure, and forces light text colors in print.`,
     },
     tags: ['Vue', 'Ruby', 'Rails', 'GitLab', 'i18n'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Amazon ECS Agent',
+    logo: 'aws',
+    date: 'July 2026 · PR #5034',
+    lang: 'Go',
+    link: 'https://github.com/aws/amazon-ecs-agent/pull/5034',
+    linkLabel: 'aws/amazon-ecs-agent #5034',
+    summary: 'Bumped the indirect dependency github.com/cilium/ebpf from v0.16.0 to v0.22.0 in /agent to clear CVE-2026-10722. The dep arrives transitively via containerd/cgroups/v3/cgroup2, so the fix was go get @v0.22.0 then go mod tidy and go mod vendor. Verified the agent never reaches the vulnerable BTF-parsing path, so the bump clears scanners rather than patching a reachable vulnerability.',
+    detail: null,
+    story: {
+      heading: 'A CVE in a vendored transitive dep, checked for actual reachability',
+      body: `<a href="https://github.com/aws/amazon-ecs-agent/issues/5023" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#5023</a> flagged the vendored <code>github.com/cilium/ebpf</code> against CVE-2026-10722, fixed upstream in <code>v0.22.0</code>. <code>cilium/ebpf</code> is not a direct import - it comes in through <code>containerd/cgroups/v3/cgroup2</code> - so the change is a <code>go get github.com/cilium/ebpf@v0.22.0</code> in <code>/agent</code> followed by <code>go mod tidy</code> and <code>go mod vendor</code>. <code>v0.22.0</code> requires <code>go 1.25.0</code>, which matches the module's existing <code>go</code> directive, so no toolchain bump.
+
+The CVE is in the <code>LoadCollectionSpec</code>/BTF parsing path. The agent doesn't reach it: cgroups builds its eBPF device program programmatically and the agent only drives the cpu and memory controllers, so nothing parses attacker-controlled BTF. That makes this a version bump to clear scanners, not a fix for a reachable vulnerability - the distinction went in the PR body so reviewers weren't left assuming an exploitable path in the agent. Verified with <code>GOOS=linux GOARCH=amd64 go build -mod=vendor ./...</code> and a consistent vendor tree.`,
+    },
+    tags: ['Go', 'AWS', 'ECS', 'eBPF', 'Supply Chain'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'RabbitMQ Cluster Operator',
+    logo: 'rabbitmq',
+    date: 'June 2026 · PR #2151',
+    lang: 'Go',
+    link: 'https://github.com/rabbitmq/cluster-operator/pull/2151',
+    linkLabel: 'rabbitmq/cluster-operator #2151',
+    summary: 'Moved RabbitmqCluster defaulting logic from the reconciliation loop into a mutating admission webhook, fixing Helm SSA conflicts reported on Azure AKS. The reconciler now only touches fields when ControlRabbitmqImage is true.',
+    detail: null,
+    story: {
+      heading: 'A Go serialization quirk breaking Helm upgrades in production',
+      body: `<a href="https://github.com/rabbitmq/cluster-operator/issues/2098" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2098</a>: the reconciler sent a full PUT every loop, so "manager" claimed ownership of the whole CR. Go's <code>resource.Quantity</code> serializes integers as strings, meaning <code>cpu: 1</code> gets stored as <code>"1"</code>. The next <code>helm upgrade</code> then fails with an SSA type conflict on that field.
+
+Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2121" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2121</a> to move defaulting into a mutating webhook. Aligned on the approach before writing: <code>failurePolicy: Fail</code> since the webhook runs in the same pod, and <code>ControlRabbitmqImage</code> stays in the reconciler as it is enforcement, not defaulting. Also caught and confirmed a module path mismatch in the PROJECT file before scaffolding.`,
+    },
+    tags: ['Go', 'Kubernetes', 'RabbitMQ', 'Helm', 'Webhooks'],
   },
   {
     type: 'upstream',
@@ -171,21 +198,17 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     tags: ['Go', 'Kubernetes', 'OCI', 'Helm'],
   },
   {
-    type: 'maintainer',
-    typeLabel: 'Author & Maintainer',
-    name: 'oci-prometheus-sd-proxy',
-    logo: 'prometheus',
-    date: 'March 2026 · Public archive',
-    lang: 'Go',
-    link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
-    linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
-    summary: 'Go HTTP SD proxy that exposes OCI compute instances to Prometheus across multiple tenancies. Handles response caching so multiple Prometheus replicas don\'t each hit the OCI API, and multi-tenancy is just config rather than per-tenancy scrape_config blocks.',
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Netflix Lemur Docker',
+    logo: 'netflix',
+    date: 'February 2026 · PR #74',
+    lang: 'Docker',
+    link: 'https://github.com/Netflix/lemur-docker/pull/74',
+    linkLabel: 'Netflix/lemur-docker #74',
+    summary: 'Build was broken because acme==3.3.0 was no longer on PyPI. Bumped both stages from ubuntu:20.04 to ubuntu:22.04, switched to NodeSource 20.x LTS, cleaned up some stale deps.',
     detail: null,
-    story: {
-      heading: 'Stopgap until native SD landed - now archived',
-      body: `Built it while native OCI SD was still blocked: <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> had been closed and HTTP SD was the only path that didn't need cloud-specific code in the Prometheus binary. Proxy runs independently, caches OCI API responses centrally, and handles multi-tenancy at the proxy level so Prometheus config stays clean. Native SD has since merged (<a href="https://github.com/prometheus/prometheus/pull/18919" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#18919</a>), which is the better end state, so the repo is now a public archive - left up as read-only reference for anyone still on an older Prometheus.`,
-    },
-    tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
+    tags: ['Python', 'Docker', 'TLS', 'PKI'],
   },
   {
     type: 'maintainer',
@@ -203,17 +226,21 @@ Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2
     tags: ['Terraform', 'AWS', 'GitLab', 'IaC', 'GitOps'],
   },
   {
-    type: 'upstream',
-    typeLabel: 'Upstream',
-    name: 'Netflix Lemur Docker',
-    logo: 'netflix',
-    date: 'February 2026 · PR #74',
-    lang: 'Docker',
-    link: 'https://github.com/Netflix/lemur-docker/pull/74',
-    linkLabel: 'Netflix/lemur-docker #74',
-    summary: 'Build was broken because acme==3.3.0 was no longer on PyPI. Bumped both stages from ubuntu:20.04 to ubuntu:22.04, switched to NodeSource 20.x LTS, cleaned up some stale deps.',
+    type: 'maintainer',
+    typeLabel: 'Author & Maintainer',
+    name: 'oci-prometheus-sd-proxy',
+    logo: 'prometheus',
+    date: 'March 2026 · Public archive',
+    lang: 'Go',
+    link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
+    linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
+    summary: 'Go HTTP SD proxy that exposes OCI compute instances to Prometheus across multiple tenancies. Handles response caching so multiple Prometheus replicas don\'t each hit the OCI API, and multi-tenancy is just config rather than per-tenancy scrape_config blocks.',
     detail: null,
-    tags: ['Python', 'Docker', 'TLS', 'PKI'],
+    story: {
+      heading: 'Stopgap until native SD landed - now archived',
+      body: `Built it while native OCI SD was still blocked: <a href="https://github.com/prometheus/prometheus/issues/10226" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#10226</a> had been closed and HTTP SD was the only path that didn't need cloud-specific code in the Prometheus binary. Proxy runs independently, caches OCI API responses centrally, and handles multi-tenancy at the proxy level so Prometheus config stays clean. Native SD has since merged (<a href="https://github.com/prometheus/prometheus/pull/18919" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">prometheus/prometheus#18919</a>), which is the better end state, so the repo is now a public archive - left up as read-only reference for anyone still on an older Prometheus.`,
+    },
+    tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
   },
   {
     type: 'maintainer',
