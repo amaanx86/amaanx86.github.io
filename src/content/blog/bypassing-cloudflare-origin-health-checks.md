@@ -42,7 +42,7 @@ Works great for ad-hoc debugging. Not a thing you can configure in Blackbox Expo
 
 ## Architecture
 
-```
+```text
                          Public DNS (Cloudflare)
                          Returns edge IPs -- NOT what we want
                                   |
@@ -90,7 +90,7 @@ The insight is simple once you see it: if you control what DNS server Blackbox E
 
 CoreDNS is perfect for this. It is a lightweight, pluggable DNS server. The relevant config is about six lines:
 
-```
+```text
 . {
     hosts /etc/coredns/hosts.override {
         fallthrough
@@ -107,7 +107,7 @@ That is it. CoreDNS loads a hosts file for overridden domains. Anything not in t
 
 The hosts override file is a plain hosts-format file. Nothing exotic:
 
-```
+```text
 # Origin LB for production
 198.51.100.10  app.example.com
 198.51.100.10  api.example.com

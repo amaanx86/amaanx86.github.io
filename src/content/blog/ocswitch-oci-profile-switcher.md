@@ -24,7 +24,7 @@ The multi-profile story in the official tooling is basically: put multiple `[PRO
 
 Profiles are separate config files in `~/.oci/`:
 
-```
+```text
 ~/.oci/config_prod
 ~/.oci/config_staging
 ~/.oci/config_dev
@@ -66,7 +66,7 @@ Tab completion is included for both bash and zsh. Hit tab after `ocswitch` and y
 
 There is a second function in the script: `ocid`. It reads the active config, pulls the tenancy OCID and user OCID out of it, and calls the OCI IAM API to resolve the human-readable names:
 
-```
+```text
 Tenant Name: mycompany-production
 Tenant ID:   ocid1.tenancy.oc1..aaaa...
 User Email:  user@example.com
@@ -76,7 +76,8 @@ Useful when you have switched between a few profiles and want to confirm exactly
 
 ## Install
 
-**zsh**
+### zsh
+
 ```zsh
 curl -fsSL https://gist.githubusercontent.com/amaanx86/2621a181e2f4b572a1904d65748d66bd/raw/ocswitch.zsh \
   -o ~/.oci/ocswitch.zsh
@@ -84,7 +85,8 @@ echo 'source ~/.oci/ocswitch.zsh' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**bash**
+### bash
+
 ```sh
 curl -fsSL https://gist.githubusercontent.com/amaanx86/2621a181e2f4b572a1904d65748d66bd/raw/ocswitch.bash \
   -o ~/.oci/ocswitch.bash
@@ -94,7 +96,7 @@ source ~/.bashrc
 
 ## Usage
 
-```
+```text
 ocswitch               # show help + logo
 ocswitch list          # list profiles (active highlighted)
 ocswitch <profile>     # switch profile (persists across all terminals)

@@ -9,7 +9,6 @@ Adding `cosign sign` to a CI pipeline and calling it "signed releases" is a bit 
 
 I had been going deep on supply chain security for a while - reading through TUF specs, the Sigstore design docs, how Fulcio issues short-lived certificates, how Rekor works as an append-only transparency log. At some point I came across the OpenSSF Best Practices requirements and saw the full picture laid out as a checklist. I could have just signed the image and moved on. Instead I used [oci-prometheus-sd-proxy](https://github.com/amaanx86/oci-prometheus-sd-proxy) - a project that does OCI Prometheus service discovery - as the thing to actually build it on. I wanted to understand each layer well enough to explain it, not just wire it up. What I ended up with: cosign keyless signing, a CycloneDX SBOM attestation, SLSA L3 build provenance, and TUF metadata distribution via [tuf-on-ci](https://github.com/amaanx86/oci-prometheus-sd-proxy-tuf-on-ci) published to GitHub Pages. No long-lived keys anywhere in the pipeline.
 
-
 ## Why each layer exists
 
 This is the question worth answering properly, because you can absolutely ship just cosign and be in a better position than 95% of projects. So why go further?
@@ -33,7 +32,7 @@ The implementation lives across two repositories:
 
 Keeping them separate was a deliberate trust boundary decision, not just organisation. The app CI can push a signing branch to the TUF repo, but it cannot merge that branch or sign `targets.json`. That step requires my OIDC identity authenticating via Sigstore in a browser - not the CI system's token. An attacker who steals the app repo's CI tokens hits a hard wall at the TUF signing step. They can push a branch, but they cannot authorise the release. The human is the last gate.
 
-```
+```text
 App repo CI (run #24290258383)
   └── builds image (linux/amd64, linux/arm64)
   └── pushes to GHCR

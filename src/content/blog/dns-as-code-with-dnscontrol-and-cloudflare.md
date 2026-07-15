@@ -18,7 +18,7 @@ This post walks through my working POC at [amaanx86/cloudflare-dnscontrol](https
 
 The repo has a simple structure:
 
-```
+```text
 dnsconfig.js           # Main DNSControl config
 domains/               # One JSON file per subdomain
   @.json               # Apex / root records
@@ -116,18 +116,18 @@ Someone needs to add `staging.runonaws.dev` pointing to an ALB. They:
 1. Create a branch: `dns/add-staging`
 2. Add `domains/staging.json`:
 
-```json
-{
-    "owner": {
-        "username": "amaanx86",
-        "email": "[email protected]"
-    },
-    "records": {
-        "CNAME": "my-alb-1234567890.us-east-1.elb.amazonaws.com"
-    },
-    "proxied": false
-}
-```
+   ```json
+   {
+       "owner": {
+           "username": "amaanx86",
+           "email": "[email protected]"
+       },
+       "records": {
+           "CNAME": "my-alb-1234567890.us-east-1.elb.amazonaws.com"
+       },
+       "proxied": false
+   }
+   ```
 
 3. Open a PR
 4. Preview workflow posts the diff as a comment: one CNAME being added
@@ -140,8 +140,7 @@ The contributor never opened the Cloudflare dashboard. The reviewer saw the exac
 
 Here is where the reconciliation model earns its keep. This is the actual preview comment the GitHub Actions bot posted on [PR #10](https://github.com/amaanx86/cloudflare-dnscontrol/pull/10):
 
-
-```
+```text
 ******************** Domain: runonaws.dev
 4 corrections (cloudflare)
 
