@@ -306,6 +306,27 @@ const recognition = [
     badgeClass: 'badge-green',
   },
 ];
+
+const community = {
+  name: 'Cloud Native Karachi',
+  logo: 'cncf',
+  badge: 'Founding Organizer',
+  date: 'July 2026 - present',
+  role: 'CNCF Community Group',
+  location: 'Karachi, Pakistan',
+  summary: 'Founding organizer of Cloud Native Karachi, the city\'s first official CNCF Community Group. Wrote the group proposal and mission statement, then cleared the LFC102 inclusive-community requirement plus CNCF\'s vendor-neutrality and organizer-diversity criteria with two co-organizers from separate companies. CNCF approved and provisioned the chapter on 22 July 2026.',
+  story: {
+    heading: 'Why Karachi needed a chapter, and what the charter commits to',
+    body: `Karachi is Pakistan's largest tech hub, with thousands of engineers working on cloud, DevOps, and platform engineering, and it had no formal CNCF chapter. Engineers here either travelled or watched recordings. The group request (<a href="https://github.com/cncf/communitygroups/issues/761" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">cncf/communitygroups#761</a>) went in on 14 June 2026 and CNCF provisioned the chapter on 22 July 2026 once the organizing team's LFC102 credentials and company diversity were verified.
+
+The charter is deliberately narrow. Meetups run at least once every 90 days, registration is free and always through the CNCF platform, and the content stays vendor-neutral: vendors are welcome as sponsors and speakers, not as the agenda. Programming covers technical talks and production war stories, hands-on workshops on CNCF projects such as Prometheus, Cilium, Argo CD, Falco, and Thanos, sessions that walk engineers through their first upstream contribution, and outreach into Karachi university programs.`,
+  },
+  links: [
+    { href: 'https://ocgroups.dev/cncf/group/cn-khi', label: 'ocgroups.dev/cncf/group/cn-khi' },
+    { href: 'https://github.com/cncf/communitygroups/issues/761', label: 'cncf/communitygroups #761' },
+  ],
+  tags: ['CNCF', 'Community', 'Kubernetes', 'Cloud Native', 'Karachi'],
+};
 ---
 
 <Base
@@ -417,7 +438,7 @@ const recognition = [
     <!-- ── Recognition ────────────────────────────────────────────────── -->
     <section class="space-y-4">
       <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Recognition</span>
+        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Community &amp; recognition</span>
         <div class="flex-1 h-px bg-border"></div>
       </div>
 
@@ -440,6 +461,75 @@ const recognition = [
           </article>
         ))}
       </div>
+
+      <!-- Full-width community card -->
+      {(() => {
+        const icon = iconFor(community.logo);
+        return (
+        <article id="cncg" class="card group border-l-4 border-l-transparent hover:border-l-accent target:border-l-accent scroll-mt-20 transition-all duration-200">
+          <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              {icon && (
+                <span
+                  class="shrink-0 inline-flex items-center justify-center w-6 h-6 text-text [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current"
+                  aria-hidden="true"
+                  set:html={icon.svg}
+                />
+              )}
+              <h2 class="font-mono text-base text-text font-semibold group-hover:text-accent transition-colors">
+                {community.name}
+              </h2>
+              <span class="badge badge-orange">{community.badge}</span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap shrink-0">
+              <span class="font-mono text-xs text-muted">{community.date}</span>
+              <span class="font-mono text-xs text-muted">·</span>
+              <span class="font-mono text-xs text-muted">{community.location}</span>
+              <span class="font-mono text-xs text-muted bg-surface-raised border border-border rounded-full px-2.5 py-0.5">
+                {community.role}
+              </span>
+            </div>
+          </div>
+
+          <p class="text-sm text-muted leading-relaxed mb-3">{community.summary}</p>
+
+          <details class="group/story mb-3">
+            <summary class="cursor-pointer list-none inline-flex items-center gap-1.5 font-mono text-xs text-accent bg-surface-raised border border-border rounded-full px-3 py-1 hover:border-accent transition-colors select-none mb-2">
+              <svg class="w-2.5 h-2.5 transition-transform group-open/story:rotate-90 shrink-0" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6 4l4 4-4 4"/>
+              </svg>
+              {community.story.heading}
+            </summary>
+            <div class="bg-surface-raised border border-border rounded-md p-4 space-y-3">
+              {community.story.body.split('\n\n').map((para) => (
+                <p class="text-sm text-muted leading-relaxed" set:html={para} />
+              ))}
+            </div>
+          </details>
+
+          <div class="flex items-center justify-between gap-3 flex-wrap pt-3 border-t border-border">
+            <div class="flex flex-wrap gap-1.5">
+              {community.tags.map((tag) => <span class="tag">{tag}</span>)}
+            </div>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 justify-end">
+              {community.links.map((l) => (
+                <a
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-xs text-accent hover:text-accent-hover no-underline inline-flex items-center gap-1.5"
+                >
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9"/>
+                  </svg>
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </article>
+        );
+      })()}
     </section>
 
   </div>
