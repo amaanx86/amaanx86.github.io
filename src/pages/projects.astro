@@ -137,19 +137,25 @@ The CVE is in the <code>LoadCollectionSpec</code>/BTF parsing path. The agent do
     typeLabel: 'Upstream',
     name: 'RabbitMQ Cluster Operator',
     logo: 'rabbitmq',
-    date: 'June 2026 · PR #2151',
+    date: 'June-August 2026 · PR #2151 + #2217',
     lang: 'Go',
-    link: 'https://github.com/rabbitmq/cluster-operator/pull/2151',
-    linkLabel: 'rabbitmq/cluster-operator #2151',
-    summary: 'Moved RabbitmqCluster defaulting logic from the reconciliation loop into a mutating admission webhook, fixing Helm SSA conflicts reported on Azure AKS. The reconciler now only touches fields when ControlRabbitmqImage is true.',
+    links: [
+      { href: 'https://github.com/rabbitmq/cluster-operator/pull/2151', label: 'rabbitmq/cluster-operator #2151' },
+      { href: 'https://github.com/rabbitmq/cluster-operator/pull/2217', label: 'rabbitmq/cluster-operator #2217' },
+    ],
+    summary: 'Two contributions. Moved RabbitmqCluster defaulting logic from the reconciliation loop into a mutating admission webhook, fixing Helm SSA conflicts reported on Azure AKS; the reconciler now only touches fields when ControlRabbitmqImage is true. Then fixed the flaky persists messages system test, where AfterEach returned before the operator finalizer had released the cluster, so every FlakeAttempts retry died on a 409 in BeforeEach instead of re-running the test body.',
     detail: null,
     story: {
-      heading: 'A Go serialization quirk breaking Helm upgrades in production',
+      heading: 'A Go serialization quirk breaking Helm upgrades, and a retry that never reached the test',
       body: `<a href="https://github.com/rabbitmq/cluster-operator/issues/2098" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2098</a>: the reconciler sent a full PUT every loop, so "manager" claimed ownership of the whole CR. Go's <code>resource.Quantity</code> serializes integers as strings, meaning <code>cpu: 1</code> gets stored as <code>"1"</code>. The next <code>helm upgrade</code> then fails with an SSA type conflict on that field.
 
-Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2121" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2121</a> to move defaulting into a mutating webhook. Aligned on the approach before writing: <code>failurePolicy: Fail</code> since the webhook runs in the same pod, and <code>ControlRabbitmqImage</code> stays in the reconciler as it is enforcement, not defaulting. Also caught and confirmed a module path mismatch in the PROJECT file before scaffolding.`,
+Maintainer opened <a href="https://github.com/rabbitmq/cluster-operator/issues/2121" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2121</a> to move defaulting into a mutating webhook. Aligned on the approach before writing: <code>failurePolicy: Fail</code> since the webhook runs in the same pod, and <code>ControlRabbitmqImage</code> stays in the reconciler as it is enforcement, not defaulting. Also caught and confirmed a module path mismatch in the PROJECT file before scaffolding.
+
+The webhook work surfaced a flake in the <code>Persistence / persists messages</code> system test, which I filed as <a href="https://github.com/rabbitmq/cluster-operator/issues/2152" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">#2152</a> and fixed in <a href="https://github.com/rabbitmq/cluster-operator/pull/2217" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">PR #2217</a>. It reads as a timeout but it is a teardown race. <code>AfterEach</code> calls Delete and returns immediately, while the operator's finalizer holds the object in Terminating for about two seconds. Ginkgo re-enters <code>BeforeEach</code>, creates the same name, and the API server rejects it with <code>object is being deleted: rabbitmqclusters.rabbitmq.com "persistence-rabbit" already exists</code>. So <code>FlakeAttempts(3)</code> was effectively <code>FlakeAttempts(1)</code>: attempts two and three failed in the setup, milliseconds in, and never reached the spec body regardless of what broke attempt one.
+
+The fix makes teardown block. A new <code>deleteRabbitmqClusterAndWait</code> helper deletes and polls until the object is gone, printing the deletion timestamp and remaining finalizers on timeout so a genuinely stuck deletion is diagnosable from the CI log. The create in <code>BeforeEach</code> is now a real closure inside <code>Eventually</code>: the original code called <code>createRabbitmqCluster</code> once and handed the resulting error to <code>Eventually</code>, so it polled a value that could never change and the create was never retried. <code>SpecTimeout</code> went from three minutes to five, matching the TLS spec in the same file, because Ginkgo counts the whole attempt against that deadline including <code>AfterEach</code>. Verified on a local kind cluster with attempt one forced to fail: on main the retry reproduced CI exactly, on the branch teardown finished in 2.0s and attempt two created the cluster cleanly.`,
     },
-    tags: ['Go', 'Kubernetes', 'RabbitMQ', 'Helm', 'Webhooks'],
+    tags: ['Go', 'Kubernetes', 'RabbitMQ', 'Helm', 'Webhooks', 'Testing'],
   },
   {
     type: 'upstream',
