@@ -77,19 +77,22 @@ The proposal came with a promise to maintain it. Since then ${a('https://github.
     typeLabel: 'Upstream',
     name: 'Cilium',
     logo: 'cilium',
-    date: 'June-August 2026 · PR #46663 + #46531 + #46116 + CFP #100',
-    lang: 'Go / Design CFP / Docs',
+    date: 'June-August 2026 · 4 PRs + CFP #100',
+    lang: 'Go / Helm / CFP / Docs',
     links: [
+      { href: 'https://github.com/cilium/cilium/pull/47850', label: 'cilium #47850' },
       { href: 'https://github.com/cilium/cilium/pull/46663', label: 'cilium #46663' },
       { href: 'https://github.com/cilium/cilium/pull/46531', label: 'cilium #46531' },
       { href: 'https://github.com/cilium/cilium/pull/46116', label: 'cilium #46116' },
       { href: 'https://github.com/cilium/design-cfps/pull/100', label: 'cilium/design-cfps #100' },
     ],
-    summary: 'Four contributions. Hubble flows now carry the datapath extended drop reason, so hubble observe shows what cilium monitor already printed. Added --reply and --not-reply flags. Wrote the accepted design proposal for putting URL paths on Hubble HTTP metrics. Wrote the Cilium install guide for Oracle Kubernetes Engine.',
+    summary: 'Five contributions. Fixed the Helm chart rendering duplicate prometheus.io keys, so user annotations now win and annotation-based scraping can be turned off. Hubble flows now carry the datapath extended drop reason, so hubble observe shows what cilium monitor already printed. Added --reply and --not-reply flags. Wrote the accepted design proposal for putting URL paths on Hubble HTTP metrics. Wrote the Cilium install guide for Oracle Kubernetes Engine.',
     detail: null,
     story: {
-      heading: 'A dropped error code, a missing flag, a metrics design, and an undocumented platform',
-      body: `${a('https://github.com/cilium/hubble/issues/1215', 'hubble#1215')}: the datapath reports an extra error code on drops, for example which FIB lookup failed. <code>cilium monitor</code> printed it, but Hubble's parser threw it away. ${a('https://github.com/cilium/cilium/pull/46663', 'PR #46663')} adds two <code>Flow</code> fields, one for the raw value and one for the readable text, and the printer now prefers the text. The fields are additive, so older agents and clients look the same as before.
+      heading: 'A duplicate Helm key, a dropped error code, a metrics design, and an undocumented platform',
+      body: `${a('https://github.com/cilium/cilium/issues/47821', 'cilium#47821')}: the Helm chart wrote <code>prometheus.io/scrape</code> and <code>prometheus.io/port</code> next to the user's own annotation map, so setting either key produced a duplicate YAML key and render order decided the winner. For the Hubble metrics service and both hubble-relay objects the chart default came last and quietly won, which is why annotation-based scraping could not be turned off. ${a('https://github.com/cilium/cilium/pull/47850', 'PR #47850')} renders both keys through a helper that skips anything the user already set, so each key appears once and the user value wins. No new Helm values, and checked with <code>helm template</code> across the default, override, and ServiceMonitor paths.
+
+${a('https://github.com/cilium/hubble/issues/1215', 'hubble#1215')}: the datapath reports an extra error code on drops, for example which FIB lookup failed. <code>cilium monitor</code> printed it, but Hubble's parser threw it away. ${a('https://github.com/cilium/cilium/pull/46663', 'PR #46663')} adds two <code>Flow</code> fields, one for the raw value and one for the readable text, and the printer now prefers the text. The fields are additive, so older agents and clients look the same as before.
 
 ${a('https://github.com/cilium/hubble/issues/1283', 'hubble#1283')}: the server already had a reply filter, there were just no CLI flags for it. Added <code>--reply</code> and <code>--not-reply</code> as mutually exclusive flags.
 
@@ -97,7 +100,7 @@ ${a('https://github.com/cilium/cilium/issues/26521', 'cilium#26521')} asked for 
 
 ${a('https://github.com/cilium/cilium/issues/46107', 'cilium#46107')}: OKE with VCN-Native Pod Networking is Oracle's recommended CNI mode, and Cilium's docs did not mention Oracle at all. Chaining already worked, because the pod side is a plain veth pair like the AWS VPC CNI. ${a('https://github.com/cilium/cilium/pull/46116', 'PR #46116')} writes it up, tested on a live cluster, including the uninstall trap: <code>helm uninstall</code> leaves <code>05-cilium.conflist</code> behind, so new pods hang in <code>ContainerCreating</code> until you remove it on every node.`,
     },
-    tags: ['Go', 'Cilium', 'CNCF', 'Hubble', 'Observability', 'OKE', 'OCI'],
+    tags: ['Go', 'Cilium', 'CNCF', 'Hubble', 'Helm', 'Observability', 'OKE', 'OCI'],
   },
   {
     type: 'upstream',
