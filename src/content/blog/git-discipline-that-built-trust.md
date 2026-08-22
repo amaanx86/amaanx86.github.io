@@ -6,9 +6,9 @@ tags: [git, workflow, devops, career, open-source]
 draft: false
 ---
 
-Most developers treat Git as a save button. Commit when something works. Push before you go to sleep. That's it. And honestly, it gets the job done — until you start sending PRs to projects with real reviewers, or working on teams where the commit history actually needs to make sense to someone else.
+Most developers treat Git as a save button. Commit when something works. Push before you go to sleep. That's it. And honestly, it gets the job done, right up until you start sending PRs to projects with real reviewers, or working on teams where the commit history actually has to make sense to someone else.
 
-Here's the thing: reviewers form an opinion about you before they open a single file. The branch name, the commit messages, the PR description — all of that is visible before they click into the diff. I figured this out after sending contributions to projects across GitHub, GitLab, Azure DevOps, and AWS CodeCommit. The feedback loop was fast. Clean work got reviewed fast and merged. Noisy work got asked follow-up questions, or sat in the queue.
+Here's the thing: reviewers form an opinion about you before they open a single file. The branch name, the commit messages, the PR description, all of it is visible before they click into the diff. I figured this out sending contributions to projects across GitHub, GitLab, Azure DevOps, and AWS CodeCommit. The feedback loop was fast. Clean work got reviewed and merged. Noisy work got follow-up questions, or sat in the queue.
 
 So here's what I actually do.
 
@@ -18,11 +18,13 @@ So here's what I actually do.
 
 I keep three long-lived branches. That's it.
 
-- **`main`** — production only. Nothing goes here without a PR that passed UAT. This branch is protected.
-- **`uat`** — staging and pre-production testing. Business users validate here before anything touches main.
-- **`dev`** — where everything starts. Features, fixes, experiments — all of it starts from here.
+- **`main`**: production only. Nothing goes here without a PR that passed UAT. This branch is protected.
+- **`uat`**: staging and pre-production testing. Business users validate here before anything touches main.
+- **`dev`**: where everything starts. Features, fixes, experiments, all of it begins here.
 
-The reason for UAT as a dedicated branch (not just a tag or a deploy config) is that it gives you a stable checkpoint. When you find a bug in UAT, you know it's code that passed dev but failed real-world testing. That's a different category of bug than something that never left the developer's machine, and it deserves a different branch to fix it.
+The exact names are not the point, and I want to be clear about that before anyone argues about it. Some projects call production `master`, some `main`. Pre-prod might be `uat`, `staging`, or `stage`. The integration branch might be `dev` or `devel`. That choice belongs to the maintainer, and more often it is already settled by how the company, the SaaS team, or the OSS project has always done it. When you join, you inherit the convention; you don't get to relitigate it. What actually matters is that there are stable, named tiers, that everyone knows which tier means what, and that the protected one is genuinely protected. Match the local vocabulary and apply the same discipline underneath it. I use `main`, `uat`, and `dev` here because that is the naming on the projects I am describing.
+
+The reason for a dedicated pre-prod branch (not just a tag or a deploy config) is that it gives you a stable checkpoint. When you find a bug there, you know it's code that passed dev but failed real-world testing. That's a different category of bug than something that never left the developer's machine, and it deserves a different branch to fix it.
 
 ---
 
@@ -44,33 +46,33 @@ git checkout main
 git checkout -b hotfix/prod-db-connection
 ```
 
-The prefixes matter. `feat/`, `bugfix/`, `hotfix/`, `test/` — any reviewer or CI system that sees these knows what category the work is before they look at anything else. And because the branch name describes the problem, not the implementation, it reads the same to a human and to a ticket system.
+The prefixes matter. `feat/`, `bugfix/`, `hotfix/`, `test/`: any reviewer or CI system that sees these knows the category of the work before it looks at anything else. And because the branch name describes the problem, not the implementation, it reads the same to a human and to a ticket system.
 
 Hotfixes are the one case where you merge in three directions: back into `main`, `uat`, and `dev`. Missing one creates drift and you'll feel it later.
 
 ---
 
-## Conventional commits — the part that changed how I write history
+## Conventional commits: the part that changed how I write history
 
 This is the single highest-leverage change I made to how I use Git. The format is simple:
 
-```
+```text
 <type>(<scope>): <description>
 ```
 
 Types I use:
 
-- `feat` — new feature
-- `fix` — bug fix
-- `docs` — documentation only
-- `refactor` — restructured code, no behavior change
-- `perf` — performance improvement
-- `test` — tests added or updated
-- `chore` — build tooling, CI, dependencies
+- `feat`: new feature
+- `fix`: bug fix
+- `docs`: documentation only
+- `refactor`: restructured code, no behavior change
+- `perf`: performance improvement
+- `test`: tests added or updated
+- `chore`: build tooling, CI, dependencies
 
 A real example from one of my projects:
 
-```
+```text
 feat(auth): add JWT refresh token rotation
 
 Implements sliding expiration using a short-lived access token (15m)
@@ -97,7 +99,7 @@ git push origin --tags
 
 This is the tool most developers don't reach for until they're stuck, and then they use it wrong. Here's the actual use case.
 
-I had a project where `uat` and `main` had diverged significantly. Both branches had been accumulating changes. We needed the `azure-pipelines.yml` from `uat` in `main` — just that file, because getting the pipeline consistent across environments was blocking the team. A full merge would have pulled in unvalidated changes. That's not acceptable for a protected branch.
+I had a project where `uat` and `main` had diverged significantly. Both branches had been accumulating changes. We needed the `azure-pipelines.yml` from `uat` in `main`, just that one file, because getting the pipeline consistent across environments was blocking the team. A full merge would have pulled in unvalidated changes, and that is not acceptable for a protected branch.
 
 So instead of a merge request, I used cherry-pick to move exactly the commits that touched that file.
 
@@ -110,7 +112,7 @@ git log uat -- azure-pipelines.yml --oneline
 
 Output:
 
-```
+```text
 b5df122 feat: update Azure Pipelines configuration to specify custom agent pool and demands
 44cbc1e feat: update image tag for crmiskuat container to use 'uat' version
 8fee9b4 feat: add Azure Pipelines configuration for OCI image build and push
@@ -133,7 +135,7 @@ git cherry-pick --continue
 
 This creates new commits on `main` with the same changes but different hashes. The original commits stay on `uat`. You get a clean, traceable history on `main` without dragging in anything that wasn't ready.
 
-The key thing to understand: cherry-pick is not a shortcut for avoiding code review. You still open a PR with these commits. The difference is the PR is surgical — it does one thing and reviewers can verify exactly what that thing is.
+The key thing to understand: cherry-pick is not a shortcut for avoiding code review. You still open a PR with these commits. The difference is that the PR is surgical. It does one thing, and reviewers can verify exactly what that thing is.
 
 ---
 
@@ -188,9 +190,9 @@ A repository with 200 stale branches is a repository nobody trusts. Clean branch
 
 The argument I used to hear against structured commits was that it slows you down. Write the code, get it working, the history is just metadata.
 
-That argument has fully inverted. AI code review tools, automated changelog generation, semantic release pipelines — all of these work significantly better when the commit history is structured. When I use an AI assistant to review a PR now, it can read the conventional commits and understand the intent without me explaining it. When I ask it to generate release notes, it has something to work from.
+That argument has fully inverted. AI code review tools, automated changelog generation, semantic release pipelines: all of them work significantly better when the commit history is structured. When I use an AI assistant to review a PR now, it reads the conventional commits and understands the intent without me explaining it. When I ask it to generate release notes, it has something to work from.
 
-But more fundamentally: reviewers at AWS, GitHub, GitLab, Azure — the pattern I noticed was that the PRs that got attention were the ones that looked like the contributor had thought it through. Clean branch name, useful commits, filled-out description. It signals that you respect the reviewer's time. That's the actual thing that builds trust.
+But more fundamentally, across reviewers at AWS, GitHub, GitLab, and Azure, the pattern was the same. The PRs that got attention were the ones that looked like the contributor had thought it through. Clean branch name, useful commits, filled-out description. It signals that you respect the reviewer's time, and that is the actual thing that builds trust.
 
 The technical content still has to be right. But a well-structured contribution gets a genuine review. A sloppy one gets skimmed.
 
