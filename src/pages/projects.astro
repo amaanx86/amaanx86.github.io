@@ -77,16 +77,17 @@ The proposal came with a promise to maintain it. Since then ${a('https://github.
     typeLabel: 'Upstream',
     name: 'Cilium',
     logo: 'cilium',
-    date: 'June-August 2026 · 4 PRs + CFP #100',
+    date: 'June-September 2026 · 5 PRs + CFP #100',
     lang: 'Go / Helm / CFP / Docs',
     links: [
+      { href: 'https://github.com/cilium/cilium/pull/47813', label: 'cilium #47813' },
       { href: 'https://github.com/cilium/cilium/pull/47850', label: 'cilium #47850' },
       { href: 'https://github.com/cilium/cilium/pull/46663', label: 'cilium #46663' },
       { href: 'https://github.com/cilium/cilium/pull/46531', label: 'cilium #46531' },
       { href: 'https://github.com/cilium/cilium/pull/46116', label: 'cilium #46116' },
       { href: 'https://github.com/cilium/design-cfps/pull/100', label: 'cilium/design-cfps #100' },
     ],
-    summary: 'Five contributions. Fixed the Helm chart rendering duplicate prometheus.io keys, so user annotations now win and annotation-based scraping can be turned off. Hubble flows now carry the datapath extended drop reason, so hubble observe shows what cilium monitor already printed. Added --reply and --not-reply flags. Wrote the accepted design proposal for putting URL paths on Hubble HTTP metrics. Wrote the Cilium install guide for Oracle Kubernetes Engine.',
+    summary: 'Six contributions. Fixed the Helm chart rendering duplicate prometheus.io keys, so user annotations now win and annotation-based scraping can be turned off. Hubble flows now carry the datapath extended drop reason, so hubble observe shows what cilium monitor already printed. Added --reply and --not-reply flags. Wrote the accepted design proposal for putting URL paths on Hubble HTTP metrics, then landed the first implementation PR, the path template matcher. Wrote the Cilium install guide for Oracle Kubernetes Engine.',
     detail: null,
     story: {
       heading: 'A duplicate Helm key, a dropped error code, a metrics design, and an undocumented platform',
@@ -97,6 +98,8 @@ ${a('https://github.com/cilium/hubble/issues/1215', 'hubble#1215')}: the datapat
 ${a('https://github.com/cilium/hubble/issues/1283', 'hubble#1283')}: the server already had a reply filter, there were just no CLI flags for it. Added <code>--reply</code> and <code>--not-reply</code> as mutually exclusive flags.
 
 ${a('https://github.com/cilium/cilium/issues/26521', 'cilium#26521')} asked for the request path on Hubble HTTP metrics and was closed in 2023, because a raw path label means a new time series for every ID. ${a('https://github.com/cilium/design-cfps/pull/100', 'CFP-26521')} works around that: the label is the template that matched, not the path, so the set of values is fixed when config loads. With no templates set, the metrics are unchanged.
+
+${a('https://github.com/cilium/cilium/pull/47813', 'PR #47813')} is the first piece of that design: the matcher itself, using the placeholder syntax <code>net/http.ServeMux</code> accepts, templates tried in order with the first match winning, and a cap of 100. The path comes from the client, so the matcher splits it only as far as the longest template can tell paths apart: a 4000-slash path costs 26ns and no allocations instead of 32us and 65KB. Nothing is wired up yet, so there is no metric change on its own. Config, the handler, and Helm come next.
 
 ${a('https://github.com/cilium/cilium/issues/46107', 'cilium#46107')}: OKE with VCN-Native Pod Networking is Oracle's recommended CNI mode, and Cilium's docs did not mention Oracle at all. Chaining already worked, because the pod side is a plain veth pair like the AWS VPC CNI. ${a('https://github.com/cilium/cilium/pull/46116', 'PR #46116')} writes it up, tested on a live cluster, including the uninstall trap: <code>helm uninstall</code> leaves <code>05-cilium.conflist</code> behind, so new pods hang in <code>ContainerCreating</code> until you remove it on every node.`,
     },
