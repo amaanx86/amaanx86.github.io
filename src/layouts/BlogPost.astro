@@ -2,6 +2,12 @@
 import Base from './Base.astro';
 import { getCollection } from 'astro:content';
 
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
 interface Props {
   title: string;
   description: string;
@@ -9,12 +15,14 @@ interface Props {
   tags: string[];
   draft?: boolean;
   readingTime?: number;
+  headings?: Heading[];
 }
 
-const { title, description, date, tags, draft = false, readingTime = 1 } = Astro.props;
+const { title, description, date, tags, draft = false, readingTime = 1, headings = [] } = Astro.props;
 
-// Fetch all posts for the search modal
-const allPostsRaw = await getCollection('blog', ({ data }) => !data.draft);
+const allPostsRaw = (await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md')))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
 const allPosts = allPostsRaw.map((p) => ({
   slug: p.id,
   title: p.data.title,
@@ -22,7 +30,16 @@ const allPosts = allPostsRaw.map((p) => ({
   tags: p.data.tags,
 }));
 
-const formattedDate = date.toLocaleDateString('en-US', {
+const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop() ?? '';
+const index = allPostsRaw.findIndex((p) => p.id === slug);
+// The collection is newest-first, so the previous entry is the newer post.
+const newer = index > 0 ? allPostsRaw[index - 1] : null;
+const older = index >= 0 && index < allPostsRaw.length - 1 ? allPostsRaw[index + 1] : null;
+
+// Only h2/h3 earn a place in the contents rail; deeper levels are noise.
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+const formattedDate = date.toLocaleDateString('en-GB', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -32,9 +49,7 @@ const mentionCountApi = `https://webmention.io/api/count?target=${encodeURICompo
 
 const postUrl = mentionTargetUrl;
 const year = date.getFullYear();
-const slug = Astro.url.pathname.replace(/\/$/, '').split('/').pop() ?? '';
 const bibtexKey = `siddiqui${year}${slug.split('-')[0]}`;
-
 const githubUrl = `https://github.com/amaanx86/amaanx86.github.io/blob/main/src/content/blog/${slug}.md`;
 
 const bibtex = `@misc{${bibtexKey},
@@ -57,140 +72,208 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
   ogDescription={description}
   ogType="article"
   allPosts={allPosts}
+  wide={true}
 >
-  <!-- Scroll progress bar -->
   <div class="progress-bar" id="progress-bar"></div>
 
-  <article>
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 font-mono text-xs text-muted mb-8">
-      <a href="/" class="hover:text-accent">home</a>
-      <span>/</span>
-      <a href="/blog" class="hover:text-accent">blog</a>
-      <span>/</span>
-      <span class="text-text truncate max-w-[200px] sm:max-w-none">{title}</span>
-    </nav>
+  <div class="post-layout">
+    <article>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">index</a>
+        <span aria-hidden="true">/</span>
+        <a href="/blog">writing</a>
+        <span aria-hidden="true">/</span>
+        <span class="current">{slug}</span>
+      </nav>
 
-    <header class="mb-10">
-      {draft && (
-        <div class="mb-4">
-          <span class="badge badge-orange">Draft</span>
+      <header class="post-header">
+        <div class="post-meta">
+          <time datetime={date.toISOString()}>{formattedDate}</time>
+          <span aria-hidden="true">/</span>
+          <span>{readingTime} min read</span>
+          <span id="webmention-wrapper" class="hidden">
+            <span aria-hidden="true">/</span>
+            <span id="webmention-count">0 mentions</span>
+          </span>
+          {draft && <span class="badge badge-orange">Draft</span>}
         </div>
-      )}
 
-      <h1 class="font-mono text-2xl sm:text-3xl text-text leading-tight mb-5">
-        {title}
-      </h1>
+        <h1 class="post-title">{title}</h1>
 
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted font-mono">
-        <time datetime={date.toISOString()} class="flex items-center gap-1.5">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="2" width="14" height="13" rx="2"/>
-            <path d="M1 6h14M5 1v2M11 1v2"/>
-          </svg>
-          {formattedDate}
-        </time>
-        <span class="flex items-center gap-1.5">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="7"/>
-            <path d="M8 4v4l3 2"/>
-          </svg>
-          {readingTime} min read
-        </span>
-        <span id="webmention-wrapper" class="flex items-center gap-1.5 hidden" title="Webmentions received for this post">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3h10v7H8l-3 3v-3H3z"/>
-          </svg>
-          <span id="webmention-count">0 mentions</span>
-        </span>
+        <p class="post-lede">{description}</p>
+
+        {tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+        )}
+      </header>
+
+      <div class="prose" id="post-content">
+        <slot />
       </div>
 
-      <p class="mt-5 text-muted text-sm leading-relaxed max-w-prose border-l-2 border-border pl-4">
-        {description}
-      </p>
+      <!-- ── Cite ───────────────────────────────────────────────────── -->
+      <section class="post-section">
+        <details id="cite-details">
+          <summary class="ghost-btn">
+            <svg id="cite-chevron" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6l4 4 4-4" />
+            </svg>
+            Cite this post
+          </summary>
 
-      {tags.length > 0 && (
-        <div class="flex flex-wrap gap-2 mt-5">
-          {tags.map((tag) => <span class="tag">{tag}</span>)}
-        </div>
+          <div class="cite-body">
+            <div class="cite-tabs">
+              <button id="tab-bibtex" class="ghost-btn is-active">BibTeX</button>
+              <button id="tab-apa" class="ghost-btn">APA</button>
+            </div>
+            <div class="cite-pre-wrap">
+              <pre id="cite-bibtex" class="cite-pre">{bibtex}</pre>
+              <pre id="cite-apa" class="cite-pre hidden">{apa}</pre>
+              <button id="cite-copy" class="code-copy" style="opacity:1">copy</button>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- ── Adjacent posts ─────────────────────────────────────────── -->
+      {(newer || older) && (
+        <nav class="post-nav" aria-label="More posts">
+          {older ? (
+            <a href={`/blog/${older.id}`} class="panel panel-link post-nav-item">
+              <span class="label">Older</span>
+              <span class="post-nav-title">{older.data.title}</span>
+            </a>
+          ) : <span />}
+          {newer ? (
+            <a href={`/blog/${newer.id}`} class="panel panel-link post-nav-item is-next">
+              <span class="label">Newer</span>
+              <span class="post-nav-title">{newer.data.title}</span>
+            </a>
+          ) : <span />}
+        </nav>
       )}
-    </header>
 
-    <div class="border-t border-border mb-10"></div>
+      <div class="post-footer">
+        <a href="/blog" class="meta">&larr; All writing</a>
+        <button id="to-top" class="meta" type="button">Back to top &uarr;</button>
+      </div>
+    </article>
 
-    <div class="prose" id="post-content">
-      <slot />
-    </div>
-
-    <!-- Cite this post -->
-    <div class="mt-12 pt-6 border-t border-border">
-      <details id="cite-details">
-        <summary class="font-mono text-xs text-muted hover:text-accent cursor-pointer flex items-center gap-2 select-none [list-style:none] [&::-webkit-details-marker]:hidden">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 4h2v4H3zm5 0h2v4H8zM3 8c0 2 1 3 2 3m5-3c0 2 1 3 2 3"/>
-          </svg>
-          Cite this post
-          <svg id="cite-chevron" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
-            <path d="M4 6l4 4 4-4"/>
-          </svg>
-        </summary>
-
-        <div class="mt-4">
-          <div class="flex gap-1 mb-3">
-            <button id="tab-bibtex" class="font-mono text-xs px-2.5 py-1 rounded border border-border bg-[var(--surface)] text-text cursor-pointer">BibTeX</button>
-            <button id="tab-apa" class="font-mono text-xs px-2.5 py-1 rounded border border-transparent text-muted hover:text-text cursor-pointer">APA</button>
-          </div>
-
-          <div class="relative">
-            <pre id="cite-bibtex" class="font-mono text-xs bg-[var(--surface)] border border-border rounded-lg p-4 overflow-x-auto text-muted leading-relaxed whitespace-pre-wrap break-all">{bibtex}</pre>
-            <pre id="cite-apa" class="font-mono text-xs bg-[var(--surface)] border border-border rounded-lg p-4 overflow-x-auto text-muted leading-relaxed whitespace-pre-wrap break-all hidden">{apa}</pre>
-            <button
-              id="cite-copy"
-              class="absolute top-2.5 right-2.5 font-mono text-xs text-muted hover:text-accent border border-border rounded px-2 py-0.5 bg-[var(--canvas)] cursor-pointer transition-colors"
-            >
-              copy
-            </button>
-          </div>
-        </div>
-      </details>
-    </div>
-
-    <div class="mt-6 pt-6 border-t border-border flex items-center justify-between">
-      <a href="/blog" class="font-mono text-sm text-muted hover:text-accent flex items-center gap-2 group">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-0.5 transition-transform">
-          <path d="M10 12L6 8l4-4"/>
-        </svg>
-        Back to blog
-      </a>
-      <button
-        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-        class="font-mono text-xs text-muted hover:text-accent flex items-center gap-1.5 cursor-pointer border-none bg-transparent"
-      >
-        Top
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 12V4M4 8l4-4 4 4"/>
-        </svg>
-      </button>
-    </div>
-  </article>
+    <!-- ── Contents rail ────────────────────────────────────────────── -->
+    {toc.length > 1 && (
+      <aside class="toc" aria-label="Table of contents">
+        <p class="toc-title">Contents</p>
+        <nav id="toc-nav">
+          {toc.map((h) => (
+            <a href={`#${h.slug}`} class={h.depth === 3 ? 'depth-3' : ''} data-toc={h.slug}>
+              {h.text}
+            </a>
+          ))}
+        </nav>
+      </aside>
+    )}
+  </div>
 
   <script is:inline define:vars={{ mentionCountApi, bibtex, apa }}>
-    // Scroll progress bar
+    // ─── Reading progress ────────────────────────────────────────────
     const bar = document.getElementById('progress-bar');
-    const content = document.getElementById('post-content');
-    const mentionCountEl = document.getElementById('webmention-count');
-
     function updateProgress() {
       if (!bar) return;
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const pct = scrollable > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)) : 0;
       bar.style.width = pct + '%';
     }
-
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
 
-    // Cite this post — tab switching and copy
+    document.getElementById('to-top')?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ─── Code blocks: language chip + copy ───────────────────────────
+    document.querySelectorAll('#post-content pre.astro-code').forEach((pre) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'code-block';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      const lang = pre.getAttribute('data-language');
+      if (lang && lang !== 'plaintext') {
+        const chip = document.createElement('span');
+        chip.className = 'code-chip';
+        chip.textContent = lang;
+        wrap.appendChild(chip);
+      }
+
+      const btn = document.createElement('button');
+      btn.className = 'code-copy';
+      btn.type = 'button';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = 'copied';
+          setTimeout(() => { btn.textContent = 'copy'; }, 1800);
+        });
+      });
+      wrap.appendChild(btn);
+    });
+
+    // ─── Heading anchors ─────────────────────────────────────────────
+    document.querySelectorAll('#post-content h2[id], #post-content h3[id]').forEach((h) => {
+      const a = document.createElement('a');
+      a.className = 'heading-anchor';
+      a.href = '#' + h.id;
+      a.setAttribute('aria-label', 'Link to this section');
+      a.textContent = '#';
+      h.appendChild(a);
+    });
+
+    // ─── Contents scroll-spy ─────────────────────────────────────────
+    const tocLinks = Array.from(document.querySelectorAll('#toc-nav a'));
+    if (tocLinks.length) {
+      const bySlug = new Map(tocLinks.map((a) => [a.dataset.toc, a]));
+      const targets = tocLinks
+        .map((a) => document.getElementById(a.dataset.toc))
+        .filter(Boolean);
+
+      let current = null;
+      function setActive(id) {
+        if (id === current) return;
+        current = id;
+        tocLinks.forEach((a) => a.classList.toggle('active', a.dataset.toc === id));
+      }
+
+      const observer = new IntersectionObserver(
+        () => {
+          // Active heading = the last one whose top has passed the marker line.
+          const marker = window.innerHeight * 0.25;
+          let active = targets[0];
+          for (const t of targets) {
+            if (t.getBoundingClientRect().top <= marker) active = t;
+          }
+          if (active) setActive(active.id);
+        },
+        { rootMargin: '0px 0px -70% 0px', threshold: [0, 1] },
+      );
+      targets.forEach((t) => observer.observe(t));
+
+      window.addEventListener('scroll', () => {
+        const marker = window.innerHeight * 0.25;
+        let active = targets[0];
+        for (const t of targets) {
+          if (t.getBoundingClientRect().top <= marker) active = t;
+        }
+        if (active) setActive(active.id);
+      }, { passive: true });
+
+      tocLinks.forEach((a) => {
+        if (bySlug.get(a.dataset.toc)) a.addEventListener('click', () => setActive(a.dataset.toc));
+      });
+    }
+
+    // ─── Cite block ──────────────────────────────────────────────────
     const tabBibtex = document.getElementById('tab-bibtex');
     const tabApa = document.getElementById('tab-apa');
     const citeBibtex = document.getElementById('cite-bibtex');
@@ -201,61 +284,40 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
 
     let activeTab = 'bibtex';
 
-    if (citeDetails) {
-      citeDetails.addEventListener('toggle', () => {
-        if (citeChevron) citeChevron.style.transform = citeDetails.open ? 'rotate(180deg)' : '';
-      });
-    }
+    citeDetails?.addEventListener('toggle', () => {
+      if (citeChevron) citeChevron.style.transform = citeDetails.open ? 'rotate(180deg)' : '';
+    });
 
     function setTab(tab) {
       activeTab = tab;
       const isB = tab === 'bibtex';
-      if (citeBibtex) citeBibtex.classList.toggle('hidden', !isB);
-      if (citeApa) citeApa.classList.toggle('hidden', isB);
-      if (tabBibtex) {
-        tabBibtex.classList.toggle('border-border', isB);
-        tabBibtex.classList.toggle('bg-[var(--surface)]', isB);
-        tabBibtex.classList.toggle('text-text', isB);
-        tabBibtex.classList.toggle('border-transparent', !isB);
-        tabBibtex.classList.toggle('text-muted', !isB);
-      }
-      if (tabApa) {
-        tabApa.classList.toggle('border-border', !isB);
-        tabApa.classList.toggle('bg-[var(--surface)]', !isB);
-        tabApa.classList.toggle('text-text', !isB);
-        tabApa.classList.toggle('border-transparent', isB);
-        tabApa.classList.toggle('text-muted', isB);
-      }
+      citeBibtex?.classList.toggle('hidden', !isB);
+      citeApa?.classList.toggle('hidden', isB);
+      tabBibtex?.classList.toggle('is-active', isB);
+      tabApa?.classList.toggle('is-active', !isB);
     }
 
-    if (tabBibtex) tabBibtex.addEventListener('click', () => setTab('bibtex'));
-    if (tabApa) tabApa.addEventListener('click', () => setTab('apa'));
+    tabBibtex?.addEventListener('click', () => setTab('bibtex'));
+    tabApa?.addEventListener('click', () => setTab('apa'));
 
-    if (citeCopy) {
-      citeCopy.addEventListener('click', () => {
-        const text = activeTab === 'bibtex' ? bibtex : apa;
-        navigator.clipboard.writeText(text).then(() => {
-          citeCopy.textContent = 'copied!';
-          setTimeout(() => { citeCopy.textContent = 'copy'; }, 2000);
-        });
+    citeCopy?.addEventListener('click', () => {
+      navigator.clipboard.writeText(activeTab === 'bibtex' ? bibtex : apa).then(() => {
+        citeCopy.textContent = 'copied';
+        setTimeout(() => { citeCopy.textContent = 'copy'; }, 1800);
       });
-    }
+    });
 
+    // ─── Webmentions ─────────────────────────────────────────────────
     fetch(mentionCountApi)
-      .then((response) => {
-        if (!response.ok) throw new Error('Failed to load mentions');
-        return response.json();
-      })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('mentions unavailable'))))
       .then((data) => {
         const count = typeof data?.count === 'number' ? data.count : 0;
-        if (count > 0 && mentionCountEl) {
-          mentionCountEl.textContent = count === 1 ? '1 mention' : `${count} mentions`;
-          const wrapper = document.getElementById('webmention-wrapper');
-          if (wrapper) wrapper.classList.remove('hidden');
+        if (count > 0) {
+          const el = document.getElementById('webmention-count');
+          if (el) el.textContent = count === 1 ? '1 mention' : count + ' mentions';
+          document.getElementById('webmention-wrapper')?.classList.remove('hidden');
         }
       })
-      .catch(() => {
-        if (mentionCountEl) mentionCountEl.textContent = 'Mentions unavailable';
-      });
+      .catch(() => {});
   </script>
 </Base>
