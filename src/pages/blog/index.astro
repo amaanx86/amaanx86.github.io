@@ -6,131 +6,138 @@ const allPosts = (await getCollection('blog', ({ data, id }) => !data.draft && !
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const allPostsData = allPosts.map((p) => ({
-    slug: p.id,
-    title: p.data.title,
-    description: p.data.description,
-    tags: p.data.tags,
-  }));
+  slug: p.id,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+}));
 
-const postsWithMeta = allPosts.map((post) => ({
+const posts = allPosts.map((post) => ({
   slug: post.id,
   title: post.data.title,
   description: post.data.description,
   date: post.data.date,
+  year: post.data.date.getFullYear(),
   tags: post.data.tags,
   draft: post.data.draft,
   readingTime: Math.ceil((post.body ?? '').split(/\s+/).length / 200),
-  formattedDate: post.data.date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  formattedDate: post.data.date.toLocaleDateString('en-GB', {
+    month: 'short',
+    day: '2-digit',
   }),
   isoDate: post.data.date.toISOString(),
 }));
+
+// Newest year first; posts inside a year keep the newest-first order above.
+const years = [...new Set(posts.map((p) => p.year))].sort((a, b) => b - a);
+
+// Tag facets, most-used first. A tag on a single post is not a useful facet
+// and thirty chips bury the list, so only recurring tags get a button; the
+// text filter still matches every tag.
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+}
+const tags = [...tagCounts.entries()]
+  .filter(([, count]) => count > 1)
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 12)
+  .map(([tag, count]) => ({ tag, count }));
 ---
 
 <Base
-  title="Blog | Amaan Ul Haq Siddiqui"
+  title="Writing | Amaan Ul Haq Siddiqui"
   description="Technical writing on infrastructure, platform security, and cloud engineering."
   allPosts={allPostsData}
 >
-  <div class="space-y-8">
-    <!-- Header -->
-    <div>
-      <h1 class="font-mono text-2xl text-text font-semibold mb-2">Blog</h1>
-      <p class="text-muted text-sm">
-        Deep-dives on infrastructure, platform security, and cloud engineering.
-        <span class="font-mono">({allPosts.length} post{allPosts.length !== 1 ? 's' : ''})</span>
+  <div class="stack">
+    <header>
+      <h1 class="page-title">Writing</h1>
+      <p class="page-lede" style="margin-top:1.25rem">
+        Deep-dives on infrastructure, platform security, and cloud engineering. Written from
+        production work, not from documentation.
       </p>
-    </div>
+      <p class="meta" style="margin-top:1rem">
+        <span id="result-count">{posts.length}</span> of {posts.length} posts
+      </p>
+    </header>
 
-    <!-- Inline search -->
-    <div class="relative">
-      <svg
-        class="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
-        width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-      >
-        <circle cx="6.5" cy="6.5" r="4.5"/>
-        <path d="M10.5 10.5L14 14"/>
-      </svg>
-      <input
-        id="blog-search"
-        type="text"
-        placeholder="Filter posts by title, tag, or keyword..."
-        class="search-input"
-        autocomplete="off"
-        autocorrect="off"
-        spellcheck="false"
-      />
-      <button
-        id="clear-search"
-        class="hidden absolute right-3 top-1/2 -translate-y-1/2 icon-btn w-5 h-5 text-muted"
-        aria-label="Clear search"
-      >
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M12 4L4 12M4 4l8 8"/>
-        </svg>
-      </button>
-    </div>
+    <section>
+      <!-- Filters -->
+      <div class="filters">
+        <div class="search-wrap">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6.5" cy="6.5" r="4.5" /><path d="M10.5 10.5L14 14" />
+          </svg>
+          <input
+            id="blog-search"
+            type="text"
+            placeholder="Filter by title, description, or tag"
+            class="search-input"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+          />
+          <button id="clear-search" class="clear-btn hidden" aria-label="Clear filter">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 4L4 12M4 4l8 8" />
+            </svg>
+          </button>
+        </div>
 
-    <!-- Post list -->
-    <div id="posts-list" class="space-y-4">
-      {postsWithMeta.map((post) => (
-        <article
-          class="post-card card block group"
-          data-title={post.title.toLowerCase()}
-          data-desc={post.description.toLowerCase()}
-          data-tags={post.tags.join(' ').toLowerCase()}
-        >
-          <a href={`/blog/${post.slug}`} class="block no-underline hover:no-underline">
-            <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h2 class="font-mono text-base text-text group-hover:text-accent transition-colors font-medium leading-snug">
-                  {post.title}
-                </h2>
-                {post.draft && (
-                  <span class="badge badge-orange">Draft</span>
-                )}
-              </div>
-              <time
-                datetime={post.isoDate}
-                class="font-mono text-xs text-muted shrink-0"
+        <div class="chip-row" role="group" aria-label="Filter by tag">
+          <button class="ghost-btn is-active" data-tag="">All</button>
+          {tags.map(({ tag, count }) => (
+            <button class="ghost-btn" data-tag={tag}>
+              {tag}<span class="chip-count">{count}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Post list, grouped by year -->
+      <div id="posts-list" style="margin-top:2.5rem">
+        {years.map((year) => (
+          <section class="year-group" data-year={year}>
+            <div class="year-head">
+              <span class="year-label">{year}</span>
+              <span class="rule" aria-hidden="true"></span>
+            </div>
+
+            {posts.filter((p) => p.year === year).map((post) => (
+              <a
+                href={`/blog/${post.slug}`}
+                class="row post-card"
+                data-title={post.title.toLowerCase()}
+                data-desc={post.description.toLowerCase()}
+                data-tags={post.tags.join(' ').toLowerCase()}
               >
-                {post.formattedDate}
-              </time>
-            </div>
-
-            <p class="text-sm text-muted leading-relaxed mb-3 line-clamp-2">
-              {post.description}
-            </p>
-
-            <div class="flex items-center gap-3 flex-wrap">
-              <span class="font-mono text-xs text-muted flex items-center gap-1">
-                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="8" cy="8" r="7"/>
-                  <path d="M8 4v4l3 2"/>
+                <time class="row-meta" datetime={post.isoDate}>{post.formattedDate}</time>
+                <div>
+                  <h2 class="row-title">
+                    {post.title}
+                    {post.draft && <span class="badge badge-orange" style="margin-left:0.5rem">Draft</span>}
+                  </h2>
+                  <p class="row-desc line-clamp-2">{post.description}</p>
+                  <div class="row-tail">
+                    <span class="meta">{post.readingTime} min</span>
+                    {post.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+                  </div>
+                </div>
+                <svg class="row-arrow" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 8h10M9 4l4 4-4 4" />
                 </svg>
-                {post.readingTime} min
-              </span>
-              <div class="flex flex-wrap gap-1.5">
-                {post.tags.map((tag: string) => (
-                  <span class="tag">{tag}</span>
-                ))}
-              </div>
-            </div>
-          </a>
-        </article>
-      ))}
-    </div>
+              </a>
+            ))}
+          </section>
+        ))}
+      </div>
 
-    <!-- Empty state -->
-    <div id="no-results" class="hidden text-center py-16">
-      <p class="font-mono text-sm text-muted mb-1">No posts match your search.</p>
-      <button id="reset-search" class="font-mono text-xs text-accent hover:text-accent-hover cursor-pointer border-none bg-transparent mt-2">
-        Clear filter
-      </button>
-    </div>
+      <div id="no-results" class="panel panel-quiet hidden" style="text-align:center;margin-top:1.5rem">
+        <p class="meta">Nothing matches that filter.</p>
+        <button id="reset-search" class="ghost-btn" style="margin-top:0.85rem">Reset</button>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -138,36 +145,60 @@ const postsWithMeta = allPosts.map((post) => ({
     const clearBtn = document.getElementById('clear-search');
     const noResults = document.getElementById('no-results');
     const resetBtn = document.getElementById('reset-search');
-    const cards = document.querySelectorAll<HTMLElement>('.post-card');
+    const countEl = document.getElementById('result-count');
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.post-card'));
+    const groups = Array.from(document.querySelectorAll<HTMLElement>('.year-group'));
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip-row [data-tag]'));
 
-    function filterPosts(query: string) {
-      const q = query.trim().toLowerCase();
+    let activeTag = '';
+
+    function apply() {
+      const q = (searchInput?.value ?? '').trim().toLowerCase();
       clearBtn?.classList.toggle('hidden', !q);
 
       let visible = 0;
-      cards.forEach((card) => {
-        const match = !q ||
+      for (const card of cards) {
+        const cardTags = card.dataset.tags || '';
+        const matchesTag = !activeTag || cardTags.split(' ').includes(activeTag);
+        const matchesText =
+          !q ||
           (card.dataset.title || '').includes(q) ||
           (card.dataset.desc || '').includes(q) ||
-          (card.dataset.tags || '').includes(q);
-        card.style.display = match ? '' : 'none';
-        if (match) visible++;
-      });
+          cardTags.includes(q);
+        const show = matchesTag && matchesText;
+        card.classList.toggle('hidden', !show);
+        if (show) visible++;
+      }
+
+      // A year heading with nothing under it is noise, so hide the whole group.
+      for (const group of groups) {
+        const anyVisible = group.querySelectorAll('.post-card:not(.hidden)').length > 0;
+        group.classList.toggle('hidden', !anyVisible);
+      }
 
       noResults?.classList.toggle('hidden', visible > 0);
+      if (countEl) countEl.textContent = String(visible);
     }
 
-    searchInput?.addEventListener('input', (e) => {
-      filterPosts((e.target as HTMLInputElement).value);
-    });
+    searchInput?.addEventListener('input', apply);
 
-    function clearSearch() {
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        activeTag = chip.dataset.tag === activeTag ? '' : (chip.dataset.tag ?? '');
+        for (const c of chips) c.classList.toggle('is-active', (c.dataset.tag ?? '') === activeTag);
+        apply();
+      });
+    }
+
+    function reset() {
       if (searchInput) searchInput.value = '';
-      filterPosts('');
+      activeTag = '';
+      for (const c of chips) c.classList.toggle('is-active', !c.dataset.tag);
+      apply();
       searchInput?.focus();
     }
 
-    clearBtn?.addEventListener('click', clearSearch);
-    resetBtn?.addEventListener('click', clearSearch);
+    clearBtn?.addEventListener('click', reset);
+    resetBtn?.addEventListener('click', reset);
   </script>
 </Base>
