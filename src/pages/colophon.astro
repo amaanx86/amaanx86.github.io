@@ -10,12 +10,50 @@ const allPostsData = allPosts.map((p) => ({
   tags: p.data.tags,
 }));
 
+const rules = [
+  {
+    title: 'Stick to the MVP',
+    body: 'With yourself as the client it is too easy to widen the scope mid-build. I listed the site structure, wrote down every element each page needed, and held the line.',
+  },
+  {
+    title: 'Avoid trends',
+    body: 'I deliberately stayed off other personal sites while building. Influence is easy to absorb without noticing, and six months later you want to tear the whole thing down.',
+  },
+  {
+    title: 'Build it fast',
+    body: 'Momentum is what stops you backing out or changing your mind. I set a realistic schedule and kept to it. Shipping something imperfect beats not shipping.',
+  },
+  {
+    title: 'Make it personal',
+    body: 'The most important rule. The point was to do it my own way and say who I am, not to impress anyone in particular.',
+  },
+];
+
+const design = [
+  {
+    label: 'Layout',
+    value: 'A sticky left rail carries identity and a numbered index; everything else is one reading column.',
+  },
+  {
+    label: 'Type',
+    value: 'Three roles, strictly kept: Source Serif 4 for display, Inter for prose, JetBrains Mono for metadata and code.',
+  },
+  {
+    label: 'Colour',
+    value: 'Warm paper and ink with a single cobalt accent. Dark mode is warm graphite, never blue-black.',
+  },
+  {
+    label: 'Depth',
+    value: 'No drop shadows outside the search overlay. Hairlines, inset fills, and a 2px accent bar do the work.',
+  },
+];
+
 const stack = [
   { label: 'Framework', value: 'Astro', link: 'https://astro.build' },
   { label: 'Styling', value: 'Tailwind CSS', link: 'https://tailwindcss.com' },
-  { label: 'Content', value: 'Markdown' },
-  { label: 'Fonts', value: 'Inter + JetBrains Mono' },
-  { label: 'Syntax highlighting', value: 'Shiki (github-dark)' },
+  { label: 'Content', value: 'Markdown content collections' },
+  { label: 'Fonts', value: 'Source Serif 4, Inter, JetBrains Mono' },
+  { label: 'Syntax highlighting', value: 'Shiki (github-light / github-dark)' },
   { label: 'Analytics', value: 'Cloudflare Web Analytics', link: 'https://www.cloudflare.com/web-analytics/' },
   { label: 'Webmention', value: 'Webmention', link: 'https://www.w3.org/TR/webmention/' },
   { label: 'Hosting', value: 'GitHub Pages' },
@@ -29,173 +67,135 @@ const stack = [
   description="How this site was built and the thinking behind it."
   allPosts={allPostsData}
 >
-  <div class="space-y-12">
-
-    <!-- Header -->
-    <div>
-      <h1 class="font-mono text-2xl text-text font-semibold mb-3">Colophon</h1>
-      <p class="text-sm text-muted leading-relaxed max-w-prose">
-        A colophon is a brief note about how something was made. In books it lives at the back, a quiet record of decisions that shaped the final thing. This is mine.
+  <div class="stack">
+    <header>
+      <h1 class="page-title">Colophon</h1>
+      <p class="page-lede" style="margin-top:1.25rem">
+        A colophon is a short note about how something was made. In books it sits at the back,
+        a quiet record of the decisions that shaped the final object. This is mine.
       </p>
-    </div>
+    </header>
 
-    <!-- Approach -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Approach</span>
-        <div class="flex-1 h-px bg-border"></div>
+    <!-- ── 01 Approach ──────────────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">01</span>
+        <h2>Approach</h2>
+        <span class="rule" aria-hidden="true"></span>
       </div>
 
-      <div class="card space-y-4">
-        <p class="text-sm text-muted leading-relaxed">
-          You're no doubt familiar with the old adage: "The toughest client is yourself." Well it's true. Designing your own site can be a frustrating experience.
+      <div class="panel">
+        <p class="entry-summary">
+          You are no doubt familiar with the old adage: the toughest client is yourself. It is
+          true, and designing your own site is a frustrating experience because of it.
         </p>
-        <p class="text-sm text-muted leading-relaxed">
-          When I've worked on personal projects before it's tended to be a messy, drawn-out, indecisive process. I'd struggle to produce anything I was happy with and I'd change my mind every five minutes and lose interest.
-        </p>
-        <p class="text-sm text-muted leading-relaxed">
-          To avoid this happening again, I set myself four rules.
+        <p class="entry-summary" style="margin-top:0.9rem">
+          Every personal project I had taken on before turned into a messy, drawn-out,
+          indecisive process. I would struggle to produce anything I liked, change my mind every
+          five minutes, and lose interest. To stop that happening again I set myself four rules.
         </p>
       </div>
     </section>
 
-    <!-- Four rules -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">The rules</span>
-        <div class="flex-1 h-px bg-border"></div>
+    <!-- ── 02 The rules ─────────────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">02</span>
+        <h2>The rules</h2>
+        <span class="rule" aria-hidden="true"></span>
       </div>
 
-      <div class="space-y-3">
-        <div class="card border-l-4 border-l-accent space-y-2">
-          <div class="flex items-center gap-3">
-            <span class="font-mono text-xs text-accent">01</span>
-            <h2 class="font-mono text-sm text-text font-semibold">Stick to the MVP</h2>
-          </div>
-          <p class="text-sm text-muted leading-relaxed">
-            With yourself as the client, it's too easy to change the scope as you get further into the project. I made a list of the site structure, detailed every essential element that would be on each page, and held the line.
-          </p>
-        </div>
+      <ol class="rules">
+        {rules.map((rule, i) => (
+          <li class="panel">
+            <span class="rule-n">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <p class="entry-name">{rule.title}</p>
+              <p class="entry-summary" style="margin-top:0.4rem">{rule.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
 
-        <div class="card border-l-4 border-l-accent space-y-2">
-          <div class="flex items-center gap-3">
-            <span class="font-mono text-xs text-accent">02</span>
-            <h2 class="font-mono text-sm text-text font-semibold">Avoid trends</h2>
-          </div>
-          <p class="text-sm text-muted leading-relaxed">
-            I deliberately avoided looking at other blogs, personal sites, or any external source of inspiration. It's easy to be influenced, consciously or not, only to find six months later you want to rip it all down.
-          </p>
-        </div>
-
-        <div class="card border-l-4 border-l-accent space-y-2">
-          <div class="flex items-center gap-3">
-            <span class="font-mono text-xs text-accent">03</span>
-            <h2 class="font-mono text-sm text-text font-semibold">Build it fast</h2>
-          </div>
-          <p class="text-sm text-muted leading-relaxed">
-            I wanted to keep momentum to avoid backing out or changing my mind. I set a realistic schedule and stuck to it. Shipping something imperfect beats not shipping at all.
-          </p>
-        </div>
-
-        <div class="card border-l-4 border-l-accent space-y-2">
-          <div class="flex items-center gap-3">
-            <span class="font-mono text-xs text-accent">04</span>
-            <h2 class="font-mono text-sm text-text font-semibold">Make it personal</h2>
-          </div>
-          <p class="text-sm text-muted leading-relaxed">
-            Probably the most important rule. Not lose sight of why I was making the site in the first place: to do things my own way, be myself, and communicate who I am. Not to impress anyone in particular.
-          </p>
-        </div>
-      </div>
-
-      <p class="text-sm text-muted leading-relaxed pl-1">
-        Setting myself these rules made the decision-making process so much simpler.
+      <p class="meta" style="margin-top:1rem;padding-left:0.85rem">
+        Four rules made every later decision simpler.
       </p>
     </section>
 
-    <!-- Why Astro -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Why Astro</span>
-        <div class="flex-1 h-px bg-border"></div>
-      </div>
-
-      <div class="card space-y-4">
-        <p class="text-sm text-muted leading-relaxed">
-          I chose Astro because it gets out of the way. It builds to plain static output that deploys to GitHub Pages with a small CI workflow. No server to manage, nothing to keep patched. That combination is hard to beat for a personal site.
-        </p>
-        <p class="text-sm text-muted leading-relaxed">
-          Astro also gets the defaults right: zero JavaScript shipped unless you explicitly opt in, content collections with schema validation, and MDX out of the box. It stays out of your way while still giving you the full component model when you need it.
-        </p>
-      </div>
-    </section>
-
-    <!-- Tech stack -->
-    <section class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="font-mono text-xs text-muted tracking-[0.15em] uppercase">Built with</span>
-        <div class="flex-1 h-px bg-border"></div>
-      </div>
-
-      <div class="card p-0 overflow-hidden">
-        <table class="w-full text-sm">
-          <tbody>
-            {stack.map((item) => (
-              <tr class="border-b border-border last:border-0 hover:bg-surface-raised transition-colors">
-                <td class="px-5 py-3 font-mono text-xs text-muted uppercase tracking-wide whitespace-nowrap w-48">{item.label}</td>
-                <td class="px-5 py-3">
-                  {item.link ? (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="font-mono text-sm text-accent hover:text-accent-hover no-underline"
-                    >
-                      {item.value}
-                    </a>
-                  ) : (
-                    <span class="font-mono text-sm text-text">{item.value}</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Source -->
+    <!-- ── 03 Design ────────────────────────────────────────────────── -->
     <section>
-      <div class="card bg-surface-raised border-dashed">
-        <div class="flex items-start gap-3">
-          <svg class="text-muted mt-0.5 flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="7"/><path d="M8 7v5M8 5h.01"/>
-          </svg>
-          <p class="font-mono text-xs text-muted leading-relaxed">
-            The source is open at{' '}
-            <a
-              href="https://github.com/amaanx86/amaanx86.github.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-accent hover:text-accent-hover"
-            >
-              github.com/amaanx86/amaanx86.github.io
-            </a>.
-            The site is statically generated and served from GitHub Pages.
-          </p>
-        </div>
+      <div class="section-head">
+        <span class="idx">03</span>
+        <h2>Design</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
+
+      <div class="panel panel-flush">
+        {design.map((item) => (
+          <div class="defrow">
+            <span class="dt">{item.label}</span>
+            <span class="dd">{item.value}</span>
+          </div>
+        ))}
       </div>
     </section>
 
-    <!-- Community signals -->
+    <!-- ── 04 Why Astro ─────────────────────────────────────────────── -->
     <section>
-      <div class="card space-y-3">
-        <h2 class="font-mono text-xs text-muted uppercase tracking-widest">Community signals</h2>
-        <p class="text-sm text-muted leading-relaxed">
-          I use Cloudflare Web Analytics for privacy-first traffic insights and Webmention so conversations and references from other sites can flow back here.
+      <div class="section-head">
+        <span class="idx">04</span>
+        <h2>Why Astro</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
+
+      <div class="panel">
+        <p class="entry-summary">
+          Astro gets out of the way. It builds plain static output that deploys to GitHub Pages
+          behind a small CI workflow: no server to manage, nothing to keep patched. For a personal
+          site that combination is hard to beat.
+        </p>
+        <p class="entry-summary" style="margin-top:0.9rem">
+          It also gets the defaults right. Zero JavaScript ships unless you opt in, content
+          collections validate frontmatter against a schema at build time, and the component model
+          is there in full when a page actually needs it.
         </p>
       </div>
     </section>
 
+    <!-- ── 05 Built with ────────────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">05</span>
+        <h2>Built with</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
+
+      <div class="panel panel-flush">
+        {stack.map((item) => (
+          <div class="defrow">
+            <span class="dt">{item.label}</span>
+            <span class="dd">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="link">{item.value}</a>
+              ) : (
+                item.value
+              )}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Source ───────────────────────────────────────────────────── -->
+    <section>
+      <div class="panel panel-quiet">
+        <p class="entry-summary">
+          The source is open at{' '}
+          <a href="https://github.com/amaanx86/amaanx86.github.io" target="_blank" rel="noopener noreferrer" class="link">github.com/amaanx86/amaanx86.github.io</a>.
+          Traffic goes through Cloudflare Web Analytics, which sets no cookies, and Webmention
+          carries replies and references from other sites back here.
+        </p>
+      </div>
+    </section>
   </div>
 </Base>

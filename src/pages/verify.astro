@@ -66,6 +66,30 @@ const accounts = [
     notes: 'PGP-signed preferred',
   },
 ];
+
+const corporateKeys = [
+  {
+    org: 'SUDO Consultants',
+    keyId: '0B1255FF6B0D509B',
+    algorithm: 'RSA 4096',
+    keyserver:
+      'https://keyserver.ubuntu.com/pks/lookup?search=amaan%40sudoconsultants.com&fingerprint=on&op=index',
+  },
+  {
+    org: 'MISK Foundation',
+    keyId: 'A1FA15D51F6C8D6D',
+    algorithm: 'RSA 4096',
+    keyserver:
+      'https://keyserver.ubuntu.com/pks/lookup?search=v-aman.siddiqui%40misk.org.sa&fingerprint=on&op=index',
+  },
+];
+
+const imposterSteps = [
+  'Report the account to the platform immediately.',
+  "Cross-reference the imposter's claims against the accounts listed on this page.",
+  'Contact me directly by email if you have security concerns.',
+  'Do not trust an unverified GPG signature. Verify against the fingerprint above.',
+];
 ---
 
 <Base
@@ -73,206 +97,177 @@ const accounts = [
   description="Canonical record of Amaan Ul Haq Siddiqui's online presence and cryptographic identity."
   allPosts={allPostsData}
 >
-  <div class="space-y-12">
-    <!-- Header -->
-    <div>
-      <h1 class="font-mono text-2xl text-text font-semibold mb-3">Verify my identity</h1>
-      <p class="text-sm text-muted leading-relaxed max-w-prose">
-        This page is the canonical record of my online presence and cryptographic identity. Use it to protect against phishing, verify signed code commits, and authenticate encrypted communication. If an account is not listed here, it is not me. Accounts claiming to be me elsewhere should be treated as imposters.
+  <div class="stack">
+    <header>
+      <h1 class="page-title">Verify</h1>
+      <p class="page-lede" style="margin-top:1.25rem">
+        This page is the canonical record of my online presence and cryptographic identity. Use it
+        to defend against phishing, verify signed commits, and authenticate encrypted mail.
+        If an account is not listed here, it is not me.
       </p>
-    </div>
+    </header>
 
-    <!-- GPG section -->
-    <section class="space-y-4">
-      <h2 class="font-mono text-xs text-muted uppercase tracking-widest">GPG Key</h2>
+    <!-- ── 01 Personal key ──────────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">01</span>
+        <h2>Personal key</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
 
-      <div class="card space-y-5">
-        <!-- Key ID + algo -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div class="panel">
+        <div class="key-grid">
           <div>
-            <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1.5">Key ID</div>
-            <code class="font-mono text-sm text-accent">FC47DEE803DB612A</code>
+            <p class="label">Key ID</p>
+            <code class="key-value is-accent">FC47DEE803DB612A</code>
           </div>
           <div>
-            <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1.5">Algorithm</div>
-            <code class="font-mono text-sm text-text">RSA 4096</code>
+            <p class="label">Algorithm</p>
+            <code class="key-value">RSA 4096</code>
           </div>
           <div>
-            <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1.5">Email</div>
-            <code class="font-mono text-sm text-text">amaanulhaq.s@outlook.com</code>
+            <p class="label">Email</p>
+            <code class="key-value">amaanulhaq.s@outlook.com</code>
           </div>
         </div>
 
-        <!-- Fingerprint -->
-        <div>
-          <div class="font-mono text-xs text-muted uppercase tracking-wide mb-2">Full fingerprint</div>
-          <div class="bg-surface-raised border border-border rounded-md px-4 py-3 font-mono text-sm text-text break-all leading-relaxed tracking-wide">
-            9A1D B246 6C1A 9E94 F7DF&nbsp;&nbsp;38C3 FC47 DEE8 03DB 612A
-          </div>
+        <div class="fingerprint-block">
+          <p class="label">Full fingerprint</p>
+          <code class="fingerprint">9A1D B246 6C1A 9E94 F7DF&nbsp;&nbsp;38C3 FC47 DEE8 03DB 612A</code>
         </div>
 
-        <!-- Actions -->
-        <div class="flex flex-wrap gap-3 pt-2 border-t border-border">
+        <div class="key-actions">
           <a
+            class="ghost-btn"
             href="https://keyserver.ubuntu.com/pks/lookup?search=amaanulhaq.s%40outlook.com&fingerprint=on&op=index"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 text-sm font-mono text-accent border border-accent/30 bg-accent-bg hover:bg-accent/10 rounded-md px-3 py-1.5 no-underline transition-colors"
           >
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="8" cy="8" r="7"/>
-              <path d="M8 4v4l3 2"/>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9" />
             </svg>
             Keyserver lookup
           </a>
-          <a
-            href="/amaan.asc"
-            download
-            class="inline-flex items-center gap-2 text-sm font-mono text-muted border border-border hover:border-accent hover:text-accent bg-surface rounded-md px-3 py-1.5 no-underline transition-colors"
-          >
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 1v9M5 7l3 3 3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1"/>
+          <a class="ghost-btn" href="/amaan.asc" download>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 1v9M5 7l3 3 3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" />
             </svg>
             Download .asc
           </a>
+          <button class="ghost-btn" id="copy-fpr" type="button">Copy fingerprint</button>
         </div>
 
-        <!-- GPG Usage -->
-        <div class="text-sm text-muted border-t border-border pt-4 leading-relaxed">
-          <p>Use this key to verify signed commits, releases, and secure communication. Never trust unsigned claims from anyone. Always verify against this canonical fingerprint.</p>
-        </div>
+        <p class="entry-summary" style="margin-top:1rem;padding-top:0.9rem;border-top:1px solid var(--border)">
+          Use this key to verify signed commits, releases, and encrypted mail. Never trust an
+          unsigned claim. Always check against the fingerprint above.
+        </p>
       </div>
     </section>
 
-    <!-- Corporate GPG Keys -->
-    <section class="space-y-4">
-      <h2 class="font-mono text-xs text-muted uppercase tracking-widest">Corporate GPG Keys</h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="card space-y-3">
-          <div>
-            <div class="font-mono text-xs text-muted uppercase tracking-wide mb-3">SUDO Consultants</div>
-            <div class="space-y-2 mb-4 border-b border-border pb-4">
-              <div>
-                <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1">Key ID</div>
-                <code class="font-mono text-sm text-accent">0B1255FF6B0D509B</code>
-              </div>
-              <div>
-                <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1">Algorithm</div>
-                <code class="font-mono text-sm text-text">RSA 4096</code>
-              </div>
-            </div>
-            <a
-              href="https://keyserver.ubuntu.com/pks/lookup?search=amaan%40sudoconsultants.com&fingerprint=on&op=index"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-xs text-accent hover:text-accent-hover"
-            >
-              View on keyserver →
-            </a>
-          </div>
-        </div>
-
-        <div class="card space-y-3">
-          <div>
-            <div class="font-mono text-xs text-muted uppercase tracking-wide mb-3">MISK Foundation</div>
-            <div class="space-y-2 mb-4 border-b border-border pb-4">
-              <div>
-                <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1">Key ID</div>
-                <code class="font-mono text-sm text-accent">A1FA15D51F6C8D6D</code>
-              </div>
-              <div>
-                <div class="font-mono text-xs text-muted uppercase tracking-wide mb-1">Algorithm</div>
-                <code class="font-mono text-sm text-text">RSA 4096</code>
-              </div>
-            </div>
-            <a
-              href="https://keyserver.ubuntu.com/pks/lookup?search=v-aman.siddiqui%40misk.org.sa&fingerprint=on&op=index"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-xs text-accent hover:text-accent-hover"
-            >
-              View on keyserver →
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Identity table -->
-    <section class="space-y-4">
-      <h2 class="font-mono text-xs text-muted uppercase tracking-widest">Verified accounts</h2>
-
-      <div class="card p-0 overflow-hidden">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-border bg-surface-raised">
-              <th class="text-left font-mono text-xs text-muted uppercase tracking-wide px-5 py-3">Platform</th>
-              <th class="text-left font-mono text-xs text-muted uppercase tracking-wide px-5 py-3">Handle / URL</th>
-              <th class="text-left font-mono text-xs text-muted uppercase tracking-wide px-5 py-3 hidden sm:table-cell">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map((acct, i) => (
-              <tr class={`border-b border-border last:border-0 hover:bg-surface-raised transition-colors`}>
-                <td class="px-5 py-3.5 font-mono text-xs text-muted whitespace-nowrap">{acct.platform}</td>
-                <td class="px-5 py-3.5">
-                  {acct.url ? (
-                    <a
-                      href={acct.url}
-                      target="_blank"
-                      rel="me noopener noreferrer"
-                      class="font-mono text-sm text-accent hover:text-accent-hover no-underline"
-                    >
-                      {acct.handle}
-                    </a>
-                  ) : (
-                    <span class="font-mono text-sm text-text">{acct.handle}</span>
-                  )}
-                </td>
-                <td class="px-5 py-3.5 text-xs text-muted hidden sm:table-cell">{acct.notes}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- What to do if you find an imposter -->
-    <section class="space-y-4">
-      <h2 class="font-mono text-xs text-muted uppercase tracking-widest">If you find an imposter</h2>
-      <div class="card bg-surface-raised">
-        <ul class="text-sm text-muted leading-relaxed space-y-2 list-disc list-inside">
-          <li>Report the account to the platform immediately</li>
-          <li>Cross-reference the imposter's claims against accounts listed on this page</li>
-          <li>Contact me directly via email if you have security concerns</li>
-          <li>Do not trust unverified GPG signatures. Verify the fingerprint above</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Canonical note -->
+    <!-- ── 02 Corporate keys ────────────────────────────────────────── -->
     <section>
-      <div class="card bg-surface-raised border-dashed">
-        <div class="flex items-start gap-3">
-          <svg class="text-muted mt-0.5 flex-shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="7"/><path d="M8 7v5M8 5h.01"/>
-          </svg>
-          <p class="font-mono text-xs text-muted leading-relaxed">
-            This page is served from{' '}
-            <a
-              href="https://github.com/amaanx86/amaanx86.github.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-accent hover:text-accent-hover"
-            >
-              github.com/amaanx86/amaanx86.github.io
-            </a>{' '}
-            and can be verified against the commit history. The canonical URL is{' '}
-            <code class="text-xs">https://amaanx86.github.io/verify</code>. GPG key <code class="text-xs">FC47DEE803DB612A</code> can also be found on the Ubuntu keyserver.
-          </p>
-        </div>
+      <div class="section-head">
+        <span class="idx">02</span>
+        <h2>Corporate keys</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
+
+      <div class="grid-2">
+        {corporateKeys.map((key) => (
+          <article class="panel">
+            <p class="entry-name" style="margin-bottom:0.85rem">{key.org}</p>
+            <div class="key-grid">
+              <div>
+                <p class="label">Key ID</p>
+                <code class="key-value is-accent">{key.keyId}</code>
+              </div>
+              <div>
+                <p class="label">Algorithm</p>
+                <code class="key-value">{key.algorithm}</code>
+              </div>
+            </div>
+            <div class="entry-foot">
+              <span></span>
+              <div class="entry-links">
+                <a href={key.keyserver} target="_blank" rel="noopener noreferrer">
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9" />
+                  </svg>
+                  keyserver
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── 03 Verified accounts ─────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">03</span>
+        <h2>Verified accounts</h2>
+        <span class="rule" aria-hidden="true"></span>
+        <span class="action">{accounts.length} listed</span>
+      </div>
+
+      <div class="panel panel-flush">
+        {accounts.map((acct) => (
+          <div class="defrow">
+            <span class="dt">{acct.platform}</span>
+            <span class="dd">
+              {acct.url ? (
+                <a href={acct.url} target="_blank" rel="me noopener noreferrer" class="account-handle">{acct.handle}</a>
+              ) : (
+                <span class="account-handle is-plain">{acct.handle}</span>
+              )}
+              <span class="account-note">{acct.notes}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── 04 Imposters ─────────────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">04</span>
+        <h2>If you find an imposter</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
+
+      <ol class="steps">
+        {imposterSteps.map((step, i) => (
+          <li>
+            <span class="step-n">{String(i + 1).padStart(2, '0')}</span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- ── Provenance ───────────────────────────────────────────────── -->
+    <section>
+      <div class="panel panel-quiet">
+        <p class="entry-summary">
+          This page is served from{' '}
+          <a href="https://github.com/amaanx86/amaanx86.github.io" target="_blank" rel="noopener noreferrer" class="link">github.com/amaanx86/amaanx86.github.io</a>{' '}
+          and can be checked against the commit history. The canonical URL is
+          <code>https://amaanx86.github.io/verify</code>, and key
+          <code>FC47DEE803DB612A</code> is also published on the Ubuntu keyserver.
+        </p>
       </div>
     </section>
   </div>
+
+  <script>
+    const FINGERPRINT = '9A1D B246 6C1A 9E94 F7DF 38C3 FC47 DEE8 03DB 612A';
+    const copyBtn = document.getElementById('copy-fpr');
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(FINGERPRINT).then(() => {
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => { copyBtn.textContent = 'Copy fingerprint'; }, 1800);
+      });
+    });
+  </script>
 </Base>
