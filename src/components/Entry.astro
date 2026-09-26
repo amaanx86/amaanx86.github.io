@@ -1,0 +1,87 @@
+---
+/**
+ * One contribution, project, or community record. The contributions list and
+ * the community entry render through here so both stay visually identical.
+ */
+interface Props {
+  id?: string;
+  name: string;
+  iconSvg?: string | null;
+  typeLabel: string;
+  badgeClass: string;
+  date: string;
+  lang?: string | null;
+  place?: string | null;
+  summary: string;
+  detail?: string | null;
+  story?: { heading: string; body: string } | null;
+  links: Array<{ href: string; label: string }>;
+  tags: string[];
+}
+
+const {
+  id,
+  name,
+  iconSvg = null,
+  typeLabel,
+  badgeClass,
+  date,
+  lang = null,
+  place = null,
+  summary,
+  detail = null,
+  story = null,
+  links,
+  tags,
+} = Astro.props;
+---
+
+<article id={id} class="entry panel">
+  <div class="entry-head">
+    {iconSvg && <span class="entry-logo" aria-hidden="true" set:html={iconSvg} />}
+    <div class="entry-ident">
+      <h3 class="entry-name">{name}</h3>
+      <p class="meta">
+        {date}{place && <span> &middot; {place}</span>}
+      </p>
+    </div>
+    <div class="entry-badges">
+      <span class={`badge ${badgeClass}`}>{typeLabel}</span>
+      {lang && <span class="tag">{lang}</span>}
+    </div>
+  </div>
+
+  <p class="entry-summary">{summary}</p>
+
+  {detail && <p class="entry-detail">{detail}</p>}
+
+  {story && (
+    <details class="story">
+      <summary class="ghost-btn">
+        <svg class="story-chevron" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M6 4l4 4-4 4" />
+        </svg>
+        {story.heading}
+      </summary>
+      <div class="story-body">
+        {story.body.split('\n\n').map((para) => <p set:html={para} />)}
+      </div>
+    </details>
+  )}
+
+  <div class="entry-foot">
+    <div class="entry-tags">
+      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+    <div class="entry-links">
+      {links.map((l) => (
+        <a href={l.href} target="_blank" rel="noopener noreferrer">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 3H3a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-4M10 1h5v5M15 1L7 9" />
+          </svg>
+          {l.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</article>
