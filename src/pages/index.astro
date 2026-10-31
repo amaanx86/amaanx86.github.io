@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { iconFor } from '../lib/icons';
 
 const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
 const recentPosts = allPosts
@@ -15,13 +16,13 @@ const allPostsData = allPosts.map((p) => ({
 }));
 
 const certifications = [
-  { name: 'Oracle Cloud Infrastructure Certified Architect Associate', window: 'Aug 2026 - Aug 2028' },
-  { name: 'Claude Certified Architect - Foundations', window: 'Jul 2026 - Jul 2027' },
-  { name: 'AWS Certified Security - Specialty', window: 'May 2026 - May 2029' },
-  { name: 'GCP Professional Cloud Architect', window: 'Jan 2026 - Jan 2028' },
-  { name: 'AWS Certified DevOps Engineer - Professional', window: 'Aug 2025 - Aug 2028' },
-  { name: 'AWS Certified Solutions Architect - Associate', window: 'Jun 2025 - Jun 2028' },
-  { name: 'AWS Certified Cloud Practitioner', window: 'Apr 2025 - Aug 2028' },
+  { name: 'Oracle Cloud Infrastructure Certified Architect Associate', issuer: 'oracle', window: 'Aug 2026 - Aug 2028' },
+  { name: 'Claude Certified Architect - Foundations', issuer: 'anthropic', window: 'Jul 2026 - Jul 2027' },
+  { name: 'AWS Certified Security - Specialty', issuer: 'aws', window: 'May 2026 - May 2029' },
+  { name: 'Google Cloud Certified Professional Cloud Architect', issuer: 'googlecloud', window: 'Jan 2026 - Jan 2028' },
+  { name: 'AWS Certified DevOps Engineer - Professional', issuer: 'aws', window: 'Aug 2025 - Aug 2028' },
+  { name: 'AWS Certified Solutions Architect - Associate', issuer: 'aws', window: 'Jun 2025 - Jun 2028' },
+  { name: 'AWS Certified Cloud Practitioner', issuer: 'aws', window: 'Apr 2025 - Aug 2028' },
 ];
 
 const stack = [
@@ -50,7 +51,7 @@ const socials = [
           <span class="pulse" aria-hidden="true"></span>
           Currently at{' '}
           <a href="https://sudoconsultants.com" target="_blank" rel="noopener noreferrer" class="link">SUDO Consultants</a>,{' '}
-          AWS Premier Implementation Partner
+          <span class="masthead-emph">AWS Premier Implementation Partner</span>
         </span>
       </div>
 
@@ -97,7 +98,10 @@ const socials = [
       <div class="panel panel-flush">
         {certifications.map((cert) => (
           <div class="listrow">
-            <span class="listrow-main">{cert.name}</span>
+            <span class="listrow-main listrow-lead">
+              <span class="listrow-logo" aria-hidden="true" set:html={iconFor(cert.issuer)?.svg} />
+              {cert.name}
+            </span>
             <span class="listrow-side">{cert.window}</span>
           </div>
         ))}
