@@ -342,6 +342,17 @@ const recognition = [
     badge: 'Speaker',
     badgeClass: 'badge-blue',
   },
+  {
+    title: 'Deep Dive into DevOps & Kubernetes',
+    date: 'October 2026',
+    location: 'Salim Habib University, Karachi',
+    description: 'DevOps and Kubernetes for computer science students, co-presented with Ameer Hamza and Muhammad Naimatullah Khan of Cloud Native Karachi.',
+    link: null,
+    badge: 'Speaker',
+    badgeClass: 'badge-blue',
+    // Odd card out in the two-column grid; span both columns until a sixth entry lands.
+    wide: true,
+  },
 ];
 
 const community = {
@@ -474,7 +485,7 @@ const maintainedCount = entries.filter((e) => e.badgeClass === 'badge-blue').len
 
       <div class="grid-2">
         {recognition.map((item) => (
-          <article class="panel">
+          <article class:list={['panel', { 'span-2': item.wide }]}>
             <div class="entry-head">
               <div class="entry-ident">
                 <h3 class="entry-name">{item.title}</h3>
