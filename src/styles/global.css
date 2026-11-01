@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
-
 @import "tailwindcss";
 
 /* ═══ Design system ═══════════════════════════════════════════════════════
@@ -25,9 +23,9 @@
   --color-accent-hover: var(--accent-hover);
   --color-accent-bg: var(--accent-bg);
 
-  --font-display: "Source Serif 4", Charter, Georgia, serif;
-  --font-sans: Inter, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Source Serif 4 Variable", "Source Serif 4", Charter, Georgia, serif;
+  --font-sans: "Inter Variable", Inter, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
 }
 
 @utility max-w-content {
