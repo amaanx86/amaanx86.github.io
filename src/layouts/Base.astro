@@ -94,6 +94,7 @@ function isActive(href: string) {
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Amaan's Engineering Notes" href="/rss.xml" />
     {jsonLd && <script type="application/ld+json" set:html={toJsonLd(jsonLd)} />}
 
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "5f48907720c34372ada4cebcc3b7943a"}'></script><!-- End Cloudflare Web Analytics -->
@@ -201,6 +202,8 @@ function isActive(href: string) {
             <a href="https://github.com/amaanx86/amaanx86.github.io" target="_blank" rel="noopener noreferrer">Source</a>
             <span aria-hidden="true"> / </span>
             <a href="/sitemap-index.xml">Sitemap</a>
+            <span aria-hidden="true"> / </span>
+            <a href="/rss.xml">RSS</a>
           </p>
         </footer>
       </div>
