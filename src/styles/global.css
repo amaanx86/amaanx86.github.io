@@ -47,8 +47,9 @@
   --border: hsl(40 13% 87%);
   --border-strong: hsl(38 10% 74%);
   --text: hsl(30 10% 12%);
-  --text-muted: hsl(30 6% 42%);
-  --text-faint: hsl(32 6% 58%);
+  /* faint clears WCAG AA (4.5:1) on canvas and surface; muted steps darker to stay distinct. */
+  --text-muted: hsl(30 6% 35%);
+  --text-faint: hsl(32 6% 43%);
   --accent: hsl(230 72% 47%);
   --accent-hover: hsl(230 74% 37%);
   --accent-bg: hsl(230 72% 47% / 0.07);
@@ -74,7 +75,7 @@
   --border-strong: hsl(30 5% 33%);
   --text: hsl(40 18% 92%);
   --text-muted: hsl(40 6% 63%);
-  --text-faint: hsl(40 5% 45%);
+  --text-faint: hsl(40 5% 53%);
   --accent: hsl(228 100% 75%);
   --accent-hover: hsl(228 100% 85%);
   --accent-bg: hsl(228 100% 75% / 0.11);
