@@ -1178,6 +1178,51 @@ details > summary::-webkit-details-marker { display: none; }
   }
   /* Lifts the partner tier out of the muted eyebrow by contrast, not a second colour. */
   .masthead-emph { color: var(--text); font-weight: 500; }
+  /* Homepage filmstrip: upstream project marks scrolling on a loop. The track holds two identical
+     sets and slides by exactly one set (-50%), so the seam is invisible. Monochrome, hairline
+     frame, no shadow; hover pauses and lifts the colour, it never moves the item. */
+  .filmstrip {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0.95rem 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  }
+  .filmstrip-track {
+    display: flex;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: filmstrip-scroll 48s linear infinite;
+  }
+  /* Spacing as trailing padding, not gap, so both halves are the same width and -50% lands exactly. */
+  .filmstrip-track > li { padding-right: 2.75rem; }
+  .filmstrip:hover .filmstrip-track,
+  .filmstrip:focus-within .filmstrip-track { animation-play-state: paused; }
+  .filmstrip-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+  .filmstrip-item:hover,
+  .filmstrip-item:focus-visible { color: var(--accent); }
+  .filmstrip-logo { display: inline-flex; width: 1.3rem; height: 1.3rem; flex-shrink: 0; }
+  .filmstrip-logo svg { width: 100%; height: 100%; fill: currentColor; }
+  @keyframes filmstrip-scroll { to { transform: translateX(-50%); } }
+  /* No motion requested: stop the loop, drop the duplicate set, and let the strip scroll by hand. */
+  @media (prefers-reduced-motion: reduce) {
+    .filmstrip { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+    .filmstrip-track { animation: none; }
+    .filmstrip-dup { display: none; }
+  }
+
   .masthead-links {
     display: flex;
     flex-wrap: wrap;

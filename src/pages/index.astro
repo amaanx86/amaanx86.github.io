@@ -3,11 +3,18 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { iconFor } from '../lib/icons';
 import { homeGraph } from '../lib/schema';
+import { contributions } from '../data/contributions';
 
 const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
+
+// Upstream projects only (not my own repos), each linking to the first merged PR.
+type StripSource = { type: string; name: string; logo?: string; link?: string | null; links?: { href: string }[] };
+const upstream = (contributions as unknown as StripSource[])
+  .filter((c) => c.type === 'upstream')
+  .map((c) => ({ name: c.name, svg: iconFor(c.logo)?.svg ?? null, href: c.links?.[0]?.href ?? c.link ?? '/projects' }));
 
 const allPostsData = allPosts.map((p) => ({
   slug: p.id,
@@ -88,10 +95,42 @@ const socials = [
       </nav>
     </header>
 
-    <!-- ── 01 Certifications ────────────────────────────────────────── -->
+    <!-- ── 01 Open source strip ───────────────────────────────────── -->
     <section>
       <div class="section-head">
         <span class="idx">01</span>
+        <h2>Upstream</h2>
+        <span class="rule" aria-hidden="true"></span>
+        <a class="action" href="/projects">All contributions</a>
+      </div>
+
+      <div class="filmstrip" role="region" aria-label="Open source projects I have contributed to">
+        <ul class="filmstrip-track">
+          {upstream.map((p) => (
+            <li>
+              <a class="filmstrip-item" href={p.href} target="_blank" rel="noopener noreferrer" title={`${p.name}: view the pull request`}>
+                {p.svg && <span class="filmstrip-logo" aria-hidden="true" set:html={p.svg} />}
+                <span>{p.name}</span>
+              </a>
+            </li>
+          ))}
+          {/* Second copy makes the loop seamless; hidden from screen readers and the tab order. */}
+          {upstream.map((p) => (
+            <li aria-hidden="true" class="filmstrip-dup">
+              <a class="filmstrip-item" href={p.href} target="_blank" rel="noopener noreferrer" tabindex="-1">
+                {p.svg && <span class="filmstrip-logo" set:html={p.svg} />}
+                <span>{p.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── 02 Certifications ────────────────────────────────────────── -->
+    <section>
+      <div class="section-head">
+        <span class="idx">02</span>
         <h2>Certifications</h2>
         <span class="rule" aria-hidden="true"></span>
         <a class="action" href="https://www.credly.com/users/amaanx86" target="_blank" rel="noopener noreferrer">Credly</a>
@@ -110,10 +149,10 @@ const socials = [
       </div>
     </section>
 
-    <!-- ── 02 Community ─────────────────────────────────────────────── -->
+    <!-- ── 03 Community ─────────────────────────────────────────────── -->
     <section>
       <div class="section-head">
-        <span class="idx">02</span>
+        <span class="idx">03</span>
         <h2>Community</h2>
         <span class="rule" aria-hidden="true"></span>
         <a class="action" href="/projects#cncg">Chapter details</a>
@@ -134,10 +173,10 @@ const socials = [
       </a>
     </section>
 
-    <!-- ── 03 Stack ─────────────────────────────────────────────────── -->
+    <!-- ── 04 Stack ─────────────────────────────────────────────────── -->
     <section>
       <div class="section-head">
-        <span class="idx">03</span>
+        <span class="idx">04</span>
         <h2>Stack</h2>
         <span class="rule" aria-hidden="true"></span>
       </div>
@@ -147,11 +186,11 @@ const socials = [
       </div>
     </section>
 
-    <!-- ── 04 Recent writing ────────────────────────────────────────── -->
+    <!-- ── 05 Recent writing ────────────────────────────────────────── -->
     {recentPosts.length > 0 && (
       <section>
         <div class="section-head">
-          <span class="idx">04</span>
+          <span class="idx">05</span>
           <h2>Recent writing</h2>
           <span class="rule" aria-hidden="true"></span>
           <a class="action" href="/blog">All {allPosts.length} posts</a>
