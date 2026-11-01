@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const posts = (await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md')))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allPostsData = posts.map((p) => ({
+  slug: p.id,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+}));
+
+const recent = posts.slice(0, 3).map((p) => ({
+  slug: p.id,
+  title: p.data.title,
+  isoDate: p.data.date.toISOString(),
+  formattedDate: p.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }),
+}));
+---
+
+<Base
+  title="Page not found | Amaan Ul Haq Siddiqui"
+  description="This page does not exist. Find your way back to the writing and contributions."
+  allPosts={allPostsData}
+>
+  <div class="stack">
+    <header>
+      <p class="meta">404</p>
+      <h1 class="page-title" style="margin-top:0.75rem">Page not found</h1>
+      <p class="page-lede" style="margin-top:1.25rem">
+        The link you followed is broken, or the page moved. Try the search (Cmd+K), or start
+        from one of these.
+      </p>
+
+      <nav class="masthead-links" style="margin-top:2rem" aria-label="Where to go">
+        <a href="/">Index</a>
+        <a href="/blog">Writing</a>
+        <a href="/projects">Contributions</a>
+      </nav>
+    </header>
+
+    <section>
+      <div class="section-head">
+        <span class="idx">01</span>
+        <h2>Recent writing</h2>
+        <span class="rule" aria-hidden="true"></span>
+        <a class="action" href="/blog">All posts</a>
+      </div>
+
+      {recent.map((post) => (
+        <a href={`/blog/${post.slug}`} class="row">
+          <time class="row-meta" datetime={post.isoDate}>{post.formattedDate}</time>
+          <div>
+            <p class="row-title">{post.title}</p>
+          </div>
+          <svg class="row-arrow" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" />
+          </svg>
+        </a>
+      ))}
+    </section>
+  </div>
+</Base>
