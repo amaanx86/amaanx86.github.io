@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { iconFor } from '../lib/icons';
+import { homeGraph } from '../lib/schema';
 
 const allPosts = await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md'));
 const recentPosts = allPosts
@@ -41,6 +42,7 @@ const socials = [
   title="Amaan Ul Haq Siddiqui | DevOps & Cloud Security Engineer"
   description="DevOps & Cloud Security Engineer building infrastructure at scale across AWS, OCI & Azure. Observability, platform security, and open source tooling."
   allPosts={allPostsData}
+  jsonLd={homeGraph}
 >
   <div class="stack">
 

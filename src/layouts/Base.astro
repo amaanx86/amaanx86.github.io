@@ -6,6 +6,7 @@ import '@fontsource-variable/source-serif-4/opsz.css';
 import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import monoLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import '../styles/global.css';
+import { toJsonLd } from '../lib/schema';
 
 interface Props {
   title: string;
@@ -17,6 +18,8 @@ interface Props {
   allPosts?: Array<{ slug: string; title: string; description: string; tags: string[] }>;
   /** Widens the shell so a post can carry a contents rail beside the prose. */
   wide?: boolean;
+  /** schema.org JSON-LD for this page, rendered in <head>. */
+  jsonLd?: unknown;
 }
 
 const {
@@ -28,6 +31,7 @@ const {
   ogImage = '/og-default.png',
   allPosts = [],
   wide = false,
+  jsonLd,
 } = Astro.props;
 
 const ogImageURL = new URL(ogImage, Astro.site).toString();
@@ -90,6 +94,7 @@ function isActive(href: string) {
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {jsonLd && <script type="application/ld+json" set:html={toJsonLd(jsonLd)} />}
 
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "5f48907720c34372ada4cebcc3b7943a"}'></script><!-- End Cloudflare Web Analytics -->
 

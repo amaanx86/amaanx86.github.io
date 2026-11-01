@@ -1,5 +1,6 @@
 ---
 import Base from './Base.astro';
+import { blogPosting } from '../lib/schema';
 import { getCollection } from 'astro:content';
 
 interface Heading {
@@ -48,6 +49,14 @@ const mentionTargetUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const mentionCountApi = `https://webmention.io/api/count?target=${encodeURIComponent(mentionTargetUrl)}`;
 
 const postUrl = mentionTargetUrl;
+const jsonLd = blogPosting({
+  title,
+  description,
+  date,
+  tags,
+  url: postUrl,
+  image: new URL('/og-default.png', Astro.site).toString(),
+});
 const year = date.getFullYear();
 const bibtexKey = `siddiqui${year}${slug.split('-')[0]}`;
 const githubUrl = `https://github.com/amaanx86/amaanx86.github.io/blob/main/src/content/blog/${slug}.md`;
@@ -73,6 +82,7 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
   ogType="article"
   allPosts={allPosts}
   wide={true}
+  jsonLd={jsonLd}
 >
   <div class="progress-bar" id="progress-bar"></div>
 
