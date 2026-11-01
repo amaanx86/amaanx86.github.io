@@ -1,0 +1,279 @@
+// Upstream contributions and authored projects. Shared by /projects (full cards) and the
+// homepage logo strip, so both read one source and cannot drift apart.
+
+// Inline link inside story bodies
+export const a = (href: string, label: string) =>
+  `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover underline underline-offset-2">${label}</a>`;
+
+export const contributions = [
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Prometheus',
+    logo: 'prometheus',
+    date: 'June 2026 · PR #18919',
+    lang: 'Go',
+    links: [
+      { href: 'https://github.com/prometheus/prometheus/pull/18919', label: 'prometheus #18919' },
+      { href: 'https://github.com/prometheus/prometheus/pull/19030', label: 'prometheus #19030' },
+      { href: 'https://github.com/prometheus/prometheus/pull/19032', label: 'prometheus #19032' },
+    ],
+    summary: 'Added native Oracle Cloud service discovery to Prometheus, so it finds OCI compute instances on its own. Two auth methods, nested compartments, tag filters. I maintain it, so the follow-ups get tested on a real tenancy.',
+    detail: null,
+    story: {
+      heading: 'A four-year-old proposal that got closed, then reopened',
+      body: `${a('https://github.com/prometheus/prometheus/issues/10226', '#10226')} asked for this in 2022 and was closed: maintainers did not want a cloud SDK baked into the Prometheus binary. ${a('https://github.com/prometheus/prometheus/issues/18707', '#18707')} reopened it, because the GCE, Kubernetes, and Azure code had since moved to a pattern that lets the linker drop unused SDK code. I followed that pattern, so the binary carries only the SDK calls Prometheus actually makes.
+
+The proposal came with a promise to maintain it. Since then ${a('https://github.com/prometheus/prometheus/pull/19030', '#19030')} added IPv6 and hostname labels so dual-stack instances show up, and ${a('https://github.com/prometheus/prometheus/pull/19032', '#19032')} stopped targets from deleted compartments lingering until a restart.`,
+    },
+    tags: ['Go', 'Prometheus', 'OCI', 'CNCF', 'Service Discovery'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Terraform AWS Provider',
+    logo: 'terraform',
+    date: 'June 2026 · PR #48190 + #48286',
+    lang: 'Go',
+    links: [
+      { href: 'https://github.com/hashicorp/terraform-provider-aws/pull/48190', label: 'hashicorp/terraform-provider-aws #48190' },
+      { href: 'https://github.com/hashicorp/terraform-provider-aws/pull/48286', label: 'hashicorp/terraform-provider-aws #48286' },
+    ],
+    summary: 'Two new resources for sending CloudWatch Logs into S3 Tables, one for the per-account integration and one for the log sources. Full lifecycle, acceptance tests against live AWS, docs.',
+    detail: null,
+    story: {
+      heading: 'New AWS feature, no Terraform support yet',
+      body: `${a('https://github.com/hashicorp/terraform-provider-aws/issues/48137', '#48137')} asked for resources covering the feature that routes CloudWatch Logs into S3 Tables, so you can query them with Athena and skip Firehose or Lambda. The integration is one per account, so the acceptance tests had to run one at a time. Listing sources throws a validation error once the parent is gone, which has to count as not-found rather than a failure. During review the maintainer added Autoflex mapping and a list data source. After the merge someone got stuck on the import format: the <code>id</code> is a per-association UUID from the CLI, not anything in the observabilityadmin API, and ${a('https://github.com/hashicorp/terraform-provider-aws/pull/48286', 'PR #48286')} writes that down.`,
+    },
+    tags: ['Go', 'Terraform', 'AWS', 'CloudWatch', 'S3 Tables'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Cilium',
+    logo: 'cilium',
+    date: 'June-September 2026 · 5 PRs + CFP #100',
+    lang: 'Go / Helm / CFP / Docs',
+    links: [
+      { href: 'https://github.com/cilium/cilium/pull/47813', label: 'cilium #47813' },
+      { href: 'https://github.com/cilium/cilium/pull/47850', label: 'cilium #47850' },
+      { href: 'https://github.com/cilium/cilium/pull/46663', label: 'cilium #46663' },
+      { href: 'https://github.com/cilium/cilium/pull/46531', label: 'cilium #46531' },
+      { href: 'https://github.com/cilium/cilium/pull/46116', label: 'cilium #46116' },
+      { href: 'https://github.com/cilium/design-cfps/pull/100', label: 'cilium/design-cfps #100' },
+    ],
+    summary: 'Six contributions. Fixed the Helm chart rendering duplicate prometheus.io keys, so user annotations now win and annotation-based scraping can be turned off. Hubble flows now carry the datapath extended drop reason, so hubble observe shows what cilium monitor already printed. Added --reply and --not-reply flags. Wrote the accepted design proposal for putting URL paths on Hubble HTTP metrics, then landed the first implementation PR, the path template matcher. Wrote the Cilium install guide for Oracle Kubernetes Engine.',
+    detail: null,
+    story: {
+      heading: 'A duplicate Helm key, a dropped error code, a metrics design, and an undocumented platform',
+      body: `${a('https://github.com/cilium/cilium/issues/47821', 'cilium#47821')}: the Helm chart wrote <code>prometheus.io/scrape</code> and <code>prometheus.io/port</code> next to the user's own annotation map, so setting either key produced a duplicate YAML key and render order decided the winner. For the Hubble metrics service and both hubble-relay objects the chart default came last and quietly won, which is why annotation-based scraping could not be turned off. ${a('https://github.com/cilium/cilium/pull/47850', 'PR #47850')} renders both keys through a helper that skips anything the user already set, so each key appears once and the user value wins. No new Helm values, and checked with <code>helm template</code> across the default, override, and ServiceMonitor paths.
+
+${a('https://github.com/cilium/hubble/issues/1215', 'hubble#1215')}: the datapath reports an extra error code on drops, for example which FIB lookup failed. <code>cilium monitor</code> printed it, but Hubble's parser threw it away. ${a('https://github.com/cilium/cilium/pull/46663', 'PR #46663')} adds two <code>Flow</code> fields, one for the raw value and one for the readable text, and the printer now prefers the text. The fields are additive, so older agents and clients look the same as before.
+
+${a('https://github.com/cilium/hubble/issues/1283', 'hubble#1283')}: the server already had a reply filter, there were just no CLI flags for it. Added <code>--reply</code> and <code>--not-reply</code> as mutually exclusive flags.
+
+${a('https://github.com/cilium/cilium/issues/26521', 'cilium#26521')} asked for the request path on Hubble HTTP metrics and was closed in 2023, because a raw path label means a new time series for every ID. ${a('https://github.com/cilium/design-cfps/pull/100', 'CFP-26521')} works around that: the label is the template that matched, not the path, so the set of values is fixed when config loads. With no templates set, the metrics are unchanged.
+
+${a('https://github.com/cilium/cilium/pull/47813', 'PR #47813')} is the first piece of that design: the matcher itself, using the placeholder syntax <code>net/http.ServeMux</code> accepts, templates tried in order with the first match winning, and a cap of 100. The path comes from the client, so the matcher splits it only as far as the longest template can tell paths apart: a 4000-slash path costs 26ns and no allocations instead of 32us and 65KB. Nothing is wired up yet, so there is no metric change on its own. Config, the handler, and Helm come next.
+
+${a('https://github.com/cilium/cilium/issues/46107', 'cilium#46107')}: OKE with VCN-Native Pod Networking is Oracle's recommended CNI mode, and Cilium's docs did not mention Oracle at all. Chaining already worked, because the pod side is a plain veth pair like the AWS VPC CNI. ${a('https://github.com/cilium/cilium/pull/46116', 'PR #46116')} writes it up, tested on a live cluster, including the uninstall trap: <code>helm uninstall</code> leaves <code>05-cilium.conflist</code> behind, so new pods hang in <code>ContainerCreating</code> until you remove it on every node.`,
+    },
+    tags: ['Go', 'Cilium', 'CNCF', 'Hubble', 'Helm', 'Observability', 'OKE', 'OCI'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'GitLab',
+    logo: 'gitlab',
+    date: 'June 2026 · MR !238594 + !240468',
+    lang: 'Vue / Ruby',
+    links: [
+      { href: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238594', label: 'gitlab-org/gitlab !238594' },
+      { href: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240468', label: 'gitlab-org/gitlab !240468' },
+    ],
+    summary: 'Added PDF export for Markdown files in the file viewer, closing a three-year-old request. The download button is now a dropdown with Print as PDF. A follow-up fixed a blank first print and gray text in dark mode.',
+    detail: null,
+    story: {
+      heading: 'Three years from product request to merge',
+      body: `${a('https://gitlab.com/gitlab-org/gitlab/-/work_items/414692', '#414692')} was filed in 2023 by a GitLab PM: customers wanted PDF copies of release docs without a CI pipeline. It sat for three years. Review reworked my first approach to match the pattern the wiki editor already used, which made it simpler, and it merged in nine days.
+
+Then ${a('https://gitlab.com/gitlab-org/gitlab/-/work_items/602773', '#602773')} turned up two bugs. The print styles leaned on the server-rendered page, so a soft Vue Router navigation printed a blank page, and the dark-mode stylesheet bled into print as gray text. ${a('https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240468', '!240468')} hides the page chrome directly and forces light text in print.`,
+    },
+    tags: ['Vue', 'Ruby', 'Rails', 'GitLab', 'i18n'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Amazon ECS Agent',
+    logo: 'aws',
+    date: 'July 2026 · PR #5034',
+    lang: 'Go',
+    link: 'https://github.com/aws/amazon-ecs-agent/pull/5034',
+    linkLabel: 'aws/amazon-ecs-agent #5034',
+    summary: 'Bumped the indirect dependency github.com/cilium/ebpf to v0.22.0 to clear CVE-2026-10722. I checked that the agent never runs the vulnerable code, so this clears scanners rather than fixing a reachable bug.',
+    detail: null,
+    story: {
+      heading: 'A CVE in a vendored dependency, checked for reachability',
+      body: `${a('https://github.com/aws/amazon-ecs-agent/issues/5023', '#5023')} flagged the vendored <code>github.com/cilium/ebpf</code> against CVE-2026-10722, fixed upstream in <code>v0.22.0</code>. It is not a direct import, it comes in through <code>containerd/cgroups/v3/cgroup2</code>, so the change is a <code>go get</code> in <code>/agent</code> then <code>go mod tidy</code> and <code>go mod vendor</code>. The CVE is in the BTF parsing path and the agent never reaches it: cgroups builds its device program in code, and the agent only drives the cpu and memory controllers. That went in the PR body so reviewers would not assume the agent was exploitable.`,
+    },
+    tags: ['Go', 'AWS', 'ECS', 'eBPF', 'Supply Chain'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'RabbitMQ Cluster Operator',
+    logo: 'rabbitmq',
+    date: 'June-August 2026 · PR #2151 + #2217',
+    lang: 'Go',
+    links: [
+      { href: 'https://github.com/rabbitmq/cluster-operator/pull/2151', label: 'rabbitmq/cluster-operator #2151' },
+      { href: 'https://github.com/rabbitmq/cluster-operator/pull/2217', label: 'rabbitmq/cluster-operator #2217' },
+    ],
+    summary: 'Two contributions. Moved RabbitmqCluster defaulting out of the reconcile loop into a mutating webhook, fixing the Helm upgrade conflicts reported on AKS. Then fixed a flaky system test where every retry died in setup instead of running the test again.',
+    detail: null,
+    story: {
+      heading: 'A Go type that breaks Helm upgrades, and a retry that never ran the test',
+      body: `${a('https://github.com/rabbitmq/cluster-operator/issues/2098', '#2098')}: the reconciler sent a full update every loop, so it claimed ownership of the whole custom resource. Go's <code>resource.Quantity</code> writes integers as strings, so <code>cpu: 1</code> is stored as <code>"1"</code> and the next <code>helm upgrade</code> fails with a type conflict. A maintainer opened ${a('https://github.com/rabbitmq/cluster-operator/issues/2121', '#2121')} to move defaulting into a mutating webhook. We agreed the shape first: <code>failurePolicy: Fail</code>, since the webhook runs in the same pod, and <code>ControlRabbitmqImage</code> stays in the reconciler because it is enforcement, not a default.
+
+That work exposed a flaky test, filed as ${a('https://github.com/rabbitmq/cluster-operator/issues/2152', '#2152')} and fixed in ${a('https://github.com/rabbitmq/cluster-operator/pull/2217', 'PR #2217')}. It reads like a timeout but it is a teardown race: <code>AfterEach</code> deletes the cluster and returns straight away, while the finalizer holds the object for about two seconds, so <code>BeforeEach</code> recreates the same name and the API server rejects it. <code>FlakeAttempts(3)</code> was really one attempt. The fix makes teardown poll until the object is gone, and print the remaining finalizers on timeout so a genuinely stuck delete is readable from CI.`,
+    },
+    tags: ['Go', 'Kubernetes', 'RabbitMQ', 'Helm', 'Webhooks', 'Testing'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Harbor',
+    logo: 'harbor',
+    date: 'June 2026 · PR #23326',
+    lang: 'Go',
+    link: 'https://github.com/goharbor/harbor/pull/23326',
+    linkLabel: 'goharbor/harbor #23326',
+    summary: 'Fixed Harbor\'s ECR adapter building the wrong endpoint for China regions. It used amazonaws.com everywhere, but cn-north-1 and cn-northwest-1 need amazonaws.com.cn. The connection just failed, with nothing shown in the UI.',
+    detail: null,
+    story: {
+      heading: 'Spotted while reviewing someone else\'s fix',
+      body: `${a('https://github.com/goharbor/harbor/issues/22860', '#22860')} was a bug I filed about missing Middle East regions, and someone else opened ${a('https://github.com/goharbor/harbor/pull/22941', 'PR #22941')} months later to fix it. Reading that, I saw the China regions were already listed but the endpoint builder used <code>amazonaws.com</code> for all of them. Any region starting with <code>cn-</code> now gets the <code>.cn</code> domain. The URL parsing regex was already right, only the builder was wrong.`,
+    },
+    tags: ['Go', 'Harbor', 'CNCF', 'ECR', 'AWS'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'k3s',
+    logo: 'k3s',
+    date: 'June 2026 · PR #14189',
+    lang: 'Go',
+    link: 'https://github.com/k3s-io/k3s/pull/14189',
+    linkLabel: 'k3s-io/k3s #14189',
+    summary: 'Fixed a flaky integration test in the kubeflags suite. The test kills and restarts k3s several times but never cleaned up in between, so stale etcd state made the next start fail.',
+    detail: null,
+    story: {
+      heading: 'Missing cleanup, intermittent fatal',
+      body: `${a('https://github.com/k3s-io/k3s/issues/14153', '#14153')}: if k3s is killed before etcd flushes its bootstrap data, the stale snapshot directory carries into the next start and k3s exits with <code>no bootstrap data found</code>. The startup test already paired every kill with a cleanup call. The kubeflags test was simply missing those two calls.`,
+    },
+    tags: ['Go', 'k3s', 'CNCF', 'Kubernetes', 'etcd'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'OCI Native Ingress Controller',
+    logo: 'kubernetes',
+    date: 'March 2026 · PR #139',
+    lang: 'Go',
+    link: 'https://github.com/oracle/oci-native-ingress-controller/pull/139',
+    linkLabel: 'oracle/oci-native-ingress-controller #139',
+    summary: 'Replaced the controller\'s TCP socket probes with real HTTP liveness and readiness probes, because the TCP ones were not satisfying CIS compliance checks.',
+    detail: null,
+    story: {
+      heading: 'Review pushed for the proper fix',
+      body: `My first version used TCP socket probes on the webhook port: quick, and compliant. The maintainer pushed back, because a TCP probe only says a port is open, not that the controller is healthy. So I built a health checker that tracks informer cache sync, exposed <code>/healthz/live</code> and <code>/healthz/ready</code>, and gated readiness on that. The controller now takes no traffic until it has finished syncing.`,
+    },
+    tags: ['Go', 'Kubernetes', 'OCI', 'Helm'],
+  },
+  {
+    type: 'upstream',
+    typeLabel: 'Upstream',
+    name: 'Netflix Lemur Docker',
+    logo: 'netflix',
+    date: 'February 2026 · PR #74',
+    lang: 'Docker',
+    link: 'https://github.com/Netflix/lemur-docker/pull/74',
+    linkLabel: 'Netflix/lemur-docker #74',
+    summary: 'The build was broken because acme==3.3.0 had been pulled from PyPI. Moved both stages to ubuntu:22.04, switched to NodeSource 20.x LTS, dropped some stale dependencies.',
+    detail: null,
+    tags: ['Python', 'Docker', 'TLS', 'PKI'],
+  },
+  {
+    type: 'maintainer',
+    typeLabel: 'Maintainer',
+    name: 'SUDO Terraform Modules',
+    logo: 'terraform',
+    date: '2025 - present',
+    lang: 'Terraform',
+    links: [
+      { href: 'https://github.com/sudo-terraform-aws-modules', label: 'github.com/sudo-terraform-aws-modules' },
+      { href: 'https://github.com/sudo-terraform-modules', label: 'github.com/sudo-terraform-modules' },
+    ],
+    summary: 'Two public Terraform module orgs on GitHub, one for AWS and one for multi-cloud patterns, all published to the Terraform Registry. I handle module design, releases, reviews, and issue triage.',
+    detail: null,
+    tags: ['Terraform', 'AWS', 'GitLab', 'IaC', 'GitOps'],
+  },
+  {
+    type: 'maintainer',
+    typeLabel: 'Author & Maintainer',
+    name: 'oci-prometheus-sd-proxy',
+    logo: 'prometheus',
+    date: 'March 2026 · Public archive',
+    lang: 'Go',
+    link: 'https://github.com/amaanx86/oci-prometheus-sd-proxy',
+    linkLabel: 'github.com/amaanx86/oci-prometheus-sd-proxy',
+    summary: 'A Go HTTP service discovery proxy that lists OCI compute instances for Prometheus across several tenancies. It caches OCI API responses so replicas do not each call the API, and a new tenancy is config rather than another scrape_config block.',
+    detail: null,
+    story: {
+      heading: 'A stopgap until native discovery landed, now archived',
+      body: `I built this while native OCI discovery was still blocked: ${a('https://github.com/prometheus/prometheus/issues/10226', 'prometheus#10226')} was closed, and HTTP service discovery was the only route that kept cloud-specific code out of the Prometheus binary. Native discovery has since merged in ${a('https://github.com/prometheus/prometheus/pull/18919', 'prometheus#18919')}, which is the better end state, so the repo is archived and left up for anyone still on an older Prometheus.`,
+    },
+    tags: ['Go', 'Prometheus', 'OCI', 'Observability'],
+  },
+  {
+    type: 'maintainer',
+    typeLabel: 'Author & Maintainer',
+    name: 'Jira DC SELinux Policy',
+    logo: 'redhat',
+    date: 'April 2026',
+    lang: 'SELinux',
+    link: 'https://github.com/amaanx86/jira-dc-selinux',
+    linkLabel: 'github.com/amaanx86/jira-dc-selinux',
+    summary: 'An SELinux policy module for running Atlassian Jira Data Center in enforcing mode on RHEL 9 with systemd. Make targets for build, install, relabel, verify, and audit. Running in production.',
+    detail: null,
+    tags: ['SELinux', 'RHEL', 'Jira', 'systemd', 'Security'],
+  },
+  // Pending - maintainers appear to have abandoned the project. Someday if it gets revived, this'll merge.
+  // {
+  //   type: 'upstream',
+  //   typeLabel: 'Upstream Contributor',
+  //   name: 'MongoDB SELinux Policy',
+  //   logo: 'mongodb',
+  //   date: 'April 2026 · PR #17',
+  //   lang: 'SELinux',
+  //   link: 'https://github.com/mongodb/mongodb-selinux/pull/17',
+  //   linkLabel: 'mongodb/mongodb-selinux #17',
+  //   summary: 'SELinux policy fix allowing mongod_t to search var_lib_nfs_t directories so FTDC disk stats collection works on hosts where /var/lib/nfs/rpc_pipefs is present. FTDC uses statfs(2) to iterate all mounted filesystems and was triggering AVC denials on every refresh in replica set deployments. Search-only, no read/write.',
+  //   detail: null,
+  //   tags: ['SELinux', 'MongoDB', 'RHEL', 'NFS', 'Security'],
+  // },
+  // Pending - maintainers appear to have abandoned the project. Someday if it gets revived, this'll merge.
+  // {
+  //   type: 'upstream',
+  //   typeLabel: 'Upstream Contributor',
+  //   name: 'Duo Labs CloudMapper',
+  //   logo: 'python',
+  //   date: 'February 2025 · PR #968',
+  //   lang: 'Python',
+  //   link: 'https://github.com/duo-labs/cloudmapper/pull/968',
+  //   linkLabel: 'duo-labs/cloudmapper #968',
+  //   summary: 'README update bumping CloudMapper\'s Python requirement from 3.7 to 3.10 and pyjq to 2.6.0 so installation works on modern Python. Open upstream - project looks abandoned, leaving it here in case maintainers come back.',
+  //   detail: null,
+  //   tags: ['Python', 'AWS', 'Security', 'Cloud Posture'],
+  // },
+];
