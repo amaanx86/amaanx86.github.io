@@ -60,7 +60,7 @@ Think about what an agent with tools actually is. It's a process that decides at
 
 So I ask the same things I'd ask about any workload, just more nervously. What can it touch? Each tool gets its own scoped role, not one big role for the whole agent. Whose identity is it acting as, the user's or a service account that can see everyone's data? What's the blast radius if it makes a bad call? Reads by default, writes behind a human. And can I reconstruct what happened afterwards, from CloudTrail or Azure Monitor, without guessing?
 
-[![Agent trust boundary on AWS: untrusted user input and retrieved documents reach an agent runtime on Bedrock AgentCore, which calls the foundation model through Bedrock Guardrails. A policy check in the tool layer sends reads straight to an order lookup Lambda whose role allows only GetItem and Query on a DynamoDB table, and holds writes for human approval before a refund Lambda with a capped write role calls the payments API. CloudTrail and CloudWatch record every model and tool call](/images/blog/fde-agent-trust-boundary.png)](/images/blog/fde-agent-trust-boundary.png)
+![Agent trust boundary on AWS: untrusted user input and retrieved documents reach an agent runtime on Bedrock AgentCore, which calls the foundation model through Bedrock Guardrails. A policy check in the tool layer sends reads straight to an order lookup Lambda whose role allows only GetItem and Query on a DynamoDB table, and holds writes for human approval before a refund Lambda with a capped write role calls the payments API. CloudTrail and CloudWatch record every model and tool call](./images/fde-agent-trust-boundary.png)
 
 On AWS, least privilege for a lookup tool is just boring IAM. Which is the point:
 
@@ -98,7 +98,7 @@ I'm still learning most of this, so take it as notes rather than answers.
 
 **Evals.** In normal software a test passes or fails, and the same input gets you the same output. Agents don't work like that. They're non-deterministic, they're usually wrong in subtle ways rather than obvious ones, and a prompt or model change can make things worse on inputs nobody thought to test. The instinct to gate deploys carries over fine. What doesn't carry over is knowing what to measure. You end up building a golden dataset with the customer's domain experts, picking between exact-match checks, rubric scoring and LLM-as-judge, and arguing about a pass threshold the business will actually sign off on. That's product and data work. It's also never finished, because the cases that matter most are the ones production shows you later.
 
-[![Eval loop: a pull request that changes a prompt, tool, or model triggers a CI job that assumes an AWS role through OIDC for one hour, runs the eval suite against the golden set, and blocks the merge if the pass rate is below threshold. Passing changes deploy to the production agent, live traffic is sampled and scored, and new failure cases are added back to the golden dataset in S3](/images/blog/fde-eval-loop.png)](/images/blog/fde-eval-loop.png)
+![Eval loop: a pull request that changes a prompt, tool, or model triggers a CI job that assumes an AWS role through OIDC for one hour, runs the eval suite against the golden set, and blocks the merge if the pass rate is below threshold. Passing changes deploy to the production agent, live traffic is sampled and scored, and new failure cases are added back to the golden dataset in S3](./images/fde-eval-loop.png)
 
 The CI side is the easy bit, and it looks like any other gate:
 

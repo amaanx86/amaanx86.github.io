@@ -42,7 +42,7 @@ The proxy polls OCI, finds every instance with the right tag across all configur
 
 `oci-prometheus-sd-proxy` is a lightweight Go service that implements the [Prometheus HTTP Service Discovery](https://prometheus.io/docs/prometheus/latest/http_sd/) API for OCI.
 
-![SD Proxy Architecture](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mkzq34x8dgpt2eubp6fh.png)
+![SD Proxy Architecture](./images/oci-sd-proxy-architecture.png)
 
 You point Prometheus at it like this:
 

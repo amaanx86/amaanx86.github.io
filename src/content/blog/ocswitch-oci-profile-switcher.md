@@ -56,7 +56,7 @@ Open a new terminal, source kicks in, reads the state file, exports the right va
 
 ## What It Looks Like
 
-![ocswitch terminal output](https://gist.github.com/user-attachments/assets/fb92f9b5-f513-43a5-b4d8-8f172ce6b457)
+![ocswitch terminal output](./images/ocswitch-demo.png)
 
 `ocswitch list` shows all detected profiles (anything matching `~/.oci/config_*`) with the active one highlighted in Oracle red. `ocswitch clear` removes the state file and unsets both env vars.
 

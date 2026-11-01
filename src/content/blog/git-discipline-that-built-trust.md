@@ -82,7 +82,7 @@ immediately on use to prevent token replay.
 Closes: #142
 ```
 
-![My commit history showing conventional commits across a real project](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/3an5dg0xmmbirndhjwv0.png)
+![My commit history showing conventional commits across a real project](./images/git-conventional-commits-history.png)
 
 When I send a PR with a history like this, reviewers can read the commit log like a changelog. They don't have to reverse-engineer what I did from the diff. And when something breaks in production six months later, the person doing the post-mortem can `git log --oneline` and actually understand the sequence of events.
 

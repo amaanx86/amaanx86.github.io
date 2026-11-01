@@ -767,6 +767,7 @@
   max-width: 100%;
   height: auto;
 }
+.prose .img-zoom { display: block; cursor: zoom-in; }
 
 .prose table {
   width: 100%;

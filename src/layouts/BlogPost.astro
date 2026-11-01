@@ -220,6 +220,21 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
       wrap.appendChild(btn);
     });
 
+    // ─── Images: click to open full size ─────────────────────────────
+    // The optimized WebP keeps the source resolution, so linking to the image's own src is the
+    // full-size view; posts need no wrapper links or a second copy of the file in /public.
+    document.querySelectorAll('#post-content img').forEach((img) => {
+      if (img.closest('a')) return;
+      const a = document.createElement('a');
+      a.className = 'img-zoom';
+      a.href = img.currentSrc || img.src;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.setAttribute('aria-label', 'Open full-size image: ' + (img.alt || 'image'));
+      img.parentNode.insertBefore(a, img);
+      a.appendChild(img);
+    });
+
     // ─── Heading anchors ─────────────────────────────────────────────
     document.querySelectorAll('#post-content h2[id], #post-content h3[id]').forEach((h) => {
       const a = document.createElement('a');
