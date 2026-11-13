@@ -18,7 +18,7 @@ const recognition = [
     title: 'AWS Community Day Dubai',
     date: 'October 2025',
     location: 'Dubai Knowledge Park, UAE',
-    description: 'Spoke to ~200 practitioners on resilient AWS architectures and CI/CD security. Based on production patterns from client work and HackOps.',
+    description: 'Spoke to ~200 practitioners on resilient AWS architectures and CI/CD security. Based on production patterns from client work and the HackOps win.',
     link: null,
     badge: 'Speaker',
     badgeClass: 'badge-blue',
@@ -27,7 +27,7 @@ const recognition = [
     title: 'HackOps 2025: 1st Place',
     date: 'April 2025',
     location: 'FAST NUCES, Karachi',
-    description: 'First place at a DevOps hackathon at FAST NUCES. Team built and shipped AWS infra under a time limit.',
+    description: 'First place at a DevOps hackathon at FAST NUCES. Our team designed, built, and shipped AWS infrastructure under a strict time limit.',
     detail: '₨65,000 prize',
     link: null,
     badge: '1st Place',
@@ -37,7 +37,7 @@ const recognition = [
     title: 'Platform Architecture Explained',
     date: 'August 2026',
     location: 'Cloud Native Karachi',
-    description: 'How modern platforms are put together, and how to read one you did not build. Kubernetes, cert-manager, Argo, Flux, and Crossplane all run the same control loop. One idea, ten times.',
+    description: 'How platforms fit together, and how to read one you did not build. Kubernetes, cert-manager, Argo, Flux, and Crossplane share one loop.',
     link: null,
     badge: 'Speaker',
     badgeClass: 'badge-blue',
@@ -46,7 +46,7 @@ const recognition = [
     title: 'AWS Architecture in Action',
     date: 'September 2026',
     location: 'AWS SBG, SMIU',
-    description: 'Hands-on session on designing a landing zone like a solutions architect: account structure, guardrails, and the path from strategy to deployment.',
+    description: 'Hands-on session on designing a landing zone like a solutions architect: account structure, guardrails, and the full path from strategy to deployment.',
     link: null,
     badge: 'Speaker',
     badgeClass: 'badge-blue',
@@ -55,12 +55,19 @@ const recognition = [
     title: 'Deep Dive into DevOps & Kubernetes',
     date: 'October 2026',
     location: 'Salim Habib University, Karachi',
-    description: 'DevOps and Kubernetes for computer science students, co-presented with Ameer Hamza and Muhammad Naimatullah Khan of Cloud Native Karachi.',
+    description: 'An introduction to DevOps and Kubernetes for computer science students, co-presented with Ameer Hamza and Muhammad Naimatullah Khan of Cloud Native Karachi.',
     link: null,
     badge: 'Speaker',
     badgeClass: 'badge-blue',
-    // Odd card out in the two-column grid; span both columns until a sixth entry lands.
-    wide: true,
+  },
+  {
+    title: 'Generative AI Infrastructure on AWS',
+    date: 'November 2026',
+    location: 'AWS Student Community, FAST NUCES',
+    description: 'The compute, networking, AWS services, and models behind generative AI applications, and how they fit together in production. Co-presented with Ameer Hamza.',
+    link: null,
+    badge: 'Speaker',
+    badgeClass: 'badge-blue',
   },
 ];
 
@@ -194,7 +201,7 @@ const maintainedCount = entries.filter((e) => e.badgeClass === 'badge-blue').len
 
       <div class="grid-2">
         {recognition.map((item) => (
-          <article class:list={['panel', { 'span-2': item.wide }]}>
+          <article class="panel">
             <div class="entry-head">
               <div class="entry-ident">
                 <h3 class="entry-name">{item.title}</h3>
