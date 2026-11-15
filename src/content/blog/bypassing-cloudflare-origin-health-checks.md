@@ -42,45 +42,7 @@ Works great for ad-hoc debugging. Not a thing you can configure in Blackbox Expo
 
 ## Architecture
 
-```text
-                         Public DNS (Cloudflare)
-                         Returns edge IPs -- NOT what we want
-                                  |
-                                  X  (bypassed)
-                                  |
-+----------------------------+    |    +----------------------------+
-|      Prometheus            |    |    |      CoreDNS Sidecar       |
-|                            |    |    |                            |
-|  "probe app.example.com"   |    |    |  hosts.override:           |
-|         |                  |    |    |    198.51.100.10            |
-|         v                  |    |    |        app.example.com     |
-|  +------------------+      |    |    |        api.example.com     |
-|  | Blackbox Exporter |------+---------->  203.0.113.50            |
-|  |                  |  DNS query |    |        docs.example.org   |
-|  |  dns: 172.20.0.53|<----------+    |                            |
-|  +------------------+      |    |    |  fallthrough -> 8.8.8.8    |
-|         |                  |    |    +----------------------------+
-+---------|------------------+    |
-          |                       |
-          | TLS + SNI: app.example.com
-          | Host: app.example.com
-          | IP: 198.51.100.10
-          |
-          v
-+----------------------------+
-|   Origin Load Balancer     |
-|   198.51.100.10:443        |
-|                            |
-|   Serves real certificate  |
-|   Routes by Host header    |
-+----------------------------+
-          |
-          v
-+----------------------------+
-|   Application Server       |
-|   Actual origin response   |
-+----------------------------+
-```
+![Prometheus asks Blackbox Exporter to probe app.example.com. Blackbox resolves the name through a CoreDNS sidecar, which answers 198.51.100.10 from its hosts override file and sends every other name to public DNS. Blackbox then connects over HTTPS straight to the origin load balancer at 198.51.100.10, with SNI and Host still set to app.example.com, so Cloudflare is not in the path](./images/cf-origin-probe.png)
 
 The trick is one line in the Blackbox Exporter config: point its DNS at the CoreDNS sidecar instead of the system resolver. CoreDNS returns origin IPs for overridden domains, falls through to public DNS for everything else. Blackbox never knows the difference - it just resolves and probes like normal.
 
