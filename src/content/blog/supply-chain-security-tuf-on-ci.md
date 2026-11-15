@@ -32,30 +32,7 @@ The implementation lives across two repositories:
 
 Keeping them separate was a deliberate trust boundary decision, not just organisation. The app CI can push a signing branch to the TUF repo, but it cannot merge that branch or sign `targets.json`. That step requires my OIDC identity authenticating via Sigstore in a browser - not the CI system's token. An attacker who steals the app repo's CI tokens hits a hard wall at the TUF signing step. They can push a branch, but they cannot authorise the release. The human is the last gate.
 
-```text
-App repo CI (run #24290258383)
-  └── builds image (linux/amd64, linux/arm64)
-  └── pushes to GHCR
-  └── cosign attest --type cyclonedx sbom.cyclonedx.json (SBOM)
-  └── cosign sign (image signature, OIDC -> Fulcio cert -> Rekor)
-  └── cosign attest --type  release-metadata.json
-  └── slsa-github-generator -> SLSA L3 provenance (isolated job)
-  └── pushes sign/release-1-4-2-rc-24290258383 branch -> TUF repo
-
-TUF repo (tuf-on-ci) [PR #8]
-  └── signing-event.yml detects branch push -> opens signing PR
-  └── Maintainer: tuf-on-ci-sign (browser OIDC -> @amaanx86 identity)
-  └── PR merged -> online-sign.yml refreshes snapshot + timestamp
-  └── publish.yml -> GitHub Pages
-  └── test.yml -> smoke-tests TUF client (scheduled)
-
-Users / Policy Engines
-  └── cosign verify - checks image signature against Rekor
-  └── cosign verify-attestation --type cyclonedx - checks SBOM
-  └── cosign verify-attestation --type  - checks release-metadata
-  └── slsa-verifier verify-image - checks SLSA L3 provenance
-  └── TUF client (python-tuf ngclient) - fetches metadata from GitHub Pages, verifies chain
-```
+![Release pipeline in three lanes. App repo CI builds and pushes the image, attaches an SBOM attestation, signs the image keylessly, adds a release-metadata attestation, generates SLSA L3 provenance in an isolated job, and pushes a signing branch across the trust boundary to the TUF repo. In the TUF repo a signing PR opens, the maintainer signs targets.json through browser Sigstore OIDC, which CI cannot do, then snapshot and timestamp are refreshed and the metadata is published to GitHub Pages. Users verify the image signature, attestations, SLSA provenance, and TUF metadata chain against GHCR, Sigstore, and GitHub Pages](./images/tuf-release-pipeline.png)
 
 ## The build pipeline
 
