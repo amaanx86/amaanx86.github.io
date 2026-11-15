@@ -188,3 +188,23 @@ export function renderPostOg(post: OgPost): Promise<Buffer> {
     footRight: chips(post.tags.slice(0, 3)),
   });
 }
+
+// Fallback card for every page that is not a post: home, projects, the blog index, verify.
+export function renderSiteOg(): Promise<Buffer> {
+  return renderCard({
+    headLeft: 'amaanx86.github.io',
+    headRight: "Amaan's Engineering Notes",
+    body: [
+      h({ flexDirection: 'column', gap: 14 }, [
+        serifTitle(NAME, 76),
+        h({ fontFamily: 'Inter', fontWeight: 600, fontSize: 30, color: c.accent }, ROLE),
+      ]),
+      lede(
+        'Building infrastructure at scale across AWS, OCI, and Azure. Observability, ' +
+          'platform security, and open source tooling that fills real gaps.',
+      ),
+    ],
+    footLeft: h({ ...mono, fontSize: 20 }, 'writing / projects / upstream contributions'),
+    footRight: chips(['aws', 'oci', 'azure', 'kubernetes']),
+  });
+}

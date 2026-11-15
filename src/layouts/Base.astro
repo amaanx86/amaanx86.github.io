@@ -83,6 +83,10 @@ function isActive(href: string) {
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="Amaan's Engineering Notes" />
     <meta property="og:image" content={ogImageURL} />
+    {/* Every OG image on the site is generated at 1200x630 by src/lib/og.ts. */}
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogTitle || title} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={ogTitle || title} />
     <meta name="twitter:description" content={ogDescription || description} />
