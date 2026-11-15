@@ -49,13 +49,15 @@ const mentionTargetUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const mentionCountApi = `https://webmention.io/api/count?target=${encodeURIComponent(mentionTargetUrl)}`;
 
 const postUrl = mentionTargetUrl;
+// Built per post by src/pages/og/[slug].png.ts.
+const ogImage = `/og/${slug}.png`;
 const jsonLd = blogPosting({
   title,
   description,
   date,
   tags,
   url: postUrl,
-  image: new URL('/og-default.png', Astro.site).toString(),
+  image: new URL(ogImage, Astro.site).toString(),
 });
 const year = date.getFullYear();
 const bibtexKey = `siddiqui${year}${slug.split('-')[0]}`;
@@ -80,6 +82,7 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
   ogTitle={title}
   ogDescription={description}
   ogType="article"
+  ogImage={ogImage}
   allPosts={allPosts}
   wide={true}
   jsonLd={jsonLd}
