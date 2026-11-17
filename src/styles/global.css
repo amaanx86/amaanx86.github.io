@@ -1331,6 +1331,8 @@ details > summary::-webkit-details-marker { display: none; }
   }
   .cite-body { margin-top: 1rem; }
   .post-markdown-link { margin-top: 1rem; }
+  .related-list { margin-top: 0.75rem; }
+  .tag-link:hover { color: var(--accent); border-color: var(--accent); }
   .cite-tabs { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
   .cite-pre-wrap { position: relative; }
   .cite-pre {

@@ -1,0 +1,48 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostRow from '../../../components/PostRow.astro';
+import { getPosts, pageTags, type Post } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  return [...pageTags(await getPosts())].map(([tag, posts]) => {
+    // Tags become URL segments verbatim, so hold them to lowercase-kebab.
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(tag)) {
+      throw new Error(`tag "${tag}" is not lowercase-kebab; fix it in the post frontmatter`);
+    }
+    return { params: { tag }, props: { posts } };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props as { posts: Post[] };
+const allPosts = (await getPosts()).map((p) => ({
+  slug: p.id,
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+}));
+---
+
+<Base
+  title={`Posts tagged ${tag} | Amaan Ul Haq Siddiqui`}
+  description={`${posts.length} posts on ${tag}: ${posts.map((p) => p.data.title).join('; ')}`}
+  allPosts={allPosts}
+>
+  <div class="stack">
+    <header>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">index</a>
+        <span aria-hidden="true">/</span>
+        <a href="/blog">writing</a>
+        <span aria-hidden="true">/</span>
+        <span class="current">{tag}</span>
+      </nav>
+      <h1 class="page-title">{tag}</h1>
+      <p class="meta" style="margin-top:1rem">{posts.length} posts</p>
+    </header>
+
+    <section>
+      {posts.map((post) => <PostRow post={post} />)}
+    </section>
+  </div>
+</Base>
