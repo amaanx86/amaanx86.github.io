@@ -13,13 +13,14 @@ interface Props {
   title: string;
   description: string;
   date: Date;
+  updated?: Date;
   tags: string[];
   draft?: boolean;
   readingTime?: number;
   headings?: Heading[];
 }
 
-const { title, description, date, tags, draft = false, readingTime = 1, headings = [] } = Astro.props;
+const { title, description, date, updated, tags, draft = false, readingTime = 1, headings = [] } = Astro.props;
 
 const allPostsRaw = await getPosts();
 
@@ -50,6 +51,7 @@ const jsonLd = blogPosting({
   title,
   description,
   date,
+  updated,
   tags,
   url: postUrl,
   image: new URL(ogImage, Astro.site).toString(),
@@ -99,6 +101,12 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
           <time datetime={date.toISOString()}>{formattedDate}</time>
           <span aria-hidden="true">/</span>
           <span>{readingTime} min read</span>
+          {updated && (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>Updated <time datetime={updated.toISOString()}>{formatDate(updated)}</time></span>
+            </>
+          )}
           <span id="webmention-wrapper" class="hidden">
             <span aria-hidden="true">/</span>
             <span id="webmention-count">0 mentions</span>

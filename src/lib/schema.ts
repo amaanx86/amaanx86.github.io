@@ -54,18 +54,19 @@ interface PostInput {
   title: string;
   description: string;
   date: Date;
+  updated?: Date;
   tags: string[];
   url: string;
   image: string;
 }
 
-export const blogPosting = ({ title, description, date, tags, url, image }: PostInput) => ({
+export const blogPosting = ({ title, description, date, updated, tags, url, image }: PostInput) => ({
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: title,
   description,
   datePublished: date.toISOString(),
-  dateModified: date.toISOString(),
+  dateModified: (updated ?? date).toISOString(),
   url,
   mainEntityOfPage: { '@type': 'WebPage', '@id': url },
   image,

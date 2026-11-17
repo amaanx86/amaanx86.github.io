@@ -19,6 +19,7 @@ const readingTime = Math.ceil((post.body ?? '').split(/\s+/).length / 200);
   title={post.data.title}
   description={post.data.description}
   date={post.data.date}
+  updated={post.data.updated}
   tags={post.data.tags}
   draft={post.data.draft}
   readingTime={readingTime}

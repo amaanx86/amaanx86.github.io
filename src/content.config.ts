@@ -7,6 +7,8 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.date(),
+    // Set when a post is materially revised; feeds dateModified and the "Updated" line.
+    updated: z.date().optional(),
     tags: z.array(z.string()),
     draft: z.boolean().default(false),
   }),
