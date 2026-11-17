@@ -47,6 +47,8 @@ const mentionCountApi = `https://webmention.io/api/count?target=${encodeURICompo
 const postUrl = mentionTargetUrl;
 // Built per post by src/pages/og/[slug].png.ts.
 const ogImage = `/og/${slug}.png`;
+// Built per post by src/pages/blog/[...slug].md.ts.
+const markdownPath = `/blog/${slug}.md`;
 const jsonLd = blogPosting({
   title,
   description,
@@ -83,6 +85,7 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
   allPosts={allPosts}
   wide={true}
   jsonLd={jsonLd}
+  markdownAlternate={markdownPath}
 >
   <div class="progress-bar" id="progress-bar"></div>
 
@@ -151,6 +154,9 @@ const apa = `Siddiqui, A. U. H. (${year}, ${date.toLocaleDateString('en-US', { m
             </div>
           </div>
         </details>
+        <p class="meta post-markdown-link">
+          Plain Markdown for agents: <a class="link" href={markdownPath}>{slug}.md</a>
+        </p>
       </section>
 
       <!-- ── Adjacent posts ─────────────────────────────────────────── -->

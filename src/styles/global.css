@@ -1330,6 +1330,7 @@ details > summary::-webkit-details-marker { display: none; }
     border-top: 1px solid var(--border);
   }
   .cite-body { margin-top: 1rem; }
+  .post-markdown-link { margin-top: 1rem; }
   .cite-tabs { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
   .cite-pre-wrap { position: relative; }
   .cite-pre {

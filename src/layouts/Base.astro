@@ -20,6 +20,8 @@ interface Props {
   wide?: boolean;
   /** schema.org JSON-LD for this page, rendered in <head>. */
   jsonLd?: unknown;
+  /** Path to a plain Markdown copy of this page, advertised to agents via rel="alternate". */
+  markdownAlternate?: string;
 }
 
 const {
@@ -32,6 +34,7 @@ const {
   allPosts = [],
   wide = false,
   jsonLd,
+  markdownAlternate,
 } = Astro.props;
 
 const ogImageURL = new URL(ogImage, Astro.site).toString();
@@ -73,6 +76,9 @@ function isActive(href: string) {
     <meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)" />
     <meta name="google-site-verification" content="g2wzBj0K1fTbsSn7_MU3y7yTfAR8NO5qXQ-edSQ3DFY" />
     <link rel="canonical" href={canonicalURL} />
+    {markdownAlternate && (
+      <link rel="alternate" type="text/markdown" href={new URL(markdownAlternate, Astro.site)} />
+    )}
     {webmentionEndpoint && <link rel="webmention" href={webmentionEndpoint} />}
     <link rel="me" href="https://github.com/amaanx86" />
     <link rel="me" href="https://gitlab.com/amaanx86" />
