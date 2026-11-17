@@ -1,7 +1,7 @@
 ---
 import Base from './Base.astro';
 import { blogPosting } from '../lib/schema';
-import { getCollection } from 'astro:content';
+import { formatDate, getPosts } from '../lib/posts';
 
 interface Heading {
   depth: number;
@@ -21,8 +21,7 @@ interface Props {
 
 const { title, description, date, tags, draft = false, readingTime = 1, headings = [] } = Astro.props;
 
-const allPostsRaw = (await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md')))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allPostsRaw = await getPosts();
 
 const allPosts = allPostsRaw.map((p) => ({
   slug: p.id,
@@ -40,11 +39,7 @@ const older = index >= 0 && index < allPostsRaw.length - 1 ? allPostsRaw[index +
 // Only h2/h3 earn a place in the contents rail; deeper levels are noise.
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
-const formattedDate = date.toLocaleDateString('en-GB', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const formattedDate = formatDate(date);
 const mentionTargetUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const mentionCountApi = `https://webmention.io/api/count?target=${encodeURIComponent(mentionTargetUrl)}`;
 

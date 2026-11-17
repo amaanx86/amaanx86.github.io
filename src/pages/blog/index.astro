@@ -1,9 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getPosts } from '../../lib/posts';
 
-const allPosts = (await getCollection('blog', ({ data, id }) => !data.draft && !id.endsWith('.draft.md')))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allPosts = await getPosts();
 
 const allPostsData = allPosts.map((p) => ({
   slug: p.id,
@@ -12,31 +12,15 @@ const allPostsData = allPosts.map((p) => ({
   tags: p.data.tags,
 }));
 
-const posts = allPosts.map((post) => ({
-  slug: post.id,
-  title: post.data.title,
-  description: post.data.description,
-  date: post.data.date,
-  year: post.data.date.getFullYear(),
-  tags: post.data.tags,
-  draft: post.data.draft,
-  readingTime: Math.ceil((post.body ?? '').split(/\s+/).length / 200),
-  formattedDate: post.data.date.toLocaleDateString('en-GB', {
-    month: 'short',
-    day: '2-digit',
-  }),
-  isoDate: post.data.date.toISOString(),
-}));
-
 // Newest year first; posts inside a year keep the newest-first order above.
-const years = [...new Set(posts.map((p) => p.year))].sort((a, b) => b - a);
+const years = [...new Set(allPosts.map((p) => p.data.date.getFullYear()))].sort((a, b) => b - a);
 
 // Tag facets, most-used first. A tag on a single post is not a useful facet
 // and thirty chips bury the list, so only recurring tags get a button; the
 // text filter still matches every tag.
 const tagCounts = new Map<string, number>();
-for (const post of posts) {
-  for (const tag of post.tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+for (const post of allPosts) {
+  for (const tag of post.data.tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
 }
 const tags = [...tagCounts.entries()]
   .filter(([, count]) => count > 1)
@@ -58,7 +42,7 @@ const tags = [...tagCounts.entries()]
         production work, not from documentation.
       </p>
       <p class="meta" style="margin-top:1rem">
-        <span id="result-count">{posts.length}</span> of {posts.length} posts
+        <span id="result-count">{allPosts.length}</span> of {allPosts.length} posts
       </p>
     </header>
 
@@ -104,30 +88,14 @@ const tags = [...tagCounts.entries()]
               <span class="rule" aria-hidden="true"></span>
             </div>
 
-            {posts.filter((p) => p.year === year).map((post) => (
-              <a
-                href={`/blog/${post.slug}`}
-                class="row post-card"
-                data-title={post.title.toLowerCase()}
-                data-desc={post.description.toLowerCase()}
-                data-tags={post.tags.join(' ').toLowerCase()}
-              >
-                <time class="row-meta" datetime={post.isoDate}>{post.formattedDate}</time>
-                <div>
-                  <h2 class="row-title">
-                    {post.title}
-                    {post.draft && <span class="badge badge-orange" style="margin-left:0.5rem">Draft</span>}
-                  </h2>
-                  <p class="row-desc line-clamp-2">{post.description}</p>
-                  <div class="row-tail">
-                    <span class="meta">{post.readingTime} min</span>
-                    {post.tags.map((tag: string) => <span class="tag">{tag}</span>)}
-                  </div>
-                </div>
-                <svg class="row-arrow" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 8h10M9 4l4 4-4 4" />
-                </svg>
-              </a>
+            {allPosts.filter((p) => p.data.date.getFullYear() === year).map((post) => (
+              <PostRow
+                post={post}
+                class="post-card"
+                data-title={post.data.title.toLowerCase()}
+                data-desc={post.data.description.toLowerCase()}
+                data-tags={post.data.tags.join(' ').toLowerCase()}
+              />
             ))}
           </section>
         ))}

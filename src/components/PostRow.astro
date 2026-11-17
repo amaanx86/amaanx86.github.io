@@ -1,0 +1,32 @@
+---
+import { readingTime, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  /** Extra attributes for the row link, e.g. the data-* hooks the /blog filter reads. */
+  [attr: string]: unknown;
+}
+
+const { post, class: extraClass, ...attrs } = Astro.props;
+const { title, description, date, tags, draft } = post.data;
+---
+
+<a href={`/blog/${post.id}`} class:list={['row', extraClass]} {...attrs}>
+  <time class="row-meta" datetime={date.toISOString()}>
+    {date.toLocaleDateString('en-GB', { month: 'short', day: '2-digit' })}
+  </time>
+  <div>
+    <h2 class="row-title">
+      {title}
+      {draft && <span class="badge badge-orange" style="margin-left:0.5rem">Draft</span>}
+    </h2>
+    <p class="row-desc line-clamp-2">{description}</p>
+    <div class="row-tail">
+      <span class="meta">{readingTime(post)} min</span>
+      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+  </div>
+  <svg class="row-arrow" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h10M9 4l4 4-4 4" />
+  </svg>
+</a>
