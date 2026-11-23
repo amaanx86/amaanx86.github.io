@@ -69,6 +69,15 @@ const recognition = [
     badge: 'Speaker',
     badgeClass: 'badge-blue',
   },
+  {
+    title: 'Zero Keys to Production on AWS',
+    date: 'November 2026',
+    location: 'AWS SCD, MAJU',
+    description: 'Deploying to AWS from GitHub Actions with no stored access key: OIDC tokens checked by STS against a trust policy pinned to repo and branch, for credentials that expire within the hour.',
+    link: null,
+    badge: 'Speaker',
+    badgeClass: 'badge-blue',
+  },
 ];
 
 const community = {
@@ -200,8 +209,14 @@ const maintainedCount = entries.filter((e) => e.badgeClass === 'badge-blue').len
       </div>
 
       <div class="grid-2">
-        {recognition.map((item) => (
-          <article class="panel">
+        {recognition.map((item, i) => (
+          <article
+            class:list={[
+              'panel',
+              // An odd count leaves the last card alone on its row; let it fill the row.
+              { 'span-2': recognition.length % 2 === 1 && i === recognition.length - 1 },
+            ]}
+          >
             <div class="entry-head">
               <div class="entry-ident">
                 <h3 class="entry-name">{item.title}</h3>
